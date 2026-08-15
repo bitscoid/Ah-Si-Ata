@@ -5,7 +5,7 @@ import requests
 
 from datetime import datetime, timezone
 
-from app.client.engsel import BASE_API_URL, UA
+from app.client.ahsiata import BASE_API_URL, UA, APP_VERSION, X_HV
 from app.client.encrypt import (
     API_KEY,
     build_encrypted_field,
@@ -132,12 +132,12 @@ def settlement_bounty(
         "user-agent": UA,
         "x-api-key": API_KEY,
         "authorization": f"Bearer {tokens['id_token']}",
-        "x-hv": "v3",
+        "x-hv": X_HV,
         "x-signature-time": str(sig_time_sec),
         "x-signature": x_sig,
         "x-request-id": str(uuid.uuid4()),
         "x-request-at": java_like_timestamp(x_requested_at),
-        "x-version-app": "8.9.0",
+        "x-version-app": APP_VERSION,
     }
     
     url = f"{BASE_API_URL}/{path}"
@@ -209,12 +209,12 @@ def settlement_loyalty(
         "user-agent": UA,
         "x-api-key": API_KEY,
         "authorization": f"Bearer {tokens['id_token']}",
-        "x-hv": "v3",
+        "x-hv": X_HV,
         "x-signature-time": str(sig_time_sec),
         "x-signature": x_sig,
         "x-request-id": str(uuid.uuid4()),
         "x-request-at": java_like_timestamp(x_requested_at),
-        "x-version-app": "8.9.0",
+        "x-version-app": APP_VERSION,
     }
 
     url = f"{BASE_API_URL}/{path}"
@@ -286,12 +286,12 @@ def bounty_allotment(
         "user-agent": UA,
         "x-api-key": API_KEY,
         "authorization": f"Bearer {tokens['id_token']}",
-        "x-hv": "v3",
+        "x-hv": X_HV,
         "x-signature-time": str(sig_time_sec),
         "x-signature": x_sig,
         "x-request-id": str(uuid.uuid4()),
         "x-request-at": java_like_timestamp(x_requested_at),
-        "x-version-app": "8.9.0",
+        "x-version-app": APP_VERSION,
     }
     
     url = f"{BASE_API_URL}/{path}"

@@ -1,5 +1,5 @@
 # CIRCLE
-from app.client.engsel import send_api_request
+from app.client.ahsiata import send_api_request
 from app.client.encrypt import encrypt_circle_msisdn
 
 def get_group_data(

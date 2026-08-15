@@ -30,6 +30,7 @@ API_KEY = os.getenv("API_KEY")
 AES_KEY_ASCII = os.getenv("AES_KEY_ASCII")
 AX_FP_KEY = os.getenv("AX_FP_KEY")
 ENCRYPTED_FIELD_KEY=os.getenv("ENCRYPTED_FIELD_KEY")
+DEVICE_FAKE_MSISDN = os.getenv("DEVICE_FAKE_MSISDN", "6281398370564")
 @dataclass
 class DeviceInfo:
     manufacturer: str
@@ -73,7 +74,7 @@ def load_ax_fp() -> str:
         ip="192.169.69.69",
         font_scale=1.0,
         android_release="13",
-        msisdn="6281398370564"
+        msisdn=DEVICE_FAKE_MSISDN
     )
     
     new_fp = ax_fingerprint(dev, AX_FP_KEY)

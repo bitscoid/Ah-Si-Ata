@@ -1,4 +1,4 @@
-from app.client.engsel import send_api_request
+from app.client.ahsiata import send_api_request
 
 def validate_puk(
     api_key: str,

@@ -2,7 +2,7 @@ from app.menus.package import show_package_details
 from app.service.auth import AuthInstance
 from app.menus.util import clear_screen, pause
 from app.service.bookmark import BookmarkInstance
-from app.client.engsel import get_family
+from app.client.ahsiata import get_family
 
 def show_bookmark_menu():
     api_key = AuthInstance.api_key

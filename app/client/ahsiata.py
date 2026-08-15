@@ -16,6 +16,8 @@ BASE_API_URL = os.getenv("BASE_API_URL")
 if not BASE_API_URL:
     raise ValueError("BASE_API_URL environment variable not set")
 UA = os.getenv("UA")
+APP_VERSION = os.getenv("APP_VERSION", "8.9.0")
+X_HV = os.getenv("X_HV", "v3")
 
 def send_api_request(
     api_key: str,
@@ -46,12 +48,12 @@ def send_api_request(
         "user-agent": UA,
         "x-api-key": API_KEY,
         "authorization": f"Bearer {id_token}",
-        "x-hv": "v3",
+        "x-hv": X_HV,
         "x-signature-time": str(sig_time_sec),
         "x-signature": x_sig,
         "x-request-id": str(uuid.uuid4()),
         "x-request-at": java_like_timestamp(now),
-        "x-version-app": "8.9.0",
+        "x-version-app": APP_VERSION,
     }
 
     url = f"{BASE_API_URL}/{path}"
@@ -73,7 +75,7 @@ def get_profile(api_key: str, access_token: str, id_token: str) -> dict:
 
     raw_payload = {
         "access_token": access_token,
-        "app_version": "8.9.0",
+        "app_version": APP_VERSION,
         "is_enterprise": False,
         "lang": "en"
     }

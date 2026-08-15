@@ -23,6 +23,9 @@ BASIC_AUTH = os.getenv("BASIC_AUTH")
 AX_DEVICE_ID = ax_device_id()
 AX_FP = load_ax_fp()
 UA = os.getenv("UA")
+DEVICE_MANUFACTURER = os.getenv("DEVICE_MANUFACTURER", "samsung")
+DEVICE_MODEL = os.getenv("DEVICE_MODEL", "SM-N935F")
+DEFAULT_SUBSTYPE = os.getenv("DEFAULT_SUBSTYPE", "PREPAID")
 
 def validate_contact(contact: str) -> bool:
     if not contact.startswith("628") or len(contact) > 14:
@@ -53,10 +56,10 @@ def get_otp(contact: str) -> str:
         "Ax-Device-Id": AX_DEVICE_ID,
         "Ax-Fingerprint": AX_FP,
         "Ax-Request-At": ax_request_at,
-        "Ax-Request-Device": "samsung",
-        "Ax-Request-Device-Model": "SM-N935F",
+        "Ax-Request-Device": DEVICE_MANUFACTURER,
+        "Ax-Request-Device-Model": DEVICE_MODEL,
         "Ax-Request-Id": ax_request_id,
-        "Ax-Substype": "PREPAID",
+        "Ax-Substype": DEFAULT_SUBSTYPE,
         "Content-Type": "application/json",
         "Host": BASE_CIAM_URL.replace("https://", ""),
         "User-Agent": UA,
@@ -96,10 +99,10 @@ def extend_session(subscriber_id: str) -> str:
         "Ax-Device-Id": AX_DEVICE_ID,
         "Ax-Fingerprint": AX_FP,
         "Ax-Request-At": ax_request_at,
-        "Ax-Request-Device": "samsung",
-        "Ax-Request-Device-Model": "SM-N935F",
+        "Ax-Request-Device": DEVICE_MANUFACTURER,
+        "Ax-Request-Device-Model": DEVICE_MODEL,
         "Ax-Request-Id": ax_request_id,
-        "Ax-Substype": "PREPAID",
+        "Ax-Substype": DEFAULT_SUBSTYPE,
         "Content-Type": "application/json",
         "Host": BASE_CIAM_URL.replace("https://", ""),
         "User-Agent": UA,
@@ -162,10 +165,10 @@ def submit_otp(
         "Ax-Device-Id": AX_DEVICE_ID,
         "Ax-Fingerprint": AX_FP,
         "Ax-Request-At": ts_header,
-        "Ax-Request-Device": "samsung",
-        "Ax-Request-Device-Model": "SM-N935F",
+        "Ax-Request-Device": DEVICE_MANUFACTURER,
+        "Ax-Request-Device-Model": DEVICE_MODEL,
         "Ax-Request-Id": str(uuid.uuid4()),
-        "Ax-Substype": "PREPAID",
+        "Ax-Substype": DEFAULT_SUBSTYPE,
         "Content-Type": "application/x-www-form-urlencoded",
         "User-Agent": UA,
     }
@@ -197,13 +200,13 @@ def get_new_token(api_key: str, refresh_token: str, subscriber_id: str) -> str:
         "ax-request-at": ax_request_at,
         "ax-device-id": AX_DEVICE_ID,
         "ax-request-id": ax_request_id,
-        "ax-request-device": "samsung",
-        "ax-request-device-model": "SM-N935F",
+        "ax-request-device": DEVICE_MANUFACTURER,
+        "ax-request-device-model": DEVICE_MODEL,
         "ax-fingerprint": AX_FP,
         "authorization": f"Basic {BASIC_AUTH}",
         "user-agent": UA,
-        "ax-substype": "PREPAID",
-        "content-type": "application/x-www-form-urlencoded"
+        "ax-substype": DEFAULT_SUBSTYPE,
+        "content-type": "application/x-www-form-urlencoded",
     }
 
     data = {
@@ -266,12 +269,12 @@ def get_auth_code(tokens: dict, pin: str, msisdn: str):
         "Ax-Request-At": ax_request_at,
         "Ax-Device-Id": AX_DEVICE_ID,
         "Ax-Request-Id": ax_request_id,
-        "Ax-Request-Device": "samsung",
-        "Ax-Request-Device-Model": "SM-N935F",
+        "Ax-Request-Device": DEVICE_MANUFACTURER,
+        "Ax-Request-Device-Model": DEVICE_MODEL,
         "Ax-Fingerprint": AX_FP,
         "Authorization": f"Bearer {tokens['access_token']}",
         "User-Agent": UA,
-        "Ax-Substype": "PREPAID",
+        "Ax-Substype": DEFAULT_SUBSTYPE,
         "Content-Type": "application/json",
     }
 

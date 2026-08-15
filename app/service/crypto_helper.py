@@ -7,6 +7,7 @@ XDATA_KEY=os.getenv("XDATA_KEY")
 AX_API_SIG_KEY=os.getenv("AX_API_SIG_KEY")
 X_API_BASE_SECRET=os.getenv("X_API_BASE_SECRET")
 ENCRYPTED_FIELD_KEY=os.getenv("ENCRYPTED_FIELD_KEY")
+PAYMENT_SIGN_SALT = os.getenv("PAYMENT_SIGN_SALT", "ae-hei_9Tee6he+Ik3Gais5=")
 
 def derive_iv(xtime_ms: int) -> bytes:
     sha = hashlib.sha256(str(xtime_ms).encode()).hexdigest()
@@ -49,7 +50,7 @@ def make_x_signature_payment(
     payment_for: str,
     path: str,
 ) -> str:
-    key_str = f"{X_API_BASE_SECRET};{sig_time_sec}#ae-hei_9Tee6he+Ik3Gais5=;POST;{path};{sig_time_sec}"
+    key_str = f"{X_API_BASE_SECRET};{sig_time_sec}#{PAYMENT_SIGN_SALT};POST;{path};{sig_time_sec}"
     key_bytes = key_str.encode("utf-8")
 
     msg = f"{access_token};{token_payment};{sig_time_sec};{payment_for};{payment_method};{package_code};".encode("utf-8")
@@ -77,7 +78,7 @@ def make_x_signature_bounty(
     ) -> str:
     path = "api/v8/personalization/bounties-exchange"
 
-    key_str = f"{X_API_BASE_SECRET};{access_token};{sig_time_sec}#ae-hei_9Tee6he+Ik3Gais5=;POST;{path};{sig_time_sec}"
+    key_str = f"{X_API_BASE_SECRET};{access_token};{sig_time_sec}#{PAYMENT_SIGN_SALT};POST;{path};{sig_time_sec}"
     key_bytes = key_str.encode("utf-8")
 
     msg = f"{access_token};{token_payment};{sig_time_sec};{package_code};".encode("utf-8")
@@ -90,9 +91,9 @@ def make_x_signature_loyalty(
     token_confirmation: str,
     path: str,
 ) -> str:
-    key_str = f"{X_API_BASE_SECRET};{sig_time_sec}#ae-hei_9Tee6he+Ik3Gais5=;POST;{path};{sig_time_sec}"
+    key_str = f"{X_API_BASE_SECRET};{sig_time_sec}#{PAYMENT_SIGN_SALT};POST;{path};{sig_time_sec}"
     key_bytes = key_str.encode("utf-8")
-    
+
     msg = f"{token_confirmation};{sig_time_sec};{package_code};".encode("utf-8")
     
     return hmac.new(key_bytes, msg, hashlib.sha512).hexdigest()
@@ -132,7 +133,7 @@ def make_x_signature_bounty_allotment(
     path: str,
     destination_msisdn: str,
     ) -> str:    
-    key_str = f"{X_API_BASE_SECRET};{sig_time_sec}#ae-hei_9Tee6he+Ik3Gais5=;{destination_msisdn};POST;{path};{sig_time_sec}"
+    key_str = f"{X_API_BASE_SECRET};{sig_time_sec}#{PAYMENT_SIGN_SALT};{destination_msisdn};POST;{path};{sig_time_sec}"
     key_bytes = key_str.encode("utf-8")
     
     msg = f"{token_confirmation};{sig_time_sec};{destination_msisdn};{package_code};".encode("utf-8")

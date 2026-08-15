@@ -1,12 +1,10 @@
 from dotenv import load_dotenv
-
-from app.service.git import check_for_updates
 load_dotenv()
 
 import sys, json
 from datetime import datetime
 from app.menus.util import clear_screen, pause
-from app.client.engsel import (
+from app.client.ahsiata import (
     get_balance,
     get_tiering_info,
 )
@@ -17,7 +15,6 @@ from app.menus.bookmark import show_bookmark_menu
 from app.menus.account import show_account_menu
 from app.menus.package import fetch_my_packages, get_packages_by_family, show_package_details
 from app.menus.hot import show_hot_menu, show_hot_menu2
-from app.service.sentry import enter_sentry_mode
 from app.menus.purchase import purchase_by_family
 from app.menus.famplan import show_family_info
 from app.menus.circle import show_circle_info
@@ -201,8 +198,6 @@ def main():
                 pause()
             elif choice.lower() == "n":
                 show_notification_menu()
-            elif choice == "s":
-                enter_sentry_mode()
             else:
                 print("Invalid choice. Please try again.")
                 pause()
@@ -216,11 +211,6 @@ def main():
 
 if __name__ == "__main__":
     try:
-        print("Checking for updates...")
-        need_update = check_for_updates()
-        if need_update:
-            pause()
-
         main()
     except KeyboardInterrupt:
         print("\nExiting the application.")

@@ -6,7 +6,7 @@ import qrcode
 
 import time
 import requests
-from app.client.engsel import *
+from app.client.ahsiata import *
 from app.client.encrypt import API_KEY, decrypt_xdata, encryptsign_xdata, java_like_timestamp, get_x_signature_payment
 from app.type_dict import PaymentItem
 
@@ -160,12 +160,12 @@ def settlement_qris(
         "user-agent": UA,
         "x-api-key": API_KEY,
         "authorization": f"Bearer {tokens['id_token']}",
-        "x-hv": "v3",
+        "x-hv": X_HV,
         "x-signature-time": str(sig_time_sec),
         "x-signature": x_sig,
         "x-request-id": str(uuid.uuid4()),
         "x-request-at": java_like_timestamp(x_requested_at),
-        "x-version-app": "8.9.0",
+        "x-version-app": APP_VERSION,
     }
     
     url = f"{BASE_API_URL}/{path}"

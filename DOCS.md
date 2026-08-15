@@ -1,6 +1,6 @@
-# Dokumentasi Teknis — MYnyak Engsel Sunset (me-cli-sunset)
+# Dokumentasi Teknis — Ah-Si-Ata
 
-Dokumen ini berisi dokumentasi teknis untuk seluruh codebase `me-cli-sunset`. Dokumentasi mencakup arsitektur, struktur direktori, alur autentikasi, protokol komunikasi API, kriptografi, alur pembelian, serta deskripsi setiap modul dan file pendukung.
+Dokumen ini berisi dokumentasi teknis untuk seluruh codebase `Ah-Si-Ata`. Dokumentasi mencakup arsitektur, struktur direktori, alur autentikasi, protokol komunikasi API, kriptografi, alur pembelian, serta deskripsi setiap modul dan file pendukung.
 
 > **Catatan**: Proyek ini adalah CLI client untuk salah satu penyedia layanan internet seluler Indonesia. Konten yang ada di sini murni untuk tujuan dokumentasi teknis. Seluruh pengguna bertanggung jawab atas kepatuhan terhadap hukum dan ketentuan yang berlaku (lihat README).
 
@@ -23,18 +23,16 @@ Dokumen ini berisi dokumentasi teknis untuk seluruh codebase `me-cli-sunset`. Do
 13. [Paket Decoy](#13-paket-decoy)
 14. [Bookmark Paket](#14-bookmark-paket)
 15. [Paket HOT](#15-paket-hot)
-16. [Sentry Mode](#16-sentry-mode)
-17. [Pengecekan Update](#17-pengecekan-update)
-18. [Data Files](#18-data-files)
-19. [Dependensi](#19-dependensi)
-20. [Setup & Menjalankan](#20-setup--menjalankan)
-21. [Catatan Pengembangan](#21-catatan-pengembangan)
+16. [Data Files](#16-data-files)
+17. [Dependensi](#17-dependensi)
+18. [Setup & Menjalankan](#18-setup--menjalankan)
+19. [Catatan Pengembangan](#19-catatan-pengembangan)
 
 ---
 
 ## 1. Ringkasan Proyek
 
-`me-cli-sunset` adalah aplikasi **Python CLI** yang mensimulasikan perilaku klien aplikasi seluler MyXL (provider seluler XL Axiata) di sisi *backend*, memungkinkan pengguna untuk:
+`Ah-Si-Ata` adalah aplikasi **Python CLI** yang mensimulasikan perilaku klien aplikasi seluler MyXL (provider seluler XL Axiata) di sisi *backend*, memungkinkan pengguna untuk:
 
 - Login menggunakan **OTP SMS** (OIDC flow) dan mempertahankan sesi via **refresh token**.
 - Melihat profil, saldo, kuota, dan riwayat transaksi.
@@ -43,7 +41,6 @@ Dokumen ini berisi dokumentasi teknis untuk seluruh codebase `me-cli-sunset`. Do
 - Membeli paket secara massal/loop dalam satu family.
 - Mengelola **Family Plan** dan **Circle** (anggota, kuota, bonus).
 - Menyimpan **bookmark** paket favorit.
-- Menjalankan **Sentry Mode** untuk memantau detail kuota secara berkala.
 
 Bahasa pemrograman: **Python 3** (>= 3.10, memakai type hints `dict | None` dan `TypedDict`).
 
@@ -73,7 +70,7 @@ Aplikasi menggunakan arsitektur berlapis sederhana:
 ┌──────────────▼─────────────────────────────┐
 │        app/service/  (service layer)        │
 │   State: auth session, bookmark, decoy,     │
-│   kriptografi inti, utilitas (git, sentry)  │
+│   kriptografi inti                          │
 └────────────────────────────────────────────┘
 ```
 
@@ -82,7 +79,7 @@ Pola desain yang digunakan:
 | Pola | Penerapan |
 |---|---|
 | **Singleton** | `Auth` (`app/service/auth.py`), `Bookmark` (`app/service/bookmark.py`), `DecoyPackage` (`app/service/decoy.py`) — semuanya memakai `__new__` + flag `_initialized_` |
-| **Facade / Gateway** | `app/client/engsel.py` — satu titik masuk `send_api_request()` untuk semua panggilan API utama |
+| **Facade / Gateway** | `app/client/ahsiata.py` — satu titik masuk `send_api_request()` untuk semua panggilan API utama |
 | **TypedDict** | `app/type_dict.py` — kontrak struktur data `PaymentItem`, `PackageToBuy` |
 | **Helper module** | `app/service/crypto_helper.py` — fungsi kripto murni yang di-re-export oleh `app/client/encrypt.py` |
 
@@ -91,7 +88,7 @@ Pola desain yang digunakan:
 ## 3. Struktur Direktori
 
 ```
-me-cli-sunset/
+Ah-Si-Ata/
 ├── main.py                      # Entry point aplikasi
 ├── requirements.txt             # Dependensi Python
 ├── setup.sh                     # Script setup Linux (virtualenv + deps)
@@ -103,15 +100,13 @@ me-cli-sunset/
 ├── active.number                # Nomor akun aktif (dihasilkan otomatis)
 ├── refresh-tokens.json          # Penyimpanan refresh token (dihasilkan otomatis)
 ├── bookmark.json                # Bookmark paket (dihasilkan otomatis)
-├── bnr.png                      # Banner untuk README
 │
 ├── app/
 │   ├── __init__.py
 │   ├── type_dict.py             # Definisi TypedDict
-│   ├── util.py                  # Utilitas API key (placeholder)
 │   │
 │   ├── client/                  # Lapisan klien API
-│   │   ├── engsel.py            # Klien API utama (profile, packages, dll.)
+│   │   ├── ahsiata.py            # Klien API utama (profile, packages, dll.)
 │   │   ├── ciam.py              # Klien autentikasi CIAM (OTP/OIDC)
 │   │   ├── encrypt.py           # Enkripsi/signature (re-export crypto_helper)
 │   │   ├── famplan.py           # Family Plan API
@@ -138,7 +133,6 @@ me-cli-sunset/
 │   │   ├── bookmark.py          # Menu bookmark
 │   │   ├── famplan.py           # Menu Family Plan
 │   │   ├── circle.py            # Menu Circle
-│   │   ├── family.py            # (kosong / placeholder)
 │   │   ├── notification.py      # Menu notifikasi
 │   │   └── store/               # Menu store
 │   │       ├── redeemables.py
@@ -149,9 +143,7 @@ me-cli-sunset/
 │       ├── auth.py              # Singleton Auth (sesi & token)
 │       ├── crypto_helper.py     # Implementasi kripto inti
 │       ├── decoy.py             # Singleton DecoyPackage
-│       ├── bookmark.py          # Singleton Bookmark
-│       ├── git.py               # Pengecekan update GitHub
-│       └── sentry.py            # Sentry mode (polling kuota)
+│       └── bookmark.py          # Singleton Bookmark
 │
 ├── decoy_data/                  # Konfigurasi paket decoy (JSON)
 │   ├── decoy-default-{balance,qris,qris0}.json
@@ -160,8 +152,6 @@ me-cli-sunset/
 ├── hot_data/                    # Data paket HOT (JSON)
 │   ├── hot.json
 │   └── hot2.json
-│
-└── sentry/                      # Output Sentry Mode (dibuat saat runtime)
 ```
 
 ---
@@ -171,8 +161,7 @@ me-cli-sunset/
 `main.py` adalah titik masuk:
 
 1. **Load `.env`** — `load_dotenv()`.
-2. **Pengecekan update** — `check_for_updates()` membandingkan commit lokal vs remote (GitHub Atom feed). Jika ada versi baru, aplikasi berhenti sementara dan menginstruksikan `git pull --rebase`.
-3. **Loop utama** — `main()` berjalan terus hingga keluar:
+2. **Loop utama** — `main()` berjalan terus hingga keluar:
    - Ambil *active user* via `AuthInstance.get_active_user()`.
    - **Jika sudah login**: ambil saldo (`get_balance`), informasi tiering untuk PREPAID (`get_tiering_info`), tampilkan menu utama, lalu proses pilihan.
    - **Jika belum login**: masuk ke menu akun untuk memilih/menambah akun.
@@ -198,7 +187,6 @@ me-cli-sunset/
 | `R` | Registrasi Dukcapil (`dukcapil`) |
 | `V` | Validasi MSISDN (`validate_msisdn`) |
 | `N` | Notifikasi (`show_notification_menu`) |
-| `S` | Sentry mode (`enter_sentry_mode`) |
 | `00` | Bookmark paket (`show_bookmark_menu`) |
 | `99` | Keluar aplikasi |
 | `t` | Shortcut testing (`pause`) |
@@ -211,12 +199,12 @@ Semua rahasia dan konfigurasi diambil dari environment variable. Template tersed
 
 | Variabel | Digunakan di | Keterangan |
 |---|---|---|
-| `BASE_API_URL` | `engsel.py`, `purchase/*` | Base URL API utama (contoh `https://xxx`) |
+| `BASE_API_URL` | `ahsiata.py`, `purchase/*` | Base URL API utama (contoh `https://xxx`) |
 | `BASE_CIAM_URL` | `ciam.py` | Base URL CIAM / OIDC provider |
 | `BASIC_AUTH` | `ciam.py` | Credential `Basic auth` (base64) untuk CIAM |
 | `AX_FP_KEY` | `encrypt.py` | Kunci AES untuk fingerprint perangkat (32-hex ASCII) |
-| `UA` | `engsel.py`, `ciam.py`, `purchase/*` | User-Agent emulasi aplikasi |
-| `API_KEY` | `encrypt.py`, `engsel.py` | `x-api-key` untuk API utama |
+| `UA` | `ahsiata.py`, `ciam.py`, `purchase/*` | User-Agent emulasi aplikasi |
+| `API_KEY` | `encrypt.py`, `ahsiata.py` | `x-api-key` untuk API utama |
 | `ENCRYPTED_FIELD_KEY` | `encrypt.py`, `crypto_helper.py` | Kunci AES untuk field terenkripsi & MSISDN Circle |
 | `XDATA_KEY` | `crypto_helper.py` | Kunci AES untuk enkripsi body (`xdata`) |
 | `AX_API_SIG_KEY` | `crypto_helper.py` | Kunci HMAC untuk `Ax-Api-Signature` |
@@ -249,7 +237,7 @@ Menyimpan sesi aktif dan daftar refresh token.
 
 **State (class-level)**:
 
-- `api_key` — hasil `ensure_api_key()` dari `app/util.py`.
+- `api_key` — hardcode `"Noir1"` (placeholder, di-set di constructor `Auth.__init__`).
 - `refresh_tokens` — daftar `{number, subscriber_id, subscription_type, refresh_token}`.
 - `active_user` — `{number, subscriber_id, subscription_type, tokens}` dengan `tokens = {refresh_token, access_token, id_token}`.
 - `last_refresh_time` — timestamp token terakhir di-refresh.
@@ -287,7 +275,7 @@ Menu akun juga mendukung perpindahan akun, penambahan (`0`), dan penghapusan (`d
 
 ## 7. Protokol Komunikasi API
 
-Semua panggilan API utama melewati **`send_api_request()`** di `app/client/engsel.py`:
+Semua panggilan API utama melewati **`send_api_request()`** di `app/client/ahsiata.py`:
 
 1. **Enkripsi payload** — `encryptsign_xdata(api_key, method, path, id_token, payload)` menghasilkan:
    - `body = {"xdata": <AES-CBC urlsafe-b64>, "xtime": <ms>}`
@@ -309,7 +297,7 @@ Semua panggilan API utama melewati **`send_api_request()`** di `app/client/engse
 3. **Request** — `POST {BASE_API_URL}/{path}` dengan body JSON terenkripsi, timeout 30 detik.
 4. **Dekripsi respons** — `decrypt_xdata(api_key, json.loads(resp.text))` → dict Python. Jika gagal, mengembalikan raw text respons.
 
-`BASE_API_URL` dan `UA` di-import dari `engsel.py` oleh modul payment (mis. `balance.py`).
+`BASE_API_URL` dan `UA` di-import dari `ahsiata.py` oleh modul payment (mis. `balance.py`).
 
 ---
 
@@ -379,7 +367,7 @@ sig     = base64(HMAC-SHA256(key, preimage))
 
 ## 9. Lapisan Klien (Client Layer)
 
-### 9.1 `app/client/engsel.py` — Klien utama
+### 9.1 `app/client/ahsiata.py` — Klien utama
 
 Endpoint yang di-wrap (semuanya `POST`):
 
@@ -554,24 +542,6 @@ File **kosong** (placeholder). Tidak ada fungsi.
 - `remove_bookmark(...)`, `get_bookmarks()`.
 - `_ensure_schema()` — migrasi otomatis field `family_name` & `order` untuk kompatibilitas.
 
-### 11.3 `app/service/git.py`
-
-- `get_local_commit()` — `git rev-parse HEAD`.
-- `get_latest_commit_atom()` — baca feed Atom `https://github.com/purplemashu/me-cli-sunset/commits/main.atom`, ekstrak SHA dari `<id>`.
-- `check_for_updates()` — bandingkan; jika beda, print notifikasi update.
-
-### 11.4 `app/service/sentry.py`
-
-- `enter_sentry_mode()` — Loop tiap **1 detik**: panggil `api/v8/packages/quota-details`, tulis `{"time": ..., "quotas": [...]}` sebagai baris JSON ke `sentry/sentry_log_<YYYYMMDD_HHMMSS>.jsonl`. Berhenti via input `q` (thread listener daemon) atau `Ctrl+C`.
-
-### 11.5 `app/util.py`
-
-Fungsi *placeholder* / belum digunakan secara penuh:
-
-- `load_api_key()` / `save_api_key()` / `delete_api_key()` — kelola file `api.key`.
-- `verify_api_key(...)` — selalu `True`.
-- `ensure_api_key()` — mengembalikan string hardcoded `"Noir1"` (stub).
-
 ---
 
 ## 12. Alur Pembelian & Metode Pembayaran
@@ -680,28 +650,7 @@ Dua sumber data lokal:
 
 ---
 
-## 16. Sentry Mode
-
-Fitur debugging (menu `s`):
-
-- Membuat direktori `sentry/` bila belum ada.
-- File log: `sentry/sentry_log_<YYYYMMDD_HHMMSS>.jsonl` (JSON Lines).
-- Setiap detik memanggil `api/v8/packages/quota-details` dan menulis satu baris `{"time": "...", "quotas": [...]}`.
-- Keluar: ketik `q` + Enter (thread daemon mendengarkan stdin) atau `Ctrl+C`.
-
----
-
-## 17. Pengecekan Update
-
-`app/service/git.py` dipanggil di awal `main.py`:
-
-- Mendapatkan SHA commit lokal (`git rev-parse HEAD`).
-- Mendapatkan SHA commit terbaru dari GitHub via **Atom feed** (tanpa autentikasi).
-- Jika berbeda → tampilkan pesan "A newer version is available" dan saran `git pull --rebase`.
-
----
-
-## 18. Data Files
+## 16. Data Files
 
 | File | Dibuat otomatis? | Isi |
 |---|---|---|
@@ -710,7 +659,6 @@ Fitur debugging (menu `s`):
 | `active.number` | Ya | Nomor akun aktif |
 | `ax.fp` | Ya | Fingerprint perangkat AES |
 | `bookmark.json` | Ya | Daftar bookmark |
-| `sentry/sentry_log_*.jsonl` | Ya (Sentry Mode) | Log kuota berkala |
 | `decoy_data/*.json` | Tidak | Konfigurasi paket decoy |
 | `hot_data/*.json` | Tidak | Data paket HOT |
 
@@ -731,7 +679,7 @@ Fitur debugging (menu `s`):
 
 ---
 
-## 19. Dependensi
+## 17. Dependensi
 
 Dari `requirements.txt`:
 
@@ -745,18 +693,17 @@ Dari `requirements.txt`:
 | `requests` | 2.32.5 | HTTP client |
 | `urllib3` | 2.5.0 | HTTP engine |
 | `qrcode` | 8.2 | Render QRIS di terminal |
-| `ascii_magic` | 2.3.0 | Utilitas ASCII (tidak terpakai langsung di kode) |
 | `python-dotenv` | 1.1.1 | Load `.env` |
 
 ---
 
-## 20. Setup & Menjalankan
+## 18. Setup & Menjalankan
 
 ### Linux (Debian/Ubuntu, Fedora, Arch)
 
 ```bash
-git clone https://github.com/purplemashu/me-cli-sunset
-cd me-cli-sunset
+git clone https://github.com/purplemashu/Ah-Si-Ata
+cd Ah-Si-Ata
 bash setup.sh          # install deps sistem + venv + pip install
 source venv/bin/activate
 python main.py
@@ -773,12 +720,10 @@ python main.py
 
 ---
 
-## 21. Catatan Pengembangan
+## 19. Catatan Pengembangan
 
 - **`CIRCLE_MSISDN_KEY`** ada di `.env.template` tapi tidak dipakai; enkripsi MSISDN Circle memakai `ENCRYPTED_FIELD_KEY`.
-- **`get_pending_transaction`** (`engsel.py`) berlabel `@TODO: implement this function properly`.
-- **`family.py`** (menu) masih kosong — kandidat pengembangan.
-- **`app/util.py`** berisi stub (`ensure_api_key` mengembalikan `"Noir1"`); `Auth.api_key` mengikuti nilai ini.
+- **`get_pending_transaction`** (`ahsiata.py`) berlabel `@TODO: implement this function properly`.
 - **Bonus otomatis** di `show_package_details` (penambahan `bonuses` ke `payment_items`) sengaja di-comment — perlu pengujian lebih lanjut.
 - **Versi aplikasi** yang di-emulasi: `x-version-app: 8.9.0`; model perangkat emulasi: `SM-N935F` (Samsung).
 - **`show_hot_menu2`** bergantung pada data lokal `hot2.json`; jika struktur server berubah, `get_package_details` dapat gagal dan pembelian dibatalkan.

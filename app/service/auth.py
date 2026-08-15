@@ -2,8 +2,10 @@ import os
 import json
 import time
 from app.client.ciam import get_new_token
-from app.client.engsel import get_profile
-from app.util import ensure_api_key
+from app.client.ahsiata import get_profile
+
+API_KEY = os.getenv("API_KEY", "Noir1")
+TOKEN_REFRESH_INTERVAL = int(os.getenv("TOKEN_REFRESH_INTERVAL", "300"))
 
 class Auth:
     _instance_ = None
@@ -43,8 +45,8 @@ class Auth:
     
     def __init__(self):
         if not self._initialized_:
-            self.api_key = ensure_api_key()
-            
+            self.api_key = API_KEY
+
             if os.path.exists("refresh-tokens.json"):
                 self.load_tokens()
             else:
@@ -181,7 +183,7 @@ class Auth:
                     self.set_active_user(first_rt["number"])
             return None
         
-        if self.last_refresh_time is None or (int(time.time()) - self.last_refresh_time) > 300:
+        if self.last_refresh_time is None or (int(time.time()) - self.last_refresh_time) > TOKEN_REFRESH_INTERVAL:
             self.renew_active_user_token()
             self.last_refresh_time = time.time()
         

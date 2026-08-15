@@ -1,5 +1,5 @@
 from app.menus.util import clear_screen
-from app.client.engsel import get_notification_detail, dashboard_segments
+from app.client.ahsiata import get_notification_detail, dashboard_segments
 from app.service.auth import AuthInstance
 
 WIDTH = 55
