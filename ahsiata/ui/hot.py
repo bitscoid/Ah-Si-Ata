@@ -168,6 +168,7 @@ def show_hot_menu() -> None:
             print(f"{j:>3}  {sp(bundle['name'], C.BOLD, C.WHITE)}  {sp(bundle['price'], C.YELLOW)}")
         print(rule(char="-", color=C.B_RED))
         print(sp(f"{'':>3}  {'B':>2} Kembali", C.DIM))
+        print(rule(color=C.B_RED))
         choice = input(sp("🧭 Pilih : ", C.YELLOW)).strip()
         if choice.lower() == "b":
             return

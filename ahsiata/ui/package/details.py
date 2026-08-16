@@ -342,6 +342,7 @@ def fetch_my_packages() -> None:
 
     print(rule(char="-", color=C.BLUE))
     print(p(f"{'':>3}  {'D':>2} Berhenti    {'B':>2} Kembali", C.DIM))
+    print(rule(char="-", color=C.BLUE))
     print()
     choice = input(p("🧭 Pilih : ", C.YELLOW)).strip()
 
