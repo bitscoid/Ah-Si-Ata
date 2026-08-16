@@ -34,7 +34,7 @@ def show_notification_menu() -> None:
             print(f"{idx}. {status_emoji} {n.get('brief_message', n.get('title', ''))}")
 
         print(rule(char="-", color=C.MAGENTA))
-        print(p(f"{'':>3}  {'S':>2} Tandai Dibaca    {'B':>2} Kembali", C.DIM))
+        print(p(f"{'':>3}  {'S':>2} Tandai Dibaca    {'B':>2} Kembali", C.WHITE))
         print(rule(char="-", color=C.MAGENTA))
         print()
         choice = input(p("🧭 Pilih : ", C.YELLOW)).strip()

@@ -53,7 +53,7 @@ def show_family_info(api_key: str, tokens: dict) -> None:
             print(rule())
             msisdn = member.get("msisdn", "N/A")
             display_msisdn = msisdn if msisdn else "<Empty Slot>"
-            msisdn_str = p(display_msisdn, C.BOLD, C.WHITE) if msisdn else p("<Kosong>", C.DIM)
+            msisdn_str = p(display_msisdn, C.BOLD, C.WHITE) if msisdn else p("<Kosong>", C.WHITE)
             alias = member.get("alias", "N/A")
             member_type = member.get("member_type", "N/A")
             add_chances = member.get("add_chances", 0)
@@ -73,7 +73,7 @@ def show_family_info(api_key: str, tokens: dict) -> None:
         print("limit <slot> <MB> — 🔒 batas kuota")
         print("del <slot> — ❌ hapus member")
         print(rule(char="-", color=C.CYAN))
-        print(p(f"{'':>3}  {'B':>2} Kembali", C.DIM))
+        print(p(f"{'':>3}  {'B':>2} Kembali", C.WHITE))
         print(rule(char="-", color=C.CYAN))
         print()
         choice = input(p("🧭 Pilih : ", C.YELLOW)).strip()

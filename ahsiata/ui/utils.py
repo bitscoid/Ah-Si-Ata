@@ -14,7 +14,7 @@ def clear_screen() -> None:
 
 
 def pause() -> None:
-    input(p("\n⏎ Lanjut…", C.DIM))
+    input(p("\n⏎ Lanjut…", C.WHITE))
 
 
 class _HTMLToText(HTMLParser):

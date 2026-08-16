@@ -30,7 +30,7 @@ def show_bookmark_menu() -> None:
                 print(f"{idx}. {p(bm['family_name'], C.BOLD)} - {bm['variant_name']} - {bm['option_name']}")
                 print(rule(color=C.BLUE))
         print(rule(char="-", color=C.MAGENTA))
-        print(p(f"{'':>3}  {'D':>2} Hapus    {'B':>2} Kembali", C.DIM))
+        print(p(f"{'':>3}  {'D':>2} Hapus    {'B':>2} Kembali", C.WHITE))
         print(rule(char="-", color=C.MAGENTA))
         print()
         choice = input(p("🧭 Pilih : ", C.YELLOW)).strip()

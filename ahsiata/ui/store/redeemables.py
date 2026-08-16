@@ -42,7 +42,7 @@ def show_redeemables_menu(is_enterprise: bool) -> None:
             print(rule())
 
         print(rule(char="-", color=C.YELLOW))
-        print(p(f"{'':>3}  {'B':>2} Kembali", C.DIM))
+        print(p(f"{'':>3}  {'B':>2} Kembali", C.WHITE))
         print(rule(char="-", color=C.YELLOW))
         print()
         choice = input(p("🧭 Pilih : ", C.YELLOW)).strip()

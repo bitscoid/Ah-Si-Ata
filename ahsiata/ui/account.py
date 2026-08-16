@@ -16,7 +16,7 @@ def _login_prompt(api_key: str) -> tuple[str, str] | None:
     print(p(center("📱 Login MyXL", 55), C.BOLD, C.B_WHITE))
     print(rule(char="=", color=C.BLUE))
     print()
-    print(p(center("Masukkan nomor XL untuk menerima OTP", 55), C.DIM))
+    print(p(center("Masukkan nomor XL untuk menerima OTP", 55), C.WHITE))
     print(rule(char="-", color=C.BLUE))
     print(p("Nomor XL  : ", C.BOLD), end="")
     phone_number = input().strip()
@@ -27,7 +27,7 @@ def _login_prompt(api_key: str) -> tuple[str, str] | None:
         return None
 
     try:
-        print(p(f"📤 Mengirim OTP ke {phone_number}…", C.DIM))
+        print(p(f"📤 Mengirim OTP ke {phone_number}…", C.WHITE))
         subscriber_id = get_otp(phone_number)
         if not subscriber_id:
             print(fail("OTP tidak terkirim. Coba lagi."))
@@ -38,7 +38,7 @@ def _login_prompt(api_key: str) -> tuple[str, str] | None:
         print(p(center("🔑 Verifikasi OTP", 55), C.BOLD, C.B_WHITE))
         print(rule(char="=", color=C.BLUE))
         print()
-        print(p(center("Masukkan kode 6 digit yang dikirim via SMS", 55), C.DIM))
+        print(p(center("Masukkan kode 6 digit yang dikirim via SMS", 55), C.WHITE))
         print(rule(char="-", color=C.BLUE))
 
         for attempt in range(5, 0, -1):
@@ -111,7 +111,7 @@ def show_account_menu() -> int | None:
                 print(row + " " * (pad // 2) + icon)
 
         print(rule(char="-", color=C.BLUE))
-        print(p(f"{'':>3}  {'A':>2} Tambah    {'D':>2} Hapus    {'B':>2} Kembali", C.DIM))
+        print(p(f"{'':>3}  {'A':>2} Tambah    {'D':>2} Hapus    {'B':>2} Kembali", C.WHITE))
         print(rule(char="-", color=C.BLUE))
         print()
         choice = input(p("🧭 Pilih : ", C.YELLOW)).strip()

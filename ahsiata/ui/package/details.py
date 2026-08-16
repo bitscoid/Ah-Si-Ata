@@ -107,10 +107,10 @@ def show_package_details(api_key, tokens, package_option_code, is_enterprise, op
             name = val.get("name", "") if isinstance(val, dict) else ""
             print(f"  🔢 {code}" + (f" - {name}" if name else ""))
     else:
-        print(p("💡 Tidak ada addon", C.DIM))
+        print(p("💡 Tidak ada addon", C.WHITE))
     print(rule(color=C.CYAN))
     print(p("📜 Syarat & Ketentuan:", C.BOLD, C.WHITE))
-    print(detail_html if detail_html.strip() else p("💡 Tidak ada Syarat & Ketentuan untuk paket ini", C.DIM))
+    print(detail_html if detail_html.strip() else p("💡 Tidak ada Syarat & Ketentuan untuk paket ini", C.WHITE))
     print(rule(color=C.CYAN))
 
     while True:
@@ -151,17 +151,17 @@ def show_package_details(api_key, tokens, package_option_code, is_enterprise, op
 
         if choice == "1":
             settlement_balance(api_key, tokens, payment_items, payment_for, True)
-            input(p("⏎ Lanjut…", C.DIM))
+            input(p("⏎ Lanjut…", C.WHITE))
             return True
 
         if choice == "2":
             show_multipayment(api_key, tokens, payment_items, payment_for, True)
-            input(p("⏎ Lanjut…", C.DIM))
+            input(p("⏎ Lanjut…", C.WHITE))
             return True
 
         if choice == "3":
             show_qris_payment(api_key, tokens, payment_items, payment_for, True)
-            input(p("⏎ Lanjut…", C.DIM))
+            input(p("⏎ Lanjut…", C.WHITE))
             return True
 
         if choice in ("4", "5"):
@@ -203,7 +203,7 @@ def show_package_details(api_key, tokens, package_option_code, is_enterprise, op
                 api_key, tokens, payment_items, PaymentFor.SHARE_PACKAGE, True,
                 token_confirmation_idx=1,
             )
-            input(p("⏎ Lanjut…", C.DIM))
+            input(p("⏎ Lanjut…", C.WHITE))
             return True
 
         if choice == "8":
@@ -233,7 +233,7 @@ def show_package_details(api_key, tokens, package_option_code, is_enterprise, op
                 token_confirmation=token_confirmation, ts_to_sign=ts_to_sign,
                 payment_target=package_option_code, price=price, item_name=variant_name,
             )
-            input(p("⏎ Lanjut…", C.DIM))
+            input(p("⏎ Lanjut…", C.WHITE))
             return True
 
         if choice.lower() == "ba":
@@ -253,7 +253,7 @@ def show_package_details(api_key, tokens, package_option_code, is_enterprise, op
                 token_confirmation=token_confirmation, ts_to_sign=ts_to_sign,
                 payment_target=package_option_code, price=price,
             )
-            input(p("⏎ Lanjut…", C.DIM))
+            input(p("⏎ Lanjut…", C.WHITE))
             return True
 
         print(info("Pembelian dibatalkan"))
@@ -341,7 +341,7 @@ def fetch_my_packages() -> None:
         })
 
     print(rule(char="-", color=C.BLUE))
-    print(p(f"{'':>3}  {'D':>2} Berhenti    {'B':>2} Kembali", C.DIM))
+    print(p(f"{'':>3}  {'D':>2} Berhenti    {'B':>2} Kembali", C.WHITE))
     print(rule(char="-", color=C.BLUE))
     print()
     choice = input(p("🧭 Pilih : ", C.YELLOW)).strip()

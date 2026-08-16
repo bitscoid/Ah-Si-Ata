@@ -45,7 +45,7 @@ def show_store_segments_menu(is_enterprise: bool) -> None:
             print(rule())
 
         print(rule(char="-", color=C.CYAN))
-        print(p(f"{'':>3}  {'B':>2} Kembali", C.DIM))
+        print(p(f"{'':>3}  {'B':>2} Kembali", C.WHITE))
         print(rule(char="-", color=C.CYAN))
         print()
         choice = input(p("🧭 Pilih : ", C.YELLOW)).strip()

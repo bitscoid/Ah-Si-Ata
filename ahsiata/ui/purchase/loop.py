@@ -58,7 +58,7 @@ def purchase_by_family(
     print(f"🔢 Mulai dari: {start_from_option}")
     print(f"🎭 Decoy: {use_decoy}")
     print(f"⏳ Jeda: {delay_seconds}s")
-    print(p(f"⏸ Jeda saat sukses: {pause_on_success}", C.DIM))
+    print(p(f"⏸ Jeda saat sukses: {pause_on_success}", C.WHITE))
 
     for i, (variant, option, items) in enumerate(zip(target_variants, target_options, payment_targets)):
         real_price = option["price"]
