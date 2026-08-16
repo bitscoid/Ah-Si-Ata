@@ -187,10 +187,10 @@ def show_circle_info(api_key: str, tokens: dict) -> None:
         print(rule(char="-", color=C.MAGENTA))
         print(p("⚙️ Opsi:", C.BOLD, C.WHITE))
         print(rule())
-        print("1. ➕ Undang Member")
-        print("2. 🏆 Bonus Circle")
-        print("del <nomor> — ❌ Hapus")
-        print("acc <nomor> — ✔️ Terima")
+        print("1. Undang Member")
+        print("2. Bonus Circle")
+        print("D Hapus Member")
+        print("A Terima Undangan")
         print(rule(char="-", color=C.MAGENTA))
         print(p(f"{'':>3}  {'B':>2} Kembali", C.DIM))
         print(rule(char="-", color=C.MAGENTA))
@@ -201,14 +201,14 @@ def show_circle_info(api_key: str, tokens: dict) -> None:
             return
 
         if choice == "1":
-            msisdn_to_invite = input(p("🧭 MSISDN diundang (628…): ", C.YELLOW))
+            msisdn_to_invite = input(p("🧭 MSISDN (628…): ", C.YELLOW))
             validate_res = validate_circle_member(api_key, tokens, msisdn_to_invite)
             if validate_res.get("status") == "SUCCESS":
                 if validate_res.get("data", {}).get("response_code", "") != "200-2001":
                     print(fail(f"Tidak dapat mengundang: {validate_res.get('data', {}).get('message', 'Unknown')}"))
                     pause()
                     continue
-            member_name = input(p("🧭 Nama member: ", C.YELLOW))
+            member_name = input(p("🧭 Nama: ", C.YELLOW))
             invite_res = invite_circle_member(api_key, tokens, msisdn_to_invite, member_name, group_id, parent_member_id)
             if invite_res.get("status") == "SUCCESS" and invite_res.get("data", {}).get("response_code", "") == "200-00":
                 print(ok(f"Undangan terkirim ke {msisdn_to_invite}."))
@@ -216,62 +216,70 @@ def show_circle_info(api_key: str, tokens: dict) -> None:
                 print(fail(f"Gagal: {invite_res.get('data', {}).get('message', 'Unknown')}"))
             pause()
 
-        elif choice.startswith("del "):
-            try:
-                idx = int(choice.split(" ", 1)[1])
-                if not (1 <= idx <= len(members)):
-                    print(fail("Nomor member tidak valid."))
-                    pause()
-                    continue
-                target = members[idx - 1]
-                if target.get("member_role") == "PARENT":
-                    print(fail("Tidak dapat menghapus parent."))
-                    pause()
-                    continue
-                is_last_member = len(members) == 2
-                if is_last_member:
-                    print(fail("Tidak dapat menghapus member terakhir."))
-                    pause()
-                    continue
-                msisdn = decrypt_circle_msisdn(api_key, target.get("msisdn", ""))
-                if input(p(f"🧭 Hapus {msisdn}? (y/n): ", C.YELLOW)).lower() != "y":
-                    print(warn("Dibatalkan."))
-                    pause()
-                    continue
-                res = remove_circle_member(api_key, tokens, target["member_id"], group_id, parent_member_id, is_last_member)
-                if res.get("status") == "SUCCESS":
-                    print(ok(f"{msisdn} dihapus."))
-                else:
-                    print(fail(f"Error: {res}"))
-            except ValueError:
-                print(fail("Input tidak valid."))
-            pause()
-
-        elif choice.startswith("acc "):
-            try:
-                idx = int(choice.split(" ", 1)[1])
-                if not (1 <= idx <= len(members)):
-                    print(fail("Nomor member tidak valid."))
-                    pause()
-                    continue
-                target = members[idx - 1]
-                if target.get("status") != "INVITED":
-                    print(fail("Tidak dalam status diundang."))
-                    pause()
-                    continue
-                msisdn = decrypt_circle_msisdn(api_key, target.get("msisdn", ""))
-                if input(p(f"🧭 Terima undangan untuk {msisdn}? (y/n): ", C.YELLOW)).lower() != "y":
-                    print(warn("Dibatalkan."))
-                    pause()
-                    continue
-                res = accept_circle_invitation(api_key, tokens, group_id, target["member_id"])
-                if res.get("status") == "SUCCESS":
-                    print(ok(f"Undangan untuk {msisdn} diterima."))
-                else:
-                    print(fail(f"Error: {res}"))
-            except ValueError:
-                print(fail("Input tidak valid."))
-            pause()
-
         elif choice == "2":
             _show_bonus_list(api_key, tokens, parent_subs_id, group_id)
+
+        elif choice.lower() == "d":
+            idx = input(p("🧭 Nomor: ", C.BOLD))
+            if not idx.isdigit():
+                print(fail("Nomor tidak valid"))
+                pause()
+                continue
+            idx = int(idx)
+            if not (1 <= idx <= len(members)):
+                print(fail("Nomor tidak valid"))
+                pause()
+                continue
+            target = members[idx - 1]
+            if target.get("member_role") == "PARENT":
+                print(fail("Tidak dapat hapus parent"))
+                pause()
+                continue
+            is_last = len(members) == 2
+            if is_last:
+                print(fail("Tidak dapat hapus member terakhir"))
+                pause()
+                continue
+            msisdn = decrypt_circle_msisdn(api_key, target.get("msisdn", ""))
+            if input(p(f"🧭 Hapus {msisdn}? (y/n): ", C.YELLOW)).lower() != "y":
+                print(warn("Dibatalkan"))
+                pause()
+                continue
+            res = remove_circle_member(api_key, tokens, target["member_id"], group_id, parent_member_id, is_last)
+            if res.get("status") == "SUCCESS":
+                print(ok(f"{msisdn} dihapus"))
+            else:
+                print(fail(f"Error: {res}"))
+            pause()
+
+        elif choice.lower() == "a":
+            idx = input(p("🧭 Nomor: ", C.BOLD))
+            if not idx.isdigit():
+                print(fail("Nomor tidak valid"))
+                pause()
+                continue
+            idx = int(idx)
+            if not (1 <= idx <= len(members)):
+                print(fail("Nomor tidak valid"))
+                pause()
+                continue
+            target = members[idx - 1]
+            if target.get("status") != "INVITED":
+                print(fail("Bukan status diundang"))
+                pause()
+                continue
+            msisdn = decrypt_circle_msisdn(api_key, target.get("msisdn", ""))
+            if input(p(f"🧭 Terima {msisdn}? (y/n): ", C.YELLOW)).lower() != "y":
+                print(warn("Dibatalkan"))
+                pause()
+                continue
+            res = accept_circle_invitation(api_key, tokens, group_id, target["member_id"])
+            if res.get("status") == "SUCCESS":
+                print(ok(f"Undangan {msisdn} diterima"))
+            else:
+                print(fail(f"Error: {res}"))
+            pause()
+
+        else:
+            print(fail("Pilihan salah"))
+            pause()
