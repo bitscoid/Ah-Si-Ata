@@ -35,7 +35,7 @@ def show_transaction_history(api_key: str, tokens: dict) -> None:
         print(f"{idx}. {p(ts_str, C.DIM)} | {p(title_tx, C.BOLD, C.WHITE)}")
         print(f"   💳 Metode: {tx.get('payment_method_label', 'N/A')}")
         print(f"   📊 Status: {tx.get('payment_status', 'N/A')}")
-        print(f"   {p(str(price), C.BOLD, C.YELLOW)}")
+        print(f"   {p('💰 ' + str(price), C.BOLD, C.YELLOW)}")
         print(rule(color=C.BLUE))
 
     print(rule(char="-", color=C.BLUE))
