@@ -97,9 +97,15 @@ class Session:
             existing["refresh_token"] = refresh_token
         else:
             tokens = get_new_token(self.api_key, refresh_token, "")
+            if not tokens:
+                print(fail(f"Gagal mendapatkan token untuk nomor: {number}."))
+                return
             profile_data = get_profile(self.api_key, tokens["access_token"], tokens["id_token"])
-            sub_id = profile_data["profile"]["subscriber_id"]
-            sub_type = profile_data["profile"]["subscription_type"]
+            if not profile_data:
+                print(fail("Gagal mengambil profil untuk nomor baru."))
+                return
+            sub_id = profile_data["subscriber_id"]
+            sub_type = profile_data["subscription_type"]
             self.refresh_tokens.append({
                 "number": int(number),
                 "subscriber_id": sub_id,
@@ -137,10 +143,14 @@ class Session:
             return False
 
         profile_data = get_profile(self.api_key, tokens["access_token"], tokens["id_token"])
+        if not profile_data:
+            print(fail(f"Gagal mengambil profil untuk nomor: {number}."))
+            input("Tekan enter untuk melanjutkan…")
+            return False
         self.active_user = {
             "number": int(number),
-            "subscriber_id": profile_data["profile"]["subscriber_id"],
-            "subscription_type": profile_data["profile"]["subscription_type"],
+            "subscriber_id": profile_data["subscriber_id"],
+            "subscription_type": profile_data["subscription_type"],
             "tokens": tokens,
         }
         rt_entry["subscriber_id"] = self.active_user["subscriber_id"]
