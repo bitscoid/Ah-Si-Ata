@@ -143,11 +143,11 @@ def _run() -> None:
             if option_code != "99":
                 show_package_details(SESSION.api_key, active_user["tokens"], option_code, False)
         elif choice == "5":
-            family_code = input(p("🧭 Family code (99=batal): ", C.BOLD))
+            family_code = input(p("🧭 Family Code : ", C.BOLD))
             if family_code != "99":
                 get_packages_by_family(family_code)
         elif choice == "6":
-            family_code = input(p("🧭 Family code (99=batal): ", C.BOLD))
+            family_code = input(p("🧭 Family Code : ", C.BOLD))
             if family_code != "99":
                 start_from = input(p("🧭 Mulai dari opsi (1): ", C.BOLD)) or "1"
                 use_decoy = input(p("🧭 Paket decoy? (y/n): ", C.BOLD)).lower() == "y"
