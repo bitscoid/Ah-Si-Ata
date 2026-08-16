@@ -5,6 +5,7 @@ from ahsiata.api.catalog import get_redeemables
 from ahsiata.core.session import SESSION
 from ahsiata.ui.package.details import show_package_details
 from ahsiata.ui.package.list import get_packages_by_family
+from ahsiata.ui.style import C, p, title, rule, info, fail
 from ahsiata.ui.utils import clear_screen, pause
 
 WIDTH = 55
@@ -18,46 +19,44 @@ def show_redeemables_menu(is_enterprise: bool) -> None:
 
     while True:
         clear_screen()
-        print("=" * WIDTH)
-        print("Redeemables".center(WIDTH))
-        print("=" * WIDTH)
+        print(title("🎁 Redeemables", color=C.YELLOW))
         res = get_redeemables(api_key, tokens, is_enterprise)
         if not res:
-            print("Gagal mengambil redeemable.")
+            print(fail("Gagal mengambil redeemable."))
             pause()
             return
 
         categories = res.get("data", {}).get("categories", [])
         if not categories:
-            print("Tidak ada kategori.")
+            print(info("Tidak ada kategori"))
             pause()
             return
 
         for letter_idx, cat in enumerate(categories):
             letter = chr(ord("A") + letter_idx)
-            print(f"{letter}. Category: {cat.get('name', 'N/A')}")
+            print(f"{letter}. 🏷 {p(cat.get('name', 'N/A'), C.BOLD, C.WHITE)}")
             for j, pkg in enumerate(cat.get("packages", []), start=1):
-                print(f"   {letter.lower()}{j}. {pkg.get('name', 'N/A')}")
-            print("-" * WIDTH)
+                print(f"   {letter.lower()}{j}. {p(pkg.get('name', 'N/A'), C.CYAN)}")
+            print(rule())
 
-        print("00. Kembali ke menu utama")
-        choice = input("Masukkan pilihan Anda untuk melihat detail paket (mis. A1, B2): ").strip()
+        print("00. ↩️ Kembali")
+        choice = input("👉 Pilih paket (mis. A1): ").strip()
         if choice == "00":
             return
         if len(choice) < 2 or not choice[0].isalpha() or not choice[1:].isdigit():
-            print("Pilihan tidak valid.")
+            print(fail("Pilihan tidak valid."))
             pause()
             continue
         letter_idx = ord(choice[0].upper()) - ord("A")
         pkg_idx = int(choice[1:]) - 1
         if not (0 <= letter_idx < len(categories)):
-            print("Pilihan tidak valid.")
+            print(fail("Pilihan tidak valid."))
             pause()
             continue
         category = categories[letter_idx]
         packages = category.get("packages", [])
         if not (0 <= pkg_idx < len(packages)):
-            print("Pilihan tidak valid.")
+            print(fail("Pilihan tidak valid."))
             pause()
             continue
         selected = packages[pkg_idx]
@@ -68,5 +67,5 @@ def show_redeemables_menu(is_enterprise: bool) -> None:
         elif action == "PDP":
             show_package_details(api_key, tokens, param, False)
         else:
-            print(f"Tipe aksi yang tidak ditangani: {action}")
+            print(fail(f"Tipe aksi yang tidak ditangani: {action}"))
             pause()

@@ -94,14 +94,12 @@ def get_otp(contact: str) -> str | None:
     params = {"contact": contact, "contactType": "SMS", "alternateContact": "false"}
     headers = _ciam_headers()
 
-    print("Meminta OTP...")
+    print("Meminta OTP…")
     try:
         response = requests.get(url, headers=headers, params=params, timeout=30)
-        print("isi respons", response.text)
         json_body = json.loads(response.text)
         if "subscriber_id" not in json_body:
-            print(json_body.get("error", "Tidak ada pesan error dalam respons"))
-            raise ValueError("Subscriber ID tidak ditemukan dalam respons")
+            raise ValueError("OTP gagal terkirim. Periksa nomor dan coba lagi.")
         return json_body["subscriber_id"]
     except Exception as e:
         print(f"Gagal meminta OTP: {e}")
@@ -115,7 +113,7 @@ def extend_session(subscriber_id: str) -> str | None:
     params = {"contact": b64_subscriber_id, "contactType": "DEVICEID"}
     headers = _ciam_headers()
 
-    print("Memperpanjang sesi...")
+    print("Memperpanjang sesi…")
     try:
         response = requests.get(url, headers=headers, params=params, timeout=30)
         if response.status_code != 200:
@@ -164,21 +162,20 @@ def submit_otp(
 
     url = CONFIG.base_ciam_url + CIAMEndpoint.TOKEN
 
-    print("Mengirim OTP...")
+    print("Mengirim OTP…")
     try:
         response = requests.post(url, data=payload, headers=headers, timeout=30)
         json_body = json.loads(response.text)
         if "error" in json_body:
-            print(f"[err submit_otp]: {json_body}")
+            print("OTP ditolak. Periksa kode dan coba lagi.")
             return None
-        print("Login berhasil.")
         return json_body
     except requests.RequestException as e:
-        print(f"[err submit_otp]: {e}")
+        print(f"Gagal mengirim OTP: {e}")
         return None
 
 
-def get_new_token(api_key: str, refresh_token: str, subscriber_id: str) -> dict:
+def get_new_token(api_key: str, refresh_token: str, subscriber_id: str) -> dict | None:
     """Refresh OIDC tokens; auto-extends session on `Session not active`."""
     url = CONFIG.base_ciam_url + CIAMEndpoint.TOKEN
 
@@ -196,7 +193,7 @@ def get_new_token(api_key: str, refresh_token: str, subscriber_id: str) -> dict:
 
     data = {"grant_type": "refresh_token", "refresh_token": refresh_token}
 
-    print("Memperbarui token...")
+    print("Memperbarui token…")
     resp = requests.post(url, headers=headers, data=data, timeout=30)
 
     if resp.status_code == 400:

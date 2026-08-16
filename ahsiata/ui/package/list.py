@@ -4,6 +4,7 @@ from __future__ import annotations
 from ahsiata.api.packages import get_family
 from ahsiata.core.session import SESSION
 from ahsiata.ui.package.details import show_package_details
+from ahsiata.ui.style import C, p as sp, rule, title, ok, fail, warn, info
 from ahsiata.ui.utils import clear_screen, pause
 
 
@@ -15,13 +16,13 @@ def get_packages_by_family(
     api_key = SESSION.api_key
     tokens = SESSION.get_active_tokens()
     if tokens is None:
-        print("Tidak ada token user aktif ditemukan.")
+        print(fail("Tidak ada token user aktif"))
         pause()
         return None
 
     data = get_family(api_key, tokens, family_code, is_enterprise, migration_type)
     if not data:
-        print("Gagal memuat data family.")
+        print(fail("Gagal muat data family"))
         pause()
         return None
 
@@ -30,21 +31,22 @@ def get_packages_by_family(
 
     while True:
         clear_screen()
-        print("-------------------------------------------------------")
-        print(f"Nama Family: {data['package_family']['name']}")
-        print(f"Family Code: {family_code}")
-        print(f"Tipe Family: {data['package_family']['package_family_type']}")
-        print(f"Jumlah Varian: {len(data['package_variants'])}")
-        print("-------------------------------------------------------")
-        print("Paket Tersedia")
-        print("-------------------------------------------------------")
+        print(rule(color=C.CYAN))
+        print(title(f"📦 {data['package_family']['name']}", color=C.CYAN))
+        print(rule(color=C.CYAN))
+        print(f"🔢 Family Code: {family_code}")
+        print(f"🏷 Tipe: {data['package_family']['package_family_type']}")
+        print(f"📦 Varian: {len(data['package_variants'])}")
+        print(rule(color=C.CYAN))
+        print(sp("📋 Paket Tersedia:", C.BOLD, C.WHITE))
+        print(rule(color=C.CYAN))
 
         option_number = 1
         for variant_idx, variant in enumerate(data["package_variants"], start=1):
             variant_name = variant["name"]
             variant_code = variant["package_variant_code"]
-            print(f" Varian {variant_idx}: {variant_name}")
-            print(f" Kode: {variant_code}")
+            print(sp(f"🔖 {variant_name}", C.BOLD, C.BLUE))
+            print(f"   🔢 Kode: {variant_code}")
             for option in variant["package_options"]:
                 packages.append({
                     "number": option_number,
@@ -54,24 +56,24 @@ def get_packages_by_family(
                     "code": option["package_option_code"],
                     "option_order": option["order"],
                 })
-                print(f"   {option_number}. {option['name']} - {price_currency} {option['price']}")
+                print(f"   {option_number}. {sp(option['name'], C.WHITE)} - {sp('{} {}'.format(price_currency, option['price']), C.BOLD, C.YELLOW)}")
                 option_number += 1
             if variant_idx < len(data["package_variants"]):
-                print("-------------------------------------------------------")
-        print("-------------------------------------------------------")
-        print("00. Kembali ke menu utama")
-        print("-------------------------------------------------------")
-        pkg_choice = input("Pilih paket (nomor): ").strip()
+                print(rule(color=C.CYAN))
+        print(rule(color=C.CYAN))
+        print("00. ↩️ Kembali")
+        print(rule(color=C.CYAN))
+        pkg_choice = input("👉 Pilih paket (nomor): ").strip()
 
         if pkg_choice == "00":
             return packages
         if not pkg_choice.isdigit():
-            print("Input tidak valid.")
+            print(fail("Input salah"))
             continue
 
         selected = next((p for p in packages if p["number"] == int(pkg_choice)), None)
         if not selected:
-            print("Paket tidak ditemukan.")
+            print(fail("Paket tidak ada"))
             continue
 
         show_package_details(

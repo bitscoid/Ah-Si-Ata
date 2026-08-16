@@ -16,7 +16,7 @@ from ahsiata.ui.account import show_account_menu
 from ahsiata.ui.bookmark import show_bookmark_menu
 from ahsiata.ui.circle.info import show_circle_info
 from ahsiata.ui.family_plan import show_family_info
-from ahsiata.ui.hot import show_hot_menu, show_hot_menu2
+from ahsiata.ui.hot import show_hot_menu
 from ahsiata.ui.notification import show_notification_menu
 from ahsiata.ui.package.details import fetch_my_packages, show_package_details
 from ahsiata.ui.package.list import get_packages_by_family
@@ -25,43 +25,66 @@ from ahsiata.ui.purchase.loop import purchase_by_family
 from ahsiata.ui.store.redeemables import show_redeemables_menu
 from ahsiata.ui.store.search import show_family_list_menu, show_store_packages_menu
 from ahsiata.ui.store.segments import show_store_segments_menu
+from ahsiata.ui.style import C, p, title, rule, center, fail, disp_w
 from ahsiata.ui.utils import clear_screen, pause
 
 WIDTH = 55
 
+MENU_ITEMS = [
+    ("1", "👤", "Ganti Akun"),
+    ("2", "📦", "Paket Saya"),
+    ("3", "🔥", "HOT"),
+    ("4", "🔎", "Kode Opsi"),
+    ("5", "👨", "Family Code"),
+    ("6", "🔄", "Beli Semua (Loop)"),
+    ("7", "🧾", "Riwayat"),
+    ("8", "👨", "Family Plan"),
+    ("9", "🫂", "Circle"),
+    ("10", "🏬", "Promo"),
+    ("11", "🏬", "Daftar Family"),
+    ("12", "🛒", "Paket Toko"),
+    ("13", "🎁", "Redeemables"),
+    ("R", "📝", "Registrasi"),
+    ("N", "🔔", "Notifikasi"),
+    ("V", "🎯", "Validasi MSISDN"),
+    ("B", "⭐", "Bookmark"),
+    ("X", "🚪", "Keluar"),
+]
+
 
 def show_main_menu(profile: dict) -> None:
     clear_screen()
-    print("=" * WIDTH)
+    number = profile["number"]
+    subscription_type = profile["subscription_type"]
     balance_remaining = profile["balance"]
     balance_expired_at = profile["balance_expired_at"]
-    balance_text = f"Rp {balance_remaining}" if balance_remaining is not None else "Tidak dapat ambil saldo"
+    balance_text = f"Rp {balance_remaining}" if balance_remaining is not None else "Saldo N/A"
     expired_text = datetime.fromtimestamp(balance_expired_at).strftime("%Y-%m-%d") if balance_expired_at else "N/A"
-    print(f"Nomor: {profile['number']} | Tipe: {profile['subscription_type']}".center(WIDTH))
-    print(f"Pulsa: {balance_text} | Aktif sampai: {expired_text}".center(WIDTH))
-    print(f"{profile['point_info']}".center(WIDTH))
-    print("=" * WIDTH)
-    print("Menu:")
-    print("1. Login/Ganti akun")
-    print("2. Lihat Paket Saya")
-    print("3. Beli Paket 🔥 HOT 🔥")
-    print("4. Beli Paket 🔥 HOT-2 🔥")
-    print("5. Beli Paket Berdasarkan Option Code")
-    print("6. Beli Paket Berdasarkan Family Code")
-    print("7. Beli Semua Paket di Family Code (loop)")
-    print("8. Riwayat Transaksi")
-    print("9. Family Plan/Akrab Organizer")
-    print("10. Circle")
-    print("11. Store Segments")
-    print("12. Store Family List")
-    print("13. Store Packages")
-    print("14. Redemables")
-    print("R. Register")
-    print("N. Notifikasi")
-    print("V. Validasi msisdn")
-    print("00. Bookmark Paket")
-    print("99. Tutup aplikasi")
-    print("-------------------------------------------------------")
+    point_info = profile["point_info"]
+    print(title("🔥 AH-SI-ATA", color=C.MAGENTA))
+    print(p(center(f"📱 {number} | {subscription_type}", WIDTH), C.BOLD, C.WHITE))
+    print(p(center(f"💰 {balance_text} | Aktif s/d: {expired_text}", WIDTH), C.BOLD, C.YELLOW))
+    if "Points" in point_info:
+        point_info = point_info.replace("Points", "⭐ Points")
+    print(p(center(point_info, WIDTH), C.CYAN))
+    print(rule(char="=", color=C.BLUE))
+    print(p("📋 Menu:", C.BOLD, C.WHITE))
+    icw = max(disp_w(ic) for _, ic, _ in MENU_ITEMS)
+    for key, ic, label in MENU_ITEMS:
+        print(f"{key:>3}  {ic}{' ' * (icw - disp_w(ic))} {label}")
+    print(rule(char="-", color=C.BLUE))
+
+
+def _show_result(label: str, res) -> None:
+    """Render API response as labeled lines instead of raw JSON."""
+    print(p(f"📋 {label}", C.BOLD, C.WHITE))
+    if isinstance(res, dict):
+        for k, v in res.items():
+            if isinstance(v, (dict, list)):
+                v = json.dumps(v, ensure_ascii=False)
+            print(f"  {p(str(k).replace('_', ' ').capitalize(), C.CYAN)}: {v}")
+    else:
+        print(p(str(res), C.YELLOW))
 
 
 def _run() -> None:
@@ -73,7 +96,7 @@ def _run() -> None:
             if selected_number:
                 SESSION.set_active_user(selected_number)
             else:
-                print("Tidak ada user dipilih atau gagal memuat user.")
+                print(fail("Gagal memuat user"))
             continue
 
         balance = get_balance(SESSION.api_key, active_user["tokens"]["id_token"])
@@ -96,7 +119,7 @@ def _run() -> None:
             "point_info": point_info,
         }
         show_main_menu(profile)
-        choice = input("Pilih menu: ").strip()
+        choice = input(p("👉 Pilih menu: ", C.BOLD)).strip()
 
         if choice == "t":
             pause()
@@ -109,22 +132,20 @@ def _run() -> None:
         elif choice == "3":
             show_hot_menu()
         elif choice == "4":
-            show_hot_menu2()
-        elif choice == "5":
-            option_code = input("Masukkan option code (atau '99' untuk batal): ")
+            option_code = input(p("👉 Kode opsi (99=batal): ", C.BOLD))
             if option_code != "99":
                 show_package_details(SESSION.api_key, active_user["tokens"], option_code, False)
-        elif choice == "6":
-            family_code = input("Masukkan family code (atau '99' untuk batal): ")
+        elif choice == "5":
+            family_code = input(p("👉 Family code (99=batal): ", C.BOLD))
             if family_code != "99":
                 get_packages_by_family(family_code)
-        elif choice == "7":
-            family_code = input("Masukkan family code (atau '99' untuk batal): ")
+        elif choice == "6":
+            family_code = input(p("👉 Family code (99=batal): ", C.BOLD))
             if family_code != "99":
-                start_from = input("Mulai pembelian dari nomor opsi (default 1): ") or "1"
-                use_decoy = input("Gunakan paket decoy? (y/n): ").lower() == "y"
-                pause_on_success = input("Jeda pada setiap pembelian yang berhasil? (y/n): ").lower() == "y"
-                delay = input("Jeda detik antar pembelian (0 tanpa jeda): ") or "0"
+                start_from = input(p("👉 Mulai dari opsi (1): ", C.BOLD)) or "1"
+                use_decoy = input(p("👉 Paket decoy? (y/n): ", C.BOLD)).lower() == "y"
+                pause_on_success = input(p("👉 Jeda tiap sukses? (y/n): ", C.BOLD)).lower() == "y"
+                delay = input(p("👉 Jeda detik (0): ", C.BOLD)) or "0"
                 try:
                     start_from_int = int(start_from)
                 except ValueError:
@@ -134,45 +155,45 @@ def _run() -> None:
                 except ValueError:
                     delay_int = 0
                 purchase_by_family(family_code, use_decoy, pause_on_success, delay_int, start_from_int)
-        elif choice == "8":
+        elif choice == "7":
             show_transaction_history(SESSION.api_key, active_user["tokens"])
-        elif choice == "9":
+        elif choice == "8":
             show_family_info(SESSION.api_key, active_user["tokens"])
-        elif choice == "10":
+        elif choice == "9":
             show_circle_info(SESSION.api_key, active_user["tokens"])
-        elif choice == "11":
-            is_enterprise = input("Toko enterprise? (y/n): ").lower() == "y"
+        elif choice == "10":
+            is_enterprise = input(p("👉 Toko enterprise? (y/n): ", C.BOLD)).lower() == "y"
             show_store_segments_menu(is_enterprise)
-        elif choice == "12":
-            is_enterprise = input("Toko enterprise? (y/n): ").lower() == "y"
+        elif choice == "11":
+            is_enterprise = input(p("👉 Toko enterprise? (y/n): ", C.BOLD)).lower() == "y"
             show_family_list_menu(profile["subscription_type"], is_enterprise)
-        elif choice == "13":
-            is_enterprise = input("Toko enterprise? (y/n): ").lower() == "y"
+        elif choice == "12":
+            is_enterprise = input(p("👉 Toko enterprise? (y/n): ", C.BOLD)).lower() == "y"
             show_store_packages_menu(profile["subscription_type"], is_enterprise)
-        elif choice == "14":
-            is_enterprise = input("Toko enterprise? (y/n): ").lower() == "y"
+        elif choice == "13":
+            is_enterprise = input(p("👉 Toko enterprise? (y/n): ", C.BOLD)).lower() == "y"
             show_redeemables_menu(is_enterprise)
-        elif choice == "00":
+        elif choice.lower() == "b":
             show_bookmark_menu()
-        elif choice == "99":
-            print("Menutup aplikasi.")
+        elif choice.lower() == "x":
+            print(p("👋 Menutup aplikasi.", C.CYAN))
             sys.exit(0)
         elif choice.lower() == "r":
-            msisdn = input("Masukkan msisdn (628xxxx): ")
-            nik = input("Masukkan NIK: ")
-            kk = input("Masukkan KK: ")
+            msisdn = input(p("👉 MSISDN (628…): ", C.BOLD))
+            nik = input(p("👉 NIK: ", C.BOLD))
+            kk = input(p("👉 KK: ", C.BOLD))
             res = dukcapil(SESSION.api_key, msisdn, kk, nik)
-            print(json.dumps(res, indent=2))
+            _show_result("Hasil Registrasi", res)
             pause()
         elif choice.lower() == "v":
-            msisdn = input("Masukkan msisdn untuk divalidasi (628xxxx): ")
+            msisdn = input(p("👉 MSISDN validasi (628…): ", C.BOLD))
             res = api_validate_msisdn(SESSION.api_key, active_user["tokens"], msisdn)
-            print(json.dumps(res, indent=2))
+            _show_result("Hasil Validasi MSISDN", res)
             pause()
         elif choice.lower() == "n":
             show_notification_menu()
         else:
-            print("Pilihan tidak valid. Silakan coba lagi.")
+            print(fail("Pilihan salah"))
             pause()
 
 
@@ -189,7 +210,7 @@ def main() -> None:
     try:
         _run()
     except KeyboardInterrupt:
-        print("\nMenutup aplikasi.")
+        print(p("\n👋 Menutup aplikasi.", C.CYAN))
 
 
 if __name__ == "__main__":

@@ -5,6 +5,7 @@ from ahsiata.api.packages import get_family, get_package_details
 from ahsiata.core.bookmark import BOOKMARK
 from ahsiata.core.session import SESSION
 from ahsiata.ui.package.details import show_package_details
+from ahsiata.ui.style import C, p, title, rule, info, fail
 from ahsiata.ui.utils import clear_screen, pause
 
 
@@ -19,18 +20,16 @@ def show_bookmark_menu() -> None:
     while in_menu:
         clear_screen()
         bookmarks = BOOKMARK.get_bookmarks()
-        print("=" * 55)
-        print("Bookmark Paket".center(55))
-        print("=" * 55)
+        print(title("⭐ Bookmark Paket", color=C.MAGENTA))
         if not bookmarks:
-            print("Belum ada bookmark.")
+            print(info("Belum ada bookmark"))
         else:
             for idx, bm in enumerate(bookmarks):
-                print(f"{idx + 1}. {bm['family_name']} - {bm['variant_name']} - {bm['option_name']}")
-                print("-" * 55)
-        print("000. Hapus bookmark")
-        print("00. Kembali")
-        choice = input("Pilih paket (nomor): ")
+                print(f"{idx + 1}. {p(bm['family_name'], C.BOLD)} - {bm['variant_name']} - {bm['option_name']}")
+                print(rule(color=C.BLUE))
+        print("000. 🗑 Hapus")
+        print("00. ↩️ Kembali")
+        choice = input(p("👉 Pilih paket (nomor): ", C.BOLD))
 
         if choice == "00":
             in_menu = False
@@ -40,9 +39,9 @@ def show_bookmark_menu() -> None:
             if not bookmarks:
                 pause()
                 continue
-            del_idx = input("Hapus nomor urut: ")
+            del_idx = input(p("👉 Nomor urut hapus: ", C.BOLD))
             if not del_idx.isdigit() or not (1 <= int(del_idx) <= len(bookmarks)):
-                print("Nomor tidak valid.")
+                print(fail("Nomor tidak valid"))
                 pause()
                 continue
             bm = bookmarks[int(del_idx) - 1]
@@ -56,14 +55,14 @@ def show_bookmark_menu() -> None:
             continue
 
         if not choice.isdigit() or not (1 <= int(choice) <= len(bookmarks)):
-            print("Pilihan tidak valid.")
+            print(fail("Pilihan salah"))
             pause()
             continue
 
         bm = bookmarks[int(choice) - 1]
         family_data = get_family(api_key, tokens, bm["family_code"], bm["is_enterprise"])
         if not family_data:
-            print("Gagal mengambil data family.")
+            print(fail("Gagal ambil data family"))
             pause()
             continue
 

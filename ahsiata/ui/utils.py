@@ -6,37 +6,15 @@ import re
 import textwrap
 from html.parser import HTMLParser
 
+from ahsiata.ui.style import C, p
+
 
 def clear_screen() -> None:
     os.system("cls" if os.name == "nt" else "clear")
-    ascii_art = r"""
-            _____                    _____          
-           /\    \                  /\    \         
-          /::\____\                /::\    \        
-         /::::|   |               /::::\    \       
-        /:::::|   |              /::::::\    \      
-       /::::::|   |             /:::/\:::\    \     
-      /:::/|::|   |            /:::/__\:::\    \    
-     /:::/ |::|   |           /::::\   \:::\    \   
-    /:::/  |::|___|______    /::::::\   \:::\    \  
-   /:::/   |::::::::\    \  /:::/\:::\   \:::\    \ 
-  /:::/    |:::::::::\____\/:::/__\:::\   \:::\____\
-  \::/    / ~~~~~/:::/    /\:::\   \:::\   \::/    /
-   \/____/      /:::/    /  \:::\   \:::\   \/____/ 
-               /:::/    /    \:::\   \:::\    \     
-              /:::/    /      \:::\   \:::\____\    
-             /:::/    /        \:::\   \::/    /    
-            /:::/    /          \:::\   \/____/     
-           /:::/    /            \:::\    \         
-          /:::/    /              \:::\____\        
-          \::/    /                \::/    /        
-           \/____/                  \/____/         
-"""
-    print(ascii_art)
 
 
 def pause() -> None:
-    input("\nTekan enter untuk melanjutkan...")
+    input(p("\n⏎ Lanjut…", C.DIM))
 
 
 class _HTMLToText(HTMLParser):

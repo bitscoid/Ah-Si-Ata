@@ -15,7 +15,7 @@ def get_family(
     migration_type: str | None = None,
 ) -> dict | None:
     """Brute-force (is_enterprise × migration_type) until a non-empty family is returned."""
-    print("Mengambil family paket...")
+    print("Mengambil family paket…")
 
     enterprise_choices = [False, True] if is_enterprise is None else [is_enterprise]
     migration_choices = list(MigrationType.ALL) if migration_type is None else [migration_type]
@@ -78,7 +78,7 @@ def get_package(
         "is_upsell_pdp": False,
         "package_variant_code": package_variant_code,
     }
-    print("Mengambil paket...")
+    print("Mengambil paket…")
     res = send_api_request(api_key, Endpoint.PACKAGE_DETAIL, payload, tokens["id_token"], "POST")
     if not isinstance(res, dict) or "data" not in res:
         print(json.dumps(res, indent=2))
@@ -89,7 +89,7 @@ def get_package(
 
 def get_addons(api_key: str, tokens: dict, package_option_code: str) -> dict | None:
     payload = {"is_enterprise": False, "lang": LANG_EN, "package_option_code": package_option_code}
-    print("Mengambil addon...")
+    print("Mengambil addon…")
     res = send_api_request(api_key, Endpoint.ADDONS, payload, tokens["id_token"], "POST")
     if not isinstance(res, dict) or "data" not in res:
         print("Gagal mengambil addon:", res.get("error", "Error tidak diketahui") if isinstance(res, dict) else res)

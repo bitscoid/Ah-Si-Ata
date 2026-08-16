@@ -104,7 +104,7 @@ def settlement_qris(
         path=path,
     )
 
-    print("Mengirim permintaan settlement...")
+    print("Mengirim permintaan settlement…")
     res = post_signed_payload(api_key=api_key, tokens=tokens, path=path, payload=payload, signature=x_sig)
 
     if not isinstance(res, dict):
@@ -151,7 +151,7 @@ def show_qris_payment(
         print("Gagal membuat transaksi QRIS.")
         return None
 
-    print("Mengambil kode QRIS...")
+    print("Mengambil kode QRIS…")
     qris_code = get_qris_code(api_key, tokens, transaction_id)
     if not qris_code:
         print("Gagal mendapatkan kode QRIS.")

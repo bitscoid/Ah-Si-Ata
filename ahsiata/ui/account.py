@@ -3,47 +3,53 @@ from __future__ import annotations
 
 from ahsiata.api.auth import get_otp, submit_otp
 from ahsiata.core.session import SESSION
+from ahsiata.ui.style import C, p, title, rule, center, ok, fail, warn, info
 from ahsiata.ui.utils import clear_screen, pause
 
 
 def _login_prompt(api_key: str) -> tuple[str, str] | None:
     """Run the OTP login flow; return (phone_number, refresh_token) on success."""
     clear_screen()
-    print("-------------------------------------------------------")
-    print("Login ke MyXL")
-    print("-------------------------------------------------------")
-    print("Masukan nomor XL (Contoh 6281234567890):")
-    phone_number = input("Nomor: ")
+    print(title("📱 Login MyXL", color=C.BLUE))
+    print(p(center("Masukkan nomor XL untuk menerima OTP", 55), C.DIM))
+    print(rule(char="-", color=C.BLUE))
+    print(p("Nomor XL  : ", C.BOLD), end="")
+    phone_number = input().strip()
 
     if not phone_number.startswith("628") or len(phone_number) < 10 or len(phone_number) > 14:
-        print("Nomor tidak valid. Pastikan nomor diawali dengan '628' dan memiliki panjang yang benar.")
+        print(fail("Nomor tidak valid. Awali dengan '628' dan cek panjang."))
         return None
 
     try:
+        print(p("📤 Mengirim OTP…", C.DIM))
         subscriber_id = get_otp(phone_number)
         if not subscriber_id:
+            print(fail("OTP tidak terkirim. Coba lagi."))
             return None
-        print("OTP Berhasil dikirim ke nomor Anda.")
+        print(ok("OTP terkirim"))
+        print(rule(char="-", color=C.BLUE))
+        print(p("🔑 Verifikasi kode OTP 6 digit:", C.BOLD))
 
         for attempt in range(5, 0, -1):
-            print(f"Sisa percobaan: {attempt}")
-            otp = input("Masukkan OTP yang telah dikirim: ")
+            print(warn(f"Sisa percobaan: {attempt}"))
+            print(p("Kode OTP  : ", C.BOLD), end="")
+            otp = input().strip()
             if not otp.isdigit() or len(otp) != 6:
-                print("OTP tidak valid. Pastikan OTP terdiri dari 6 digit angka.")
+                print(fail("OTP 6 digit"))
                 continue
 
             tokens = submit_otp(api_key, "SMS", phone_number, otp)
             if not tokens:
-                print("OTP salah. Silahkan coba lagi.")
+                print(fail("OTP salah"))
                 continue
 
-            print("Berhasil login!")
+            print(ok("Login berhasil"))
             return phone_number, tokens["refresh_token"]
 
-        print("Gagal login setelah beberapa percobaan. Silahkan coba lagi nanti.")
+        print(fail("Gagal login"))
         return None
     except Exception as e:
-        print(f"Gagal login: {e}")
+        print(fail(f"Gagal login: {e}"))
         return None
 
 
@@ -55,11 +61,10 @@ def show_account_menu() -> int | None:
 
     while in_menu:
         clear_screen()
-        print("-------------------------------------------------------")
         if SESSION.get_active_user() is None or add_user:
             result = _login_prompt(SESSION.api_key)
             if not result:
-                print("Gagal menambah akun. Silahkan coba lagi.")
+                print(fail("Gagal menambah akun"))
                 pause()
                 continue
 
@@ -72,25 +77,29 @@ def show_account_menu() -> int | None:
         users = SESSION.refresh_tokens
         active_user = SESSION.get_active_user()
 
-        print("Akun Tersimpan:")
+        print(title("📋 Ganti Nomor", color=C.BLUE))
         if not users:
-            print("Tidak ada akun tersimpan.")
+            print(info("Tidak ada akun tersimpan"))
+        else:
+            numbers = [str(u.get("number", "")) for u in users]
+            types = [str(u.get("subscription_type", "")) for u in users]
+            nw, tw = max(map(len, numbers)), max(map(len, types))
 
-        for idx, user in enumerate(users):
-            is_active = active_user and user["number"] == active_user["number"]
-            marker = "✅" if is_active else ""
-            number = str(user.get("number", "")).ljust(14)
-            sub_type = str(user.get("subscription_type", "")).center(12)
-            print(f"{idx + 1}. {number} [{sub_type}] {marker}")
+            print(f"{'#':>3}  {p('Nomor'.ljust(nw), C.BOLD, C.WHITE)}  {p('Tipe'.center(tw), C.BOLD, C.WHITE)}  Status")
+            print(rule(char="-", color=C.BLUE))
+            for idx, (user, num, typ) in enumerate(zip(users, numbers, types), 1):
+                is_active = active_user and user["number"] == active_user["number"]
+                row = f"{idx:>3}  {p(num.ljust(nw), C.BOLD)}  {p(typ.center(tw), C.CYAN)}  "
+                row += p("✅ Akun aktif", C.GREEN, C.BOLD) if is_active else p("Belum aktif", C.DIM)
+                print(row)
 
-        print("-" * 55)
-        print("Command:")
-        print("0: Tambah Akun")
-        print("Masukan nomor urut akun untuk berganti.")
-        print("Masukan del <nomor urut> untuk menghapus akun tertentu.")
-        print("00: Kembali ke menu utama")
-        print("-" * 55)
-        choice = input("Pilihan:")
+        print(rule(char="-", color=C.BLUE))
+        print(p("⚙️ Command:", C.BOLD))
+        print(f"{'0':>3}  ➕ Tambah akun")
+        print(f"{'00':>3}  ↩️ Kembali")
+        print(f"{'del':>3}  🗑 Hapus akun (contoh: del 2)")
+        print(f"{'#':>3}  🔢 Ganti akun (ketik nomor urut)")
+        choice = input(p("👉 Pilihan: ", C.BOLD))
 
         if choice == "00":
             in_menu = False
@@ -106,29 +115,29 @@ def show_account_menu() -> int | None:
         if choice.startswith("del "):
             parts = choice.split()
             if len(parts) != 2 or not parts[1].isdigit():
-                print("Perintah tidak valid. Gunakan format: del <nomor urut>")
+                print(fail("Format: del <nomor>"))
                 pause()
                 continue
             del_idx = int(parts[1])
             if active_user and users[del_idx - 1]["number"] == active_user["number"]:
-                print("Tidak dapat menghapus akun aktif. Silahkan ganti akun terlebih dahulu.")
+                print(fail("Akun aktif tidak bisa dihapus"))
                 pause()
                 continue
             if not (1 <= del_idx <= len(users)):
-                print("Nomor urut tidak valid.")
+                print(fail("Nomor urut tidak valid"))
                 pause()
                 continue
 
             user_to_delete = users[del_idx - 1]
-            confirm = input(f"Yakin ingin menghapus akun {user_to_delete['number']}? (y/n): ")
+            confirm = input(p(f"🗑 Hapus {user_to_delete['number']}? (y/n): ", C.BOLD))
             if confirm.lower() == "y":
                 SESSION.remove_refresh_token(user_to_delete["number"])
                 SESSION.load_tokens()
-                print("Akun berhasil dihapus.")
+                print(ok("Akun dihapus"))
             else:
-                print("Penghapusan akun dibatalkan.")
+                print(info("Penghapusan dibatalkan"))
             pause()
             continue
 
-        print("Input tidak valid. Silahkan coba lagi.")
+        print(fail("Input tidak valid"))
         pause()

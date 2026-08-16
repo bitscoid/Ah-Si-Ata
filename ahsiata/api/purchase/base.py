@@ -45,7 +45,7 @@ def resolve_amount(
 
 
 def join_item_codes(items: list[dict]) -> str:
-    """`item1_code;item2_code;...` (server's payment-target format)."""
+    """`item1_code;item2_code;…` (server's payment-target format)."""
     return ";".join(item["item_code"] for item in items)
 
 
@@ -59,7 +59,7 @@ def fetch_payment_token(api_key: str, tokens: dict, item_code: str, token_confir
         "is_referral": False,
         "token_confirmation": token_confirmation,
     }
-    print("Mendapatkan metode pembayaran...")
+    print("Mendapatkan metode pembayaran…")
     res = send_api_request(api_key, Endpoint.PAYMENT_METHODS_OPTION, payload, tokens["id_token"], "POST")
     if not isinstance(res, dict) or res.get("status") != "SUCCESS":
         print("Gagal mengambil metode pembayaran.")

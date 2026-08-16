@@ -11,6 +11,7 @@ from ahsiata.api.family_plan import (
     set_quota_limit,
     validate_msisdn,
 )
+from ahsiata.ui.style import C, p, title, rule, center, ok, fail, warn, info
 from ahsiata.ui.utils import clear_screen, format_quota_byte, pause
 
 WIDTH = 55
@@ -21,7 +22,7 @@ def show_family_info(api_key: str, tokens: dict) -> None:
         clear_screen()
         res = get_family_data(api_key, tokens)
         if not res.get("data"):
-            print("Gagal mendapatkan data family.")
+            print(fail("Gagal mendapatkan data family."))
             pause()
             return
 
@@ -29,7 +30,7 @@ def show_family_info(api_key: str, tokens: dict) -> None:
         member_info = family_detail.get("member_info", {})
         plan_type = member_info.get("plan_type", "")
         if plan_type == "":
-            print("Anda bukan organizer family plan.")
+            print(fail("Anda bukan organizer family plan."))
             pause()
             return
 
@@ -43,16 +44,16 @@ def show_family_info(api_key: str, tokens: dict) -> None:
         end_date = datetime.fromtimestamp(end_date_ts).strftime("%Y-%m-%d") if end_date_ts else "N/A"
 
         clear_screen()
-        print("-" * WIDTH)
-        print(f"Plan: {plan_type} | Parent: {parent_msisdn}".center(WIDTH))
-        print(f"Kuota Bersama: {remaining_quota} / {total_quota} | Berlaku s/d: {end_date}".center(WIDTH))
-        print("-" * WIDTH)
+        print(p(center(f"👨👩👧 Plan: {plan_type} | 🧑 Parent: {parent_msisdn}", WIDTH), C.BOLD, C.CYAN))
+        print(p(center(f"📦 Kuota: {remaining_quota} / {total_quota} | ⏳ s/d: {end_date}", WIDTH), C.BOLD, C.YELLOW))
+        print(rule())
 
-        print(f"Anggota: {len(members) - len(empty_slots)}/{len(members)}:")
+        print(p(f"👥 Anggota: {len(members) - len(empty_slots)}/{len(members)}:", C.BOLD))
         for idx, member in enumerate(members, start=1):
-            print("-" * WIDTH)
+            print(rule())
             msisdn = member.get("msisdn", "N/A")
             display_msisdn = msisdn if msisdn else "<Empty Slot>"
+            msisdn_str = p(display_msisdn, C.BOLD, C.WHITE) if msisdn else p("<Kosong>", C.DIM)
             alias = member.get("alias", "N/A")
             member_type = member.get("member_type", "N/A")
             add_chances = member.get("add_chances", 0)
@@ -61,36 +62,36 @@ def show_family_info(api_key: str, tokens: dict) -> None:
             usage = member.get("usage", {})
             quota_allocated = format_quota_byte(usage.get("quota_allocated", 0))
             quota_used = format_quota_byte(usage.get("quota_used", 0))
-            print(f"{idx}. {display_msisdn} ({alias}) | {member_type} | Tambah Kesempatan: {add_chances}/{total_add_chances}")
-            print(f"   Pemakaian: {quota_used} / {quota_allocated}")
-        print("-" * WIDTH)
+            print(f"{idx}. {msisdn_str} ({alias}) | {p(member_type, C.CYAN)} | ➕ {add_chances}/{total_add_chances}")
+            print(f"   📊 Pemakaian: {p(quota_used, C.YELLOW)} / {p(quota_allocated, C.YELLOW)}")
+        print(rule())
         print()
-        print("-" * WIDTH)
-        print("Opsi:")
-        print("-" * WIDTH)
-        print("1. Ganti Member")
-        print("limit <Nomor Slot> <Kuota MB>  - atur batas kuota")
-        print("del <Nomor Slot>               - hapus member dari slot")
-        print("00. Kembali ke menu utama")
-        print("-" * WIDTH)
+        print(rule())
+        print(p("⚙️ Opsi:", C.BOLD, C.WHITE))
+        print(rule())
+        print("1. 🔄 Ganti Member")
+        print("limit <slot> <MB> — 🔒 batas kuota")
+        print("del <slot> — 🗑 hapus member")
+        print("00. ↩️ Kembali")
+        print(rule())
 
-        choice = input("Masukkan pilihan Anda: ").strip()
+        choice = input("👉 Pilih: ").strip()
         if choice == "00":
             return
 
         if choice == "1":
-            slot_idx = input("Masukkan nomor slot: ").strip()
-            target_msisdn = input("Masukkan nomor telepon member baru (awali dengan 62): ").strip()
-            parent_alias = input("Masukkan alias Anda: ").strip()
-            child_alias = input("Masukkan alias member baru: ").strip()
+            slot_idx = input("👉 Nomor slot: ").strip()
+            target_msisdn = input("👉 Nomor member (62…): ").strip()
+            parent_alias = input("👉 Alias Anda: ").strip()
+            child_alias = input("👉 Alias member: ").strip()
             try:
                 slot_idx_int = int(slot_idx)
                 if not (1 <= slot_idx_int <= len(members)):
-                    print("Nomor slot tidak valid.")
+                    print(fail("Nomor slot tidak valid."))
                     pause()
                     continue
                 if members[slot_idx_int - 1].get("msisdn") != "":
-                    print("Slot terpilih tidak kosong. Tidak dapat mengganti member.")
+                    print(fail("Slot terpilih tidak kosong."))
                     pause()
                     continue
 
@@ -99,29 +100,29 @@ def show_family_info(api_key: str, tokens: dict) -> None:
 
                 validation = validate_msisdn(api_key, tokens, target_msisdn)
                 if validation.get("status", "").lower() != "success":
-                    print(f"Validasi MSISDN gagal: {json.dumps(validation, indent=2)}")
+                    print(fail(f"Validasi MSISDN gagal: {json.dumps(validation, indent=2)}"))
                     pause()
                     continue
-                print("Validasi MSISDN berhasil.")
+                print(ok("Validasi MSISDN berhasil."))
 
                 if validation["data"].get("family_plan_role", "") != "NO_ROLE":
-                    print(f"{target_msisdn} sudah tergabung dalam family plan lain.")
+                    print(fail(f"{target_msisdn} sudah tergabung dalam family plan lain."))
                     pause()
                     continue
 
-                if input("Apakah Anda yakin? (y/n): ").strip().lower() != "y":
-                    print("Dibatalkan.")
+                if input("👉 Yakin? (y/n): ").strip().lower() != "y":
+                    print(warn("Dibatalkan."))
                     pause()
                     continue
 
                 change_res = change_member(api_key, tokens, parent_alias, child_alias, slot_id, family_member_id, target_msisdn)
                 if change_res.get("status") == "SUCCESS":
-                    print("Member berhasil diganti.")
+                    print(ok("Member berhasil diganti."))
                 else:
-                    print(f"Gagal: {change_res.get('message', 'Unknown error')}")
+                    print(fail(f"Gagal: {change_res.get('message', 'Unknown error')}"))
                 print(json.dumps(change_res, indent=4))
             except ValueError:
-                print("Nomor slot tidak valid.")
+                print(fail("Nomor slot tidak valid."))
             pause()
 
         elif choice.startswith("del "):
@@ -129,26 +130,26 @@ def show_family_info(api_key: str, tokens: dict) -> None:
                 _, slot_num = choice.split(" ", 1)
                 slot_idx_int = int(slot_num)
                 if not (1 <= slot_idx_int <= len(members)):
-                    print("Nomor slot tidak valid.")
+                    print(fail("Nomor slot tidak valid."))
                     pause()
                     continue
                 member = members[slot_idx_int - 1]
                 if not member.get("msisdn"):
-                    print("Slot sudah kosong.")
+                    print(warn("Slot sudah kosong."))
                     pause()
                     continue
-                if input(f"Hapus {member.get('msisdn')} dari slot {slot_idx_int}? (y/n): ").strip().lower() != "y":
-                    print("Dibatalkan.")
+                if input(f"👉 Hapus {member.get('msisdn')} dari slot {slot_idx_int}? (y/n): ").strip().lower() != "y":
+                    print(warn("Dibatalkan."))
                     pause()
                     continue
                 res = remove_member(api_key, tokens, member["family_member_id"])
                 if res.get("status") == "SUCCESS":
-                    print("Member dihapus.")
+                    print(ok("Member dihapus."))
                 else:
-                    print(f"Gagal: {res.get('message', 'Unknown error')}")
+                    print(fail(f"Gagal: {res.get('message', 'Unknown error')}"))
                 print(json.dumps(res, indent=4))
             except ValueError:
-                print("Nomor slot tidak valid.")
+                print(fail("Nomor slot tidak valid."))
             pause()
 
         elif choice.startswith("limit "):
@@ -157,22 +158,22 @@ def show_family_info(api_key: str, tokens: dict) -> None:
                 slot_idx_int = int(slot_num)
                 new_quota_mb_int = int(new_quota_mb)
                 if not (1 <= slot_idx_int <= len(members)):
-                    print("Nomor slot tidak valid.")
+                    print(fail("Nomor slot tidak valid."))
                     pause()
                     continue
                 member = members[slot_idx_int - 1]
                 if not member.get("msisdn"):
-                    print("Slot kosong.")
+                    print(warn("Slot kosong."))
                     pause()
                     continue
                 original = member.get("usage", {}).get("quota_allocated", 0)
                 new_bytes = new_quota_mb_int * 1024 * 1024
                 res = set_quota_limit(api_key, tokens, original, new_bytes, member["family_member_id"])
                 if res.get("status") == "SUCCESS":
-                    print("Batas kuota diatur.")
+                    print(ok("Batas kuota diatur."))
                 else:
-                    print(f"Gagal: {res.get('message', 'Unknown error')}")
+                    print(fail(f"Gagal: {res.get('message', 'Unknown error')}"))
                 print(json.dumps(res, indent=4))
             except ValueError:
-                print("Input tidak valid.")
+                print(fail("Input tidak valid."))
             pause()

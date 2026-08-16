@@ -9,6 +9,7 @@ from ahsiata.api.purchase.balance import settle_with_decoy, settlement_balance
 from ahsiata.core.decoy import DECOY
 from ahsiata.core.session import SESSION
 from ahsiata.type_dict import PaymentItem
+from ahsiata.ui.style import C, p, ok, fail
 from ahsiata.ui.utils import pause
 
 
@@ -28,7 +29,7 @@ def purchase_n_times_by_option_code(
 
     detail = get_package(api_key, tokens, option_code)
     if not detail:
-        print("Gagal mengambil detail paket.")
+        print(fail("Gagal mengambil detail paket."))
         return 0
 
     price = detail["package_option"]["price"]
@@ -36,6 +37,7 @@ def purchase_n_times_by_option_code(
     successful = 0
 
     for i in range(n):
+        print(ok(f"✅ [{i + 1}/{n}] {detail['package_option']['name']}"))
         rnd = randint(1000, 9999)
         items = [PaymentItem(
             item_code=option_code,

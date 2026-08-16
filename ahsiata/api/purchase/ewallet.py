@@ -82,7 +82,7 @@ def settlement_multipayment(
         path=path,
     )
 
-    print("Mengirim permintaan settlement...")
+    print("Mengirim permintaan settlement…")
     return post_signed_payload(api_key=api_key, tokens=tokens, path=path, payload=payload, signature=x_sig)
 
 

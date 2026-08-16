@@ -119,20 +119,20 @@ class Session:
                 if tokens:
                     self.set_active_user(first["number"])
             else:
-                input("Tidak ada user tersisa. Tekan enter untuk melanjutkan...")
+                input("Tidak ada user tersisa. Tekan enter untuk melanjutkan…")
                 self.active_user = None
 
     def set_active_user(self, number: int) -> bool:
         rt_entry = next((rt for rt in self.refresh_tokens if rt["number"] == number), None)
         if not rt_entry:
             print(f"Tidak ada refresh token ditemukan untuk nomor: {number}")
-            input("Tekan enter untuk melanjutkan...")
+            input("Tekan enter untuk melanjutkan…")
             return False
 
         tokens = get_new_token(self.api_key, rt_entry["refresh_token"], rt_entry.get("subscriber_id", ""))
         if not tokens:
             print(f"Gagal mendapatkan token untuk nomor: {number}. Refresh token mungkin tidak valid atau sudah kedaluwarsa.")
-            input("Tekan enter untuk melanjutkan...")
+            input("Tekan enter untuk melanjutkan…")
             return False
 
         profile_data = get_profile(self.api_key, tokens["access_token"], tokens["id_token"])
@@ -155,7 +155,7 @@ class Session:
     def renew_active_user_token(self) -> bool:
         if not self.active_user:
             print("Tidak ada user aktif atau refresh token hilang.")
-            input("Tekan enter untuk melanjutkan...")
+            input("Tekan enter untuk melanjutkan…")
             return False
 
         tokens = get_new_token(
@@ -165,7 +165,7 @@ class Session:
         )
         if not tokens:
             print("Gagal memperbarui token user aktif.")
-            input("Tekan enter untuk melanjutkan...")
+            input("Tekan enter untuk melanjutkan…")
             return False
 
         self.active_user["tokens"] = tokens

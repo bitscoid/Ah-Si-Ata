@@ -167,7 +167,7 @@ def settlement_balance(
         path=path,
     )
 
-    print("Mengirim permintaan settlement...")
+    print("Mengirim permintaan settlement…")
     res = post_signed_payload(api_key=api_key, tokens=tokens, path=path, payload=payload, signature=x_sig)
 
     if isinstance(res, dict) and res.get("status") != "SUCCESS":
