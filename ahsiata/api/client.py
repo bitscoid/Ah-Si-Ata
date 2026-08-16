@@ -108,7 +108,6 @@ def get_balance(api_key: str, id_token: str) -> dict | None:
     """Fetch balance and credit expiry."""
     from ahsiata.constants import Endpoint
     payload = _common_payload()
-    print("⏳ Mengambil saldo…")
     res = send_api_request(api_key, Endpoint.BALANCE, payload, id_token, "POST")
     if isinstance(res, dict) and "data" in res and "balance" in res["data"]:
         return res["data"]["balance"]
@@ -122,7 +121,6 @@ def intercept_page(api_key: str, tokens: dict, option_code: str, is_enterprise: 
         is_enterprise=is_enterprise,
         package_option_code=option_code,
     )
-    print("⏳ Mengambil halaman intercept…")
     res = send_api_request(api_key, Endpoint.INTERCEPT_PAGE, payload, tokens["id_token"], "POST")
     if isinstance(res, dict) and "status" in res:
         print(f"Status intercept: {res['status']}")

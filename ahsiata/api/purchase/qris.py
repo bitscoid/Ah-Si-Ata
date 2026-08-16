@@ -150,7 +150,6 @@ def show_qris_payment(
         print(fail("Gagal membuat transaksi QRIS."))
         return None
 
-    print("⏳ Mengambil kode QRIS…")
     qris_code = get_qris_code(api_key, tokens, transaction_id)
     if not qris_code:
         print(fail("Gagal mendapatkan kode QRIS."))
