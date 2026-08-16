@@ -75,7 +75,7 @@ def show_family_info(api_key: str, tokens: dict) -> None:
         print(rule(char="-", color=C.CYAN))
         print(p(f"{'':>3}  {'B':>2} Kembali", C.DIM))
         print()
-        choice = input(p("🧭 Pilih: ", C.YELLOW)).strip()
+        choice = input(p("🧭 Pilih : ", C.YELLOW)).strip()
         if choice.lower() == "b":
             return
 

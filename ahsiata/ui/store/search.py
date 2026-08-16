@@ -32,7 +32,7 @@ def show_family_list_menu(subs_type: str, is_enterprise: bool) -> None:
         print(rule(char="-", color=C.CYAN))
         print(p(f"{'':>3}  {'B':>2} Kembali", C.DIM))
         print()
-        choice = input(p("🧭 Pilih: ", C.YELLOW)).strip()
+        choice = input(p("🧭 Pilih : ", C.YELLOW)).strip()
         if choice.lower() == "b":
             return
         if not choice.isdigit() or not (1 <= int(choice) <= len(families)):
@@ -68,7 +68,7 @@ def show_store_packages_menu(subs_type: str, is_enterprise: bool) -> None:
         print(rule(char="-", color=C.CYAN))
         print(p(f"{'':>3}  {'B':>2} Kembali", C.DIM))
         print()
-        choice = input(p("🧭 Pilih: ", C.YELLOW)).strip()
+        choice = input(p("🧭 Pilih : ", C.YELLOW)).strip()
         if choice.lower() == "b":
             return
         if not choice.isdigit() or not (1 <= int(choice) <= len(packages)):

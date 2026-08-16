@@ -64,7 +64,7 @@ def get_packages_by_family(
         print(rule(char="-", color=C.CYAN))
         print(sp(f"{'':>3}  {'B':>2} Kembali", C.DIM))
         print()
-        pkg_choice = input(sp("🧭 Pilih: ", C.YELLOW)).strip()
+        pkg_choice = input(sp("🧭 Pilih : ", C.YELLOW)).strip()
 
         if pkg_choice.lower() == "b":
             return packages

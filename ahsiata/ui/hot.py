@@ -108,7 +108,7 @@ def _buy_bundle(api_key: str, tokens: dict, selected: dict) -> None:
         print(f"{'2':>3}  💵 E-Wallet")
         print(f"{'3':>3}  🧾 QRIS")
         print(f"{'B':>3}  ↩️ Kembali")
-        method = input(sp("🧭 Pilih: ", C.YELLOW)).strip().lower()
+        method = input(sp("🧭 Pilih : ", C.YELLOW)).strip().lower()
         if method == "b":
             return
         if method == "1":
@@ -169,7 +169,7 @@ def show_hot_menu() -> None:
         print(rule())
         print(f"{'B':>3}  ↩️ Kembali")
         print(rule())
-        choice = input(sp("🧭 Pilih: ", C.YELLOW)).strip()
+        choice = input(sp("🧭 Pilih : ", C.YELLOW)).strip()
         if choice.lower() == "b":
             return
         if not choice.isdigit():

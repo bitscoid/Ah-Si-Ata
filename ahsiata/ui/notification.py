@@ -36,7 +36,7 @@ def show_notification_menu() -> None:
         print(rule(char="-", color=C.MAGENTA))
         print(p(f"{'':>3}  {'S':>2} Tandai Dibaca    {'B':>2} Kembali", C.DIM))
         print()
-        choice = input(p("🧭 Pilih: ", C.YELLOW)).strip()
+        choice = input(p("🧭 Pilih : ", C.YELLOW)).strip()
 
         if choice.lower() == "b":
             return

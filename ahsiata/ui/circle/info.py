@@ -66,7 +66,7 @@ def _show_bonus_list(api_key: str, tokens: dict, parent_subs_id: str, family_id:
         print(rule(char="-", color=C.YELLOW))
         print(p(f"{'':>3}  {'B':>2} Kembali", C.DIM))
         print()
-        choice = input(p("🧭 Pilih: ", C.YELLOW)).strip()
+        choice = input(p("🧭 Pilih : ", C.YELLOW)).strip()
         if choice.lower() == "b":
             return
         if not choice.isdigit() or not (1 <= int(choice) <= len(bonus_list)):
@@ -192,7 +192,7 @@ def show_circle_info(api_key: str, tokens: dict) -> None:
         print("2. 🏆 Bonus Circle")
         print(p(f"{'':>3}  {'B':>2} Kembali", C.DIM))
         print()
-        choice = input(p("🧭 Pilih: ", C.YELLOW)).strip()
+        choice = input(p("🧭 Pilih : ", C.YELLOW)).strip()
 
         if choice.lower() == "b":
             return

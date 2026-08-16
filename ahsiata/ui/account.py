@@ -113,7 +113,7 @@ def show_account_menu() -> int | None:
         print(rule(char="-", color=C.BLUE))
         print(p(f"{'':>3}  {'A':>2} Tambah    {'D':>2} Hapus    {'B':>2} Kembali", C.DIM))
         print()
-        choice = input(p("🧭 Pilih: ", C.YELLOW)).strip()
+        choice = input(p("🧭 Pilih : ", C.YELLOW)).strip()
 
         if choice.lower() == "b":
             return active_user["number"] if active_user else None

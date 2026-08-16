@@ -41,4 +41,4 @@ def show_transaction_history(api_key: str, tokens: dict) -> None:
     print(rule(char="-", color=C.CYAN))
     print(p(f"{'':>3}  {'B':>2} Kembali", C.DIM))
     print()
-    input(p("🧭 Pilih: ", C.YELLOW))
+    input(p("🧭 Pilih : ", C.YELLOW))
