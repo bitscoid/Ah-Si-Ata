@@ -74,6 +74,7 @@ def show_family_info(api_key: str, tokens: dict) -> None:
         print("del <slot> — ❌ hapus member")
         print(rule(char="-", color=C.CYAN))
         print(p(f"{'':>3}  {'B':>2} Kembali", C.DIM))
+        print(rule(char="-", color=C.CYAN))
         print()
         choice = input(p("🧭 Pilih : ", C.YELLOW)).strip()
         if choice.lower() == "b":

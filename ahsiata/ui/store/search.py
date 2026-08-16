@@ -31,6 +31,7 @@ def show_family_list_menu(subs_type: str, is_enterprise: bool) -> None:
             print(f"{idx}. 👨‍👩‍👧 {p(fam.get('family_name', 'N/A'), C.BOLD)}")
         print(rule(char="-", color=C.CYAN))
         print(p(f"{'':>3}  {'B':>2} Kembali", C.DIM))
+        print(rule(char="-", color=C.CYAN))
         print()
         choice = input(p("🧭 Pilih : ", C.YELLOW)).strip()
         if choice.lower() == "b":
@@ -67,6 +68,7 @@ def show_store_packages_menu(subs_type: str, is_enterprise: bool) -> None:
             print(f"{idx}. 📦 {p(name, C.BOLD)} - {p(format_price(price), C.BOLD, C.YELLOW)}")
         print(rule(char="-", color=C.CYAN))
         print(p(f"{'':>3}  {'B':>2} Kembali", C.DIM))
+        print(rule(char="-", color=C.CYAN))
         print()
         choice = input(p("🧭 Pilih : ", C.YELLOW)).strip()
         if choice.lower() == "b":

@@ -43,6 +43,7 @@ def show_redeemables_menu(is_enterprise: bool) -> None:
 
         print(rule(char="-", color=C.YELLOW))
         print(p(f"{'':>3}  {'B':>2} Kembali", C.DIM))
+        print(rule(char="-", color=C.YELLOW))
         print()
         choice = input(p("🧭 Pilih : ", C.YELLOW)).strip()
         if choice.lower() == "b":
