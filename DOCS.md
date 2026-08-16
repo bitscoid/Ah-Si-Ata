@@ -200,10 +200,10 @@ Semua rahasia dan konfigurasi diambil dari environment variable. Template tersed
 | Variabel | Digunakan di | Keterangan |
 |---|---|---|
 | `BASE_API_URL` | `ahsiata.py`, `purchase/*` | Base URL API utama (contoh `https://xxx`) |
-| `BASE_CIAM_URL` | `ciam.py` | Base URL CIAM / OIDC provider |
-| `BASIC_AUTH` | `ciam.py` | Credential `Basic auth` (base64) untuk CIAM |
+| `BASE_CIAM_URL` | `auth.py` | Base URL CIAM / OIDC provider |
+| `BASIC_AUTH` | `auth.py` | Credential `Basic auth` (base64) untuk CIAM |
 | `AX_FP_KEY` | `encrypt.py` | Kunci AES untuk fingerprint perangkat (32-hex ASCII) |
-| `UA` | `ahsiata.py`, `ciam.py`, `purchase/*` | User-Agent emulasi aplikasi |
+| `UA` | `ahsiata.py`, `auth.py`, `purchase/*` | User-Agent emulasi aplikasi |
 | `API_KEY` | `encrypt.py`, `ahsiata.py` | `x-api-key` untuk API utama |
 | `ENCRYPTED_FIELD_KEY` | `encrypt.py`, `crypto_helper.py` | Kunci AES untuk field terenkripsi & MSISDN Circle |
 | `XDATA_KEY` | `crypto_helper.py` | Kunci AES untuk enkripsi body (`xdata`) |
@@ -217,7 +217,7 @@ Semua rahasia dan konfigurasi diambil dari environment variable. Template tersed
 
 ## 6. Autentikasi & Manajemen Sesi
 
-### 6.1 `app/client/ciam.py` — CIAM / OIDC
+### 6.1 `ahsiata/api/auth.py` — CIAM / OIDC
 
 Fungsi utama:
 
