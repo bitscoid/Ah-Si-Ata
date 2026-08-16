@@ -107,7 +107,7 @@ def _buy_bundle(api_key: str, tokens: dict, selected: dict) -> None:
         print(f"{'1':>3}  💰 Balance")
         print(f"{'2':>3}  💵 E-Wallet")
         print(f"{'3':>3}  🧾 QRIS")
-        print(f"{'B':>3}  ↩️ Kembali")
+        print(sp(f"{'':>3}  {'B':>2} Kembali", C.DIM))
         method = input(sp("🧭 Pilih : ", C.YELLOW)).strip().lower()
         if method == "b":
             return
@@ -166,8 +166,8 @@ def show_hot_menu() -> None:
         print(rule(char="-", color=C.B_RED))
         for j, bundle in enumerate(bundles, offset + 1):
             print(f"{j:>3}  {sp(bundle['name'], C.BOLD, C.WHITE)}  {sp(bundle['price'], C.YELLOW)}")
-        print(rule())
-        print(f"{'B':>3}  ↩️ Kembali")
+        print(rule(char="-", color=C.B_RED))
+        print(sp(f"{'':>3}  {'B':>2} Kembali", C.DIM))
         print(rule())
         choice = input(sp("🧭 Pilih : ", C.YELLOW)).strip()
         if choice.lower() == "b":
