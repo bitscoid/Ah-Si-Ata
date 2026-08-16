@@ -139,7 +139,7 @@ def _run() -> None:
         elif choice == "3":
             show_hot_menu()
         elif choice == "4":
-            option_code = input(p("🧭 Kode opsi (99=batal): ", C.BOLD))
+            option_code = input(p("🧭 Option Code : ", C.BOLD))
             if option_code != "99":
                 show_package_details(SESSION.api_key, active_user["tokens"], option_code, False)
         elif choice == "5":
