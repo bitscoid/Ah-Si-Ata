@@ -34,11 +34,11 @@ def show_store_segments_menu(is_enterprise: bool) -> None:
 
         for seg_idx, seg in enumerate(segments):
             letter = chr(ord("A") + seg_idx)
-            print(f"{letter}. {p(seg.get('title', 'N/A'), C.BOLD, C.WHITE)}")
+            print(f"{letter}. {p(seg.get('title', ''), C.BOLD, C.WHITE)}")
             for j, banner in enumerate(seg.get("banners", []), start=1):
                 price = banner.get("discounted_price")
                 price_text = format_price(price) if isinstance(price, (int, float)) else ""
-                line = f"   {letter.lower()}{j}. {p(banner.get('title', 'N/A'), C.CYAN)}"
+                line = f"   {letter.lower()}{j}. {p(banner.get('title', ''), C.CYAN)}"
                 if price_text:
                     line += p(f" ({price_text})", C.YELLOW)
                 print(line)

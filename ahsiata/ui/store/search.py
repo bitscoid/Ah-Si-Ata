@@ -63,8 +63,8 @@ def show_store_packages_menu(subs_type: str, is_enterprise: bool) -> None:
 
         packages = res.get("data", {}).get("results_price_only", [])
         for idx, pkg in enumerate(packages, start=1):
-            price = pkg.get("discounted_price", pkg.get("price", "N/A"))
-            name = pkg.get("package_name", pkg.get("name", "N/A"))
+            price = pkg.get("discounted_price", pkg.get("price", 0))
+            name = pkg.get("package_name", pkg.get("name", ""))
             print(f"{idx}. 📦 {p(name, C.BOLD)} - {p(format_price(price), C.BOLD, C.YELLOW)}")
         print(rule(char="-", color=C.CYAN))
         print(p(f"{'':>3}  {'B':>2} Kembali", C.DIM))

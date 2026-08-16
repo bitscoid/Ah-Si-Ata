@@ -36,9 +36,9 @@ def show_redeemables_menu(is_enterprise: bool) -> None:
 
         for letter_idx, cat in enumerate(categories):
             letter = chr(ord("A") + letter_idx)
-            print(f"{letter}. 🏷 {p(cat.get('name', 'N/A'), C.BOLD, C.WHITE)}")
+            print(f"{letter}. 🏷 {p(cat.get('name', ''), C.BOLD, C.WHITE)}")
             for j, pkg in enumerate(cat.get("packages", []), start=1):
-                print(f"   {letter.lower()}{j}. {p(pkg.get('name', 'N/A'), C.CYAN)}")
+                print(f"   {letter.lower()}{j}. {p(pkg.get('name', ''), C.CYAN)}")
             print(rule())
 
         print(rule(char="-", color=C.YELLOW))
