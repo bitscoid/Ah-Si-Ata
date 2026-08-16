@@ -184,6 +184,10 @@ def show_package_details(api_key, tokens, package_option_code, is_enterprise, op
 
         if choice in ("6", "7"):
             decoy = DECOY.get_decoy("qris" if choice == "6" else "qris0")
+            if not decoy:
+                print(fail("Decoy tidak tersedia"))
+                pause()
+                return False
             decoy_detail = get_package(api_key, tokens, decoy["option_code"])
             if not decoy_detail:
                 print(fail("Gagal muat detail decoy"))
