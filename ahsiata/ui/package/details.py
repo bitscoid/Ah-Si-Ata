@@ -129,11 +129,11 @@ def show_package_details(api_key, tokens, package_option_code, is_enterprise, op
             print("L. ⭐ Beli Poin")
         if option_order != -1:
             print("0. ⭐ Bookmark")
-        print("00. ↩️ Kembali")
+        print(f"{chr(66):>3}  ↩️ Kembali")
 
-        choice = input("👉 Pilihan: ").strip()
+        choice = input(p("🧭 Pilih: ", C.YELLOW)).strip()
 
-        if choice == "00":
+        if choice.lower() == "b":
             return False
 
         if choice == "0" and option_order != -1:
@@ -339,7 +339,7 @@ def fetch_my_packages() -> None:
     print(rule(char="-", color=C.BLUE))
     print(p(f"{'':>3}  {'D':>2} Berhenti    {'B':>2} Kembali", C.DIM))
     print()
-    choice = input(p("🧭 Pilihan: ", C.YELLOW)).strip()
+    choice = input(p("🧭 Pilih: ", C.YELLOW)).strip()
 
     if choice.lower() == "b":
         return

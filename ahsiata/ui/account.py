@@ -111,12 +111,11 @@ def show_account_menu() -> int | None:
                 print(row + " " * (pad // 2) + icon)
 
         print(rule(char="-", color=C.BLUE))
-        print(p(f"{'A':>2} Tambah    {'D':>2} Hapus    {'B':>2} Kembali", C.DIM))
+        print(p(f"{'':>3}  {'A':>2} Tambah    {'D':>2} Hapus    {'B':>2} Kembali", C.DIM))
         print()
-        choice = input(p("🧭 Pilihan: ", C.BOLD))
+        choice = input(p("🧭 Pilih: ", C.YELLOW)).strip()
 
         if choice.lower() == "b":
-            in_menu = False
             return active_user["number"] if active_user else None
 
         if choice.lower() == "a":

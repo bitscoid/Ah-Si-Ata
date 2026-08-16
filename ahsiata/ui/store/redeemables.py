@@ -19,7 +19,9 @@ def show_redeemables_menu(is_enterprise: bool) -> None:
 
     while True:
         clear_screen()
+        print(rule(char="=", color=C.YELLOW))
         print(title("🎁 Redeemables", color=C.YELLOW))
+        print(rule(char="=", color=C.YELLOW))
         res = get_redeemables(api_key, tokens, is_enterprise)
         if not res:
             print(fail("Gagal mengambil redeemable."))
@@ -39,9 +41,11 @@ def show_redeemables_menu(is_enterprise: bool) -> None:
                 print(f"   {letter.lower()}{j}. {p(pkg.get('name', 'N/A'), C.CYAN)}")
             print(rule())
 
-        print("00. ↩️ Kembali")
-        choice = input("🧭 Pilih paket (mis. A1): ").strip()
-        if choice == "00":
+        print(rule(char="-", color=C.YELLOW))
+        print(p(f"{'':>3}  {'B':>2} Kembali", C.DIM))
+        print()
+        choice = input(p("🧭 Pilih: ", C.YELLOW)).strip()
+        if choice.lower() == "b":
             return
         if len(choice) < 2 or not choice[0].isalpha() or not choice[1:].isdigit():
             print(fail("Pilihan tidak valid."))

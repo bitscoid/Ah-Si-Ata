@@ -40,50 +40,53 @@ def show_circle_creation(api_key: str, tokens: dict) -> None:
 
 
 def _show_bonus_list(api_key: str, tokens: dict, parent_subs_id: str, family_id: str) -> None:
-    clear_screen()
-    print(info("⏳ Mengambil data bonus…"))
-    bonus_data = get_bonus_data(api_key, tokens, parent_subs_id, family_id)
-    if bonus_data.get("status") != "SUCCESS":
-        print(fail("Gagal mengambil data bonus."))
-        pause()
-        return
+    while True:
+        clear_screen()
+        print(info("⏳ Mengambil data bonus…"))
+        bonus_data = get_bonus_data(api_key, tokens, parent_subs_id, family_id)
+        if bonus_data.get("status") != "SUCCESS":
+            print(fail("Gagal mengambil data bonus."))
+            pause()
+            return
 
-    bonus_list = bonus_data.get("data", {}).get("bonuses", [])
-    if not bonus_list:
-        print(warn("Tidak ada data bonus tersedia."))
-        pause()
-        return
+        bonus_list = bonus_data.get("data", {}).get("bonuses", [])
+        if not bonus_list:
+            print(warn("Tidak ada data bonus tersedia."))
+            pause()
+            return
 
-    print(title("🏆 Bonus Circle", color=C.YELLOW))
+        print(rule(char="=", color=C.YELLOW))
+        print(title("🏆 Bonus Circle", color=C.YELLOW))
+        print(rule(char="=", color=C.YELLOW))
 
-    for idx, bonus in enumerate(bonus_list, start=1):
-        print(f"{idx}. {p(bonus.get('name', 'N/A'), C.BOLD, C.WHITE)} | 🏷 {bonus.get('bonus_type', 'N/A')}")
-        print(f"   🎯 Aksi: {bonus.get('action_type', 'N/A')} | Param: {bonus.get('action_param', 'N/A')}")
+        for idx, bonus in enumerate(bonus_list, start=1):
+            print(f"{idx}. {p(bonus.get('name', 'N/A'), C.BOLD, C.WHITE)} | 🏷 {bonus.get('bonus_type', 'N/A')}")
+            print(f"   🎯 Aksi: {bonus.get('action_type', 'N/A')} | Param: {bonus.get('action_param', 'N/A')}")
 
-    print(rule())
-    print("👀 Masukkan nomor bonus untuk melihat detail.")
-    print("00. ↩️ Kembali")
-    choice = input("🧭 Pilih (00=↩️): ")
-    if choice == "00":
-        return
-    if not choice.isdigit() or not (1 <= int(choice) <= len(bonus_list)):
-        print(fail("Pilihan tidak valid."))
-        pause()
-        return
+        print(rule(char="-", color=C.YELLOW))
+        print(p(f"{'':>3}  {'B':>2} Kembali", C.DIM))
+        print()
+        choice = input(p("🧭 Pilih: ", C.YELLOW)).strip()
+        if choice.lower() == "b":
+            return
+        if not choice.isdigit() or not (1 <= int(choice) <= len(bonus_list)):
+            print(fail("Pilihan tidak valid."))
+            pause()
+            return
 
-    selected = bonus_list[int(choice) - 1]
-    action_type = selected.get("action_type", "")
-    action_param = selected.get("action_param", "")
+        selected = bonus_list[int(choice) - 1]
+        action_type = selected.get("action_type", "")
+        action_param = selected.get("action_param", "")
 
-    if action_type == "PLP":
-        from ahsiata.ui.package.list import get_packages_by_family
-        get_packages_by_family(action_param)
-    elif action_type == "PDP":
-        from ahsiata.ui.package.details import show_package_details
-        show_package_details(api_key, tokens, action_param, False)
-    else:
-        print(fail(f"Tipe aksi yang tidak ditangani: {action_type}"))
-        pause()
+        if action_type == "PLP":
+            from ahsiata.ui.package.list import get_packages_by_family
+            get_packages_by_family(action_param)
+        elif action_type == "PDP":
+            from ahsiata.ui.package.details import show_package_details
+            show_package_details(api_key, tokens, action_param, False)
+        else:
+            print(fail(f"Tipe aksi yang tidak ditangani: {action_type}"))
+            pause()
 
 
 def show_circle_info(api_key: str, tokens: dict) -> None:
@@ -102,7 +105,7 @@ def show_circle_info(api_key: str, tokens: dict) -> None:
         group_id = group_data.get("group_id", "")
         if not group_id:
             print(warn("Anda tidak tergabung dalam Circle apa pun."))
-            if input("🧭 Buat baru? (y/n): ").lower() == "y":
+            if input(p("🧭 Buat baru? (y/n): ", C.YELLOW)).lower() == "y":
                 show_circle_creation(api_key, tokens)
             else:
                 pause()
@@ -153,7 +156,9 @@ def show_circle_info(api_key: str, tokens: dict) -> None:
         target = spending.get("target", 0)
 
         clear_screen()
+        print(rule(char="=", color=C.MAGENTA))
         print(title(f"🫂 {group_name}", color=C.MAGENTA))
+        print(rule(char="=", color=C.MAGENTA))
         print(p(f"👤 Pemilik: {owner_name} {parrent_msisdn}", C.CYAN))
         print(rule())
         print(p(f"📦 Paket: {package_name} | {remaining} / {allocation}", C.BOLD, C.YELLOW))
@@ -179,27 +184,28 @@ def show_circle_info(api_key: str, tokens: dict) -> None:
             print(p(f"   📊 Pemakaian: {used} / {allocated}", C.YELLOW))
             print(rule())
 
-        print(rule())
+        print(rule(char="-", color=C.MAGENTA))
         print(p("⚙️ Opsi:", C.BOLD, C.WHITE))
         print("1. ➕ Undang Member")
         print("del <nomor> — ❌ hapus")
         print("acc <nomor> — ✔️ terima undangan")
         print("2. 🏆 Bonus Circle")
-        print("00. ↩️ Kembali")
-        choice = input("🧭 Pilih: ")
+        print(p(f"{'':>3}  {'B':>2} Kembali", C.DIM))
+        print()
+        choice = input(p("🧭 Pilih: ", C.YELLOW)).strip()
 
-        if choice == "00":
+        if choice.lower() == "b":
             return
 
         if choice == "1":
-            msisdn_to_invite = input("🧭 MSISDN diundang (628…): ")
+            msisdn_to_invite = input(p("🧭 MSISDN diundang (628…): ", C.YELLOW))
             validate_res = validate_circle_member(api_key, tokens, msisdn_to_invite)
             if validate_res.get("status") == "SUCCESS":
                 if validate_res.get("data", {}).get("response_code", "") != "200-2001":
                     print(fail(f"Tidak dapat mengundang: {validate_res.get('data', {}).get('message', 'Unknown')}"))
                     pause()
                     continue
-            member_name = input("🧭 Nama member: ")
+            member_name = input(p("🧭 Nama member: ", C.YELLOW))
             invite_res = invite_circle_member(api_key, tokens, msisdn_to_invite, member_name, group_id, parent_member_id)
             if invite_res.get("status") == "SUCCESS" and invite_res.get("data", {}).get("response_code", "") == "200-00":
                 print(ok(f"Undangan terkirim ke {msisdn_to_invite}."))
@@ -225,7 +231,7 @@ def show_circle_info(api_key: str, tokens: dict) -> None:
                     pause()
                     continue
                 msisdn = decrypt_circle_msisdn(api_key, target.get("msisdn", ""))
-                if input(f"🧭 Hapus {msisdn}? (y/n): ").lower() != "y":
+                if input(p(f"🧭 Hapus {msisdn}? (y/n): ", C.YELLOW)).lower() != "y":
                     print(warn("Dibatalkan."))
                     pause()
                     continue
@@ -251,7 +257,7 @@ def show_circle_info(api_key: str, tokens: dict) -> None:
                     pause()
                     continue
                 msisdn = decrypt_circle_msisdn(api_key, target.get("msisdn", ""))
-                if input(f"🧭 Terima undangan untuk {msisdn}? (y/n): ").lower() != "y":
+                if input(p(f"🧭 Terima undangan untuk {msisdn}? (y/n): ", C.YELLOW)).lower() != "y":
                     print(warn("Dibatalkan."))
                     pause()
                     continue

@@ -17,7 +17,9 @@ def show_family_list_menu(subs_type: str, is_enterprise: bool) -> None:
 
     while True:
         clear_screen()
+        print(rule(char="=", color=C.CYAN))
         print(title("🏬 Family List", color=C.CYAN))
+        print(rule(char="=", color=C.CYAN))
         res = get_family_list(api_key, tokens, subs_type, is_enterprise)
         if not res:
             print(fail("Gagal mengambil daftar family."))
@@ -27,10 +29,11 @@ def show_family_list_menu(subs_type: str, is_enterprise: bool) -> None:
         families = res.get("data", {}).get("family_list", [])
         for idx, fam in enumerate(families, start=1):
             print(f"{idx}. 👨‍👩‍👧 {p(fam.get('family_name', 'N/A'), C.BOLD)}")
-        print(rule())
-        print("00. ↩️ Keluar")
-        choice = input("🧭 Pilih family (nomor): ").strip()
-        if choice == "00":
+        print(rule(char="-", color=C.CYAN))
+        print(p(f"{'':>3}  {'B':>2} Kembali", C.DIM))
+        print()
+        choice = input(p("🧭 Pilih: ", C.YELLOW)).strip()
+        if choice.lower() == "b":
             return
         if not choice.isdigit() or not (1 <= int(choice) <= len(families)):
             print(fail("Pilihan tidak valid."))
@@ -48,7 +51,9 @@ def show_store_packages_menu(subs_type: str, is_enterprise: bool) -> None:
 
     while True:
         clear_screen()
+        print(rule(char="=", color=C.CYAN))
         print(title("🛒 Store Packages", color=C.CYAN))
+        print(rule(char="=", color=C.CYAN))
         res = get_store_packages(api_key, tokens, subs_type, is_enterprise)
         if not res:
             print(fail("Gagal mengambil paket."))
@@ -60,10 +65,11 @@ def show_store_packages_menu(subs_type: str, is_enterprise: bool) -> None:
             price = pkg.get("discounted_price", pkg.get("price", "N/A"))
             name = pkg.get("package_name", pkg.get("name", "N/A"))
             print(f"{idx}. 📦 {p(name, C.BOLD)} - {p(str(price), C.BOLD, C.YELLOW)}")
-        print(rule())
-        print("00. ↩️ Keluar")
-        choice = input("🧭 Pilih paket (nomor): ").strip()
-        if choice == "00":
+        print(rule(char="-", color=C.CYAN))
+        print(p(f"{'':>3}  {'B':>2} Kembali", C.DIM))
+        print()
+        choice = input(p("🧭 Pilih: ", C.YELLOW)).strip()
+        if choice.lower() == "b":
             return
         if not choice.isdigit() or not (1 <= int(choice) <= len(packages)):
             print(fail("Pilihan tidak valid."))

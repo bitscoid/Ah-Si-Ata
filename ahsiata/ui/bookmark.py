@@ -17,25 +17,27 @@ def show_bookmark_menu() -> None:
     tokens = user["tokens"]
 
     in_menu = True
-    while in_menu:
+    while True:
         clear_screen()
         bookmarks = BOOKMARK.get_bookmarks()
+        print(rule(char="=", color=C.MAGENTA))
         print(title("⭐ Bookmark Paket", color=C.MAGENTA))
+        print(rule(char="=", color=C.MAGENTA))
         if not bookmarks:
             print(info("Belum ada bookmark"))
         else:
-            for idx, bm in enumerate(bookmarks):
-                print(f"{idx + 1}. {p(bm['family_name'], C.BOLD)} - {bm['variant_name']} - {bm['option_name']}")
+            for idx, bm in enumerate(bookmarks, 1):
+                print(f"{idx}. {p(bm['family_name'], C.BOLD)} - {bm['variant_name']} - {bm['option_name']}")
                 print(rule(color=C.BLUE))
-        print("000. ❌ Hapus")
-        print("00. ↩️ Kembali")
-        choice = input(p("🧭 Pilih paket (nomor): ", C.BOLD))
+        print(rule(char="-", color=C.MAGENTA))
+        print(p(f"{'':>3}  {'D':>2} Hapus    {'B':>2} Kembali", C.DIM))
+        print()
+        choice = input(p("🧭 Pilih: ", C.YELLOW)).strip()
 
-        if choice == "00":
-            in_menu = False
+        if choice.lower() == "b":
             return
 
-        if choice == "000":
+        if choice.lower() == "d":
             if not bookmarks:
                 pause()
                 continue

@@ -31,22 +31,22 @@ from ahsiata.ui.utils import clear_screen, pause
 WIDTH = 55
 
 MENU_ITEMS = [
-    ("1", "👤", "Ganti Akun"),
-    ("2", "📦", "Paket Saya"),
+    ("1", "👤", "Akun"),
+    ("2", "📦", "Paket"),
     ("3", "🔥", "HOT"),
-    ("4", "🔎", "Kode Opsi"),
+    ("4", "🔎", "Option Code"),
     ("5", "👨", "Family Code"),
-    ("6", "🔄", "Beli Semua (Loop)"),
+    ("6", "🔄", "Loop"),
     ("7", "🧾", "Riwayat"),
     ("8", "👨", "Family Plan"),
     ("9", "🫂", "Circle"),
     ("10", "🏬", "Promo"),
-    ("11", "🏬", "Daftar Family"),
-    ("12", "🛒", "Paket Toko"),
+    ("11", "🏬", "Family List"),
+    ("12", "🛒", "Store"),
     ("13", "🎁", "Redeemables"),
     ("R", "📝", "Registrasi"),
     ("N", "🔔", "Notifikasi"),
-    ("V", "🎯", "Validasi MSISDN"),
+    ("V", "🎯", "Validasi"),
     ("B", "⭐", "Bookmark"),
     ("X", "🚪", "Keluar"),
 ]
@@ -61,14 +61,13 @@ def show_main_menu(profile: dict) -> None:
     balance_text = f"Rp {balance_remaining}" if balance_remaining is not None else "Saldo N/A"
     expired_text = datetime.fromtimestamp(balance_expired_at).strftime("%Y-%m-%d") if balance_expired_at else "N/A"
     point_info = profile["point_info"]
-    print(title("🔥 AH-SI-ATA", color=C.MAGENTA))
+    print(title("🔥 AH-SI-ATA 🔥", color=C.MAGENTA))
     print(p(center(f"📱 {number} | {subscription_type}", WIDTH), C.BOLD, C.WHITE))
     print(p(center(f"💰 {balance_text} | Aktif s/d: {expired_text}", WIDTH), C.BOLD, C.YELLOW))
     if "Points" in point_info:
         point_info = point_info.replace("Points", "⭐ Points")
     print(p(center(point_info, WIDTH), C.CYAN))
     print(rule(char="=", color=C.BLUE))
-    print(p("📋 Menu:", C.BOLD, C.WHITE))
     icw = max(disp_w(ic) for _, ic, _ in MENU_ITEMS)
     for key, ic, label in MENU_ITEMS:
         print(f"{key:>3}  {ic}{' ' * (icw - disp_w(ic))} {label}")

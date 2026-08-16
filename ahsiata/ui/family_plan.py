@@ -72,11 +72,11 @@ def show_family_info(api_key: str, tokens: dict) -> None:
         print("1. 🔄 Ganti Member")
         print("limit <slot> <MB> — 🔒 batas kuota")
         print("del <slot> — ❌ hapus member")
-        print("00. ↩️ Kembali")
-        print(rule())
-
-        choice = input("🧭 Pilih: ").strip()
-        if choice == "00":
+        print(rule(char="-", color=C.CYAN))
+        print(p(f"{'':>3}  {'B':>2} Kembali", C.DIM))
+        print()
+        choice = input(p("🧭 Pilih: ", C.YELLOW)).strip()
+        if choice.lower() == "b":
             return
 
         if choice == "1":

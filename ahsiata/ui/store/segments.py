@@ -17,7 +17,9 @@ def show_store_segments_menu(is_enterprise: bool) -> None:
 
     while True:
         clear_screen()
+        print(rule(char="=", color=C.CYAN))
         print(title("🏬 Promo", color=C.CYAN))
+        print(rule(char="=", color=C.CYAN))
         print(info("⏳ Mengambil segmen…"))
         segments_data = get_segments(api_key, tokens, is_enterprise)
         if not segments_data:
@@ -43,9 +45,11 @@ def show_store_segments_menu(is_enterprise: bool) -> None:
                 print(line)
             print(rule())
 
-        print("00. ↩️ Kembali")
-        choice = input("🧭 Pilih paket (contoh: A1): ").strip()
-        if choice == "00":
+        print(rule(char="-", color=C.CYAN))
+        print(p(f"{'':>3}  {'B':>2} Kembali", C.DIM))
+        print()
+        choice = input(p("🧭 Pilih: ", C.YELLOW)).strip()
+        if choice.lower() == "b":
             return
         # Parse "<letter><number>"
         if len(choice) < 2 or not choice[0].isalpha() or not choice[1:].isdigit():

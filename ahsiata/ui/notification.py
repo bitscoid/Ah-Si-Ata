@@ -9,11 +9,15 @@ from ahsiata.ui.utils import clear_screen, pause
 
 def show_notification_menu() -> None:
     user = SESSION.get_active_user()
+    if user is None:
+        return
     tokens = user["tokens"]
 
     while True:
         clear_screen()
+        print(rule(char="=", color=C.MAGENTA))
         print(title("🔔 Notifikasi", color=C.MAGENTA))
+        print(rule(char="=", color=C.MAGENTA))
         res = get_notifications(SESSION.api_key, tokens)
         if not isinstance(res, dict):
             print(fail("Gagal mengambil notifikasi"))
@@ -29,14 +33,14 @@ def show_notification_menu() -> None:
             status_emoji = "✅" if n.get("is_read") else "🔴"
             print(f"{idx}. {status_emoji} {n.get('brief_message', n.get('title', ''))}")
 
-        print(rule(color=C.BLUE))
-        print("1. ✅ Tandai dibaca semua")
-        print("00. ↩️ Kembali")
-        choice = input(p("🧭 Pilih:", C.BOLD))
+        print(rule(char="-", color=C.MAGENTA))
+        print(p(f"{'':>3}  {'S':>2} Tandai Dibaca    {'B':>2} Kembali", C.DIM))
+        print()
+        choice = input(p("🧭 Pilih: ", C.YELLOW)).strip()
 
-        if choice == "00":
+        if choice.lower() == "b":
             return
-        if choice == "1":
+        if choice.lower() == "s":
             for n in notifications:
                 if n.get("is_read") is False:
                     get_notification_detail(SESSION.api_key, tokens, n.get("id", ""))

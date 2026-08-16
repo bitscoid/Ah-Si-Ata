@@ -32,9 +32,9 @@ def get_packages_by_family(
 
     while True:
         clear_screen()
-        print(rule(color=C.CYAN))
+        print(rule(char="=", color=C.CYAN))
         print(title(f"📦 {data['package_family']['name']}", color=C.CYAN))
-        print(rule(color=C.CYAN))
+        print(rule(char="=", color=C.CYAN))
         print(f"🔢 Family Code: {family_code}")
         print(f"🏷 Tipe: {data['package_family']['package_family_type']}")
         print(f"📦 Varian: {len(data['package_variants'])}")
@@ -61,12 +61,12 @@ def get_packages_by_family(
                 option_number += 1
             if variant_idx < len(data["package_variants"]):
                 print(rule(color=C.CYAN))
-        print(rule(color=C.CYAN))
-        print("00. ↩️ Kembali")
-        print(rule(color=C.CYAN))
-        pkg_choice = input("🧭 Pilih paket (nomor): ").strip()
+        print(rule(char="-", color=C.CYAN))
+        print(sp(f"{'':>3}  {'B':>2} Kembali", C.DIM))
+        print()
+        pkg_choice = input(sp("🧭 Pilih: ", C.YELLOW)).strip()
 
-        if pkg_choice == "00":
+        if pkg_choice.lower() == "b":
             return packages
         if not pkg_choice.isdigit():
             print(fail("Input salah"))

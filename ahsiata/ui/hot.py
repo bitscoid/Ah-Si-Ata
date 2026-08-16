@@ -107,9 +107,9 @@ def _buy_bundle(api_key: str, tokens: dict, selected: dict) -> None:
         print(f"{'1':>3}  💰 Balance")
         print(f"{'2':>3}  💵 E-Wallet")
         print(f"{'3':>3}  🧾 QRIS")
-        print(f"{'X':>3}  ↩️ Kembali")
-        method = input("🧭 Pilih metode: ").strip().lower()
-        if method == "x":
+        print(f"{'B':>3}  ↩️ Kembali")
+        method = input(sp("🧭 Pilih: ", C.YELLOW)).strip().lower()
+        if method == "b":
             return
         if method == "1":
             if overwrite_amount == -1:
@@ -167,10 +167,10 @@ def show_hot_menu() -> None:
         for j, bundle in enumerate(bundles, offset + 1):
             print(f"{j:>3}  {sp(bundle['name'], C.BOLD, C.WHITE)}  {sp(bundle['price'], C.YELLOW)}")
         print(rule())
-        print(f"{'X':>3}  ↩️ Kembali")
+        print(f"{'B':>3}  ↩️ Kembali")
         print(rule())
-        choice = input("🧭 Pilih paket (nomor): ").strip()
-        if choice.lower() == "x":
+        choice = input(sp("🧭 Pilih: ", C.YELLOW)).strip()
+        if choice.lower() == "b":
             return
         if not choice.isdigit():
             print(fail("Input salah"))
