@@ -26,7 +26,7 @@ from ahsiata.ui.store.redeemables import show_redeemables_menu
 from ahsiata.ui.store.search import show_family_list_menu, show_store_packages_menu
 from ahsiata.ui.store.segments import show_store_segments_menu
 from ahsiata.ui.style import C, p, title, rule, center, fail, disp_w
-from ahsiata.ui.utils import clear_screen, pause
+from ahsiata.ui.utils import clear_screen, pause, format_price
 
 WIDTH = 55
 
@@ -58,7 +58,7 @@ def show_main_menu(profile: dict) -> None:
     subscription_type = profile["subscription_type"]
     balance_remaining = profile["balance"]
     balance_expired_at = profile["balance_expired_at"]
-    balance_text = f"Rp {balance_remaining}" if balance_remaining is not None else "Saldo N/A"
+    balance_text = format_price(balance_remaining) if balance_remaining is not None else "Saldo N/A"
     expired_text = datetime.fromtimestamp(balance_expired_at).strftime("%Y-%m-%d") if balance_expired_at else "N/A"
     point_info = profile["point_info"]
     print(title("🔥 AH-SI-ATA 🔥", color=C.MAGENTA))
