@@ -149,10 +149,10 @@ def _run() -> None:
         elif choice == "6":
             family_code = input(p("🧭 Family Code : ", C.BOLD))
             if family_code != "99":
-                start_from = input(p("🧭 Mulai dari opsi (1): ", C.BOLD)) or "1"
-                use_decoy = input(p("🧭 Paket decoy? (y/n): ", C.BOLD)).lower() == "y"
-                pause_on_success = input(p("🧭 Jeda tiap sukses? (y/n): ", C.BOLD)).lower() == "y"
-                delay = input(p("🧭 Jeda detik (0): ", C.BOLD)) or "0"
+                start_from = input(p("🧭 Mulai : ", C.BOLD)) or "1"
+                use_decoy = input(p("🧭 Decoy : ", C.BOLD)).lower() == "y"
+                pause_on_success = input(p("🧭 Jeda : ", C.BOLD)).lower() == "y"
+                delay = input(p("🧭 Detik : ", C.BOLD)) or "0"
                 try:
                     start_from_int = int(start_from)
                 except ValueError:
