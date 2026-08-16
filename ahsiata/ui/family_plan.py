@@ -73,7 +73,7 @@ def show_family_info(api_key: str, tokens: dict) -> None:
         print("limit <slot> <MB> — 🔒 batas kuota")
         print("del <slot> — ❌ hapus member")
         print(rule(char="-", color=C.CYAN))
-        print(p(f"{'':>3}  {'B':>2} Kembali", C.WHITE))
+        print(p(f"{'':>3}  {'B':>2} Kembali", C.YELLOW))
         print(rule(char="-", color=C.CYAN))
         print()
         choice = input(p("🧭 Pilih : ", C.YELLOW)).strip()

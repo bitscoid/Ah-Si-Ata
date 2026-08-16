@@ -111,7 +111,7 @@ def show_account_menu() -> int | None:
                 print(row + " " * (pad // 2) + icon)
 
         print(rule(char="-", color=C.BLUE))
-        print(p(f"{'':>3}  {'A':>2} Tambah    {'D':>2} Hapus    {'B':>2} Kembali", C.WHITE))
+        print(p(f"{'':>3}  {'A':>2} Tambah    {'D':>2} Hapus    {'B':>2} Kembali", C.YELLOW))
         print(rule(char="-", color=C.BLUE))
         print()
         choice = input(p("🧭 Pilih : ", C.YELLOW)).strip()

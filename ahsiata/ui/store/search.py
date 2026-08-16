@@ -30,7 +30,7 @@ def show_family_list_menu(subs_type: str, is_enterprise: bool) -> None:
         for idx, fam in enumerate(families, start=1):
             print(f"{idx}. 👨‍👩‍👧 {p(fam.get('family_name', 'N/A'), C.BOLD)}")
         print(rule(char="-", color=C.CYAN))
-        print(p(f"{'':>3}  {'B':>2} Kembali", C.WHITE))
+        print(p(f"{'':>3}  {'B':>2} Kembali", C.YELLOW))
         print(rule(char="-", color=C.CYAN))
         print()
         choice = input(p("🧭 Pilih : ", C.YELLOW)).strip()
@@ -67,7 +67,7 @@ def show_store_packages_menu(subs_type: str, is_enterprise: bool) -> None:
             name = pkg.get("package_name", pkg.get("name", ""))
             print(f"{idx}. 📦 {p(name, C.BOLD)} - {p(format_price(price), C.BOLD, C.YELLOW)}")
         print(rule(char="-", color=C.CYAN))
-        print(p(f"{'':>3}  {'B':>2} Kembali", C.WHITE))
+        print(p(f"{'':>3}  {'B':>2} Kembali", C.YELLOW))
         print(rule(char="-", color=C.CYAN))
         print()
         choice = input(p("🧭 Pilih : ", C.YELLOW)).strip()

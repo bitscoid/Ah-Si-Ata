@@ -40,7 +40,7 @@ def show_transaction_history(api_key: str, tokens: dict) -> None:
         print(rule(color=C.BLUE))
 
     print(rule(char="-", color=C.BLUE))
-    print(p(f"{'':>3}  {'B':>2} Kembali", C.WHITE))
+    print(p(f"{'':>3}  {'B':>2} Kembali", C.YELLOW))
     print(rule(char="-", color=C.BLUE))
     print()
     input(p("🧭 Pilih : ", C.YELLOW))

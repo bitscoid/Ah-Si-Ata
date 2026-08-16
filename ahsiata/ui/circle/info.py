@@ -63,7 +63,7 @@ def _show_bonus_list(api_key: str, tokens: dict, parent_subs_id: str, family_id:
             print(f"   🎯 Aksi: {bonus.get('action_type', 'N/A')} | Param: {bonus.get('action_param', 'N/A')}")
 
         print(rule(char="-", color=C.YELLOW))
-        print(p(f"{'':>3}  {'B':>2} Kembali", C.WHITE))
+        print(p(f"{'':>3}  {'B':>2} Kembali", C.YELLOW))
         print()
         choice = input(p("🧭 Pilih : ", C.YELLOW)).strip()
         if choice.lower() == "b":
@@ -191,7 +191,7 @@ def show_circle_info(api_key: str, tokens: dict) -> None:
         print("D Hapus Member")
         print("A Terima Undangan")
         print(rule(char="-", color=C.MAGENTA))
-        print(p(f"{'':>3}  {'B':>2} Kembali", C.WHITE))
+        print(p(f"{'':>3}  {'B':>2} Kembali", C.YELLOW))
         print(rule(char="-", color=C.MAGENTA))
         print()
         choice = input(p("🧭 Pilih : ", C.YELLOW)).strip()

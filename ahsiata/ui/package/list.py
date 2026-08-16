@@ -62,7 +62,7 @@ def get_packages_by_family(
             if variant_idx < len(data["package_variants"]):
                 print(rule(color=C.CYAN))
         print(rule(char="-", color=C.CYAN))
-        print(sp(f"{'':>3}  {'B':>2} Kembali", C.WHITE))
+        print(sp(f"{'':>3}  {'B':>2} Kembali", C.YELLOW))
         print()
         pkg_choice = input(sp("🧭 Pilih : ", C.YELLOW)).strip()
 
