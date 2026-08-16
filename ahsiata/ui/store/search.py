@@ -28,7 +28,7 @@ def show_family_list_menu(subs_type: str, is_enterprise: bool) -> None:
 
         families = res.get("data", {}).get("results", [])
         for idx, fam in enumerate(families, start=1):
-            print(f"{idx}. 👨‍👩‍👧 {p(fam.get('label', ''), C.BOLD)}")
+            print(f"{idx}. 👨 {p(fam.get('label', ''), C.BOLD)}")
         print(rule(char="-", color=C.CYAN))
         print(p(f"{'':>3}  {'B':>2} Kembali", C.YELLOW))
         print(rule(char="-", color=C.CYAN))

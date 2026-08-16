@@ -16,14 +16,12 @@ def get_profile(api_key: str, access_token: str, id_token: str) -> dict:
     }
     res = send_api_request(api_key, Endpoint.PROFILE, payload, id_token, "POST")
     if isinstance(res, dict):
-        return res.get("data")
-    return None
+        return res.get("profile", {})
+    return {}
 
 
 def get_tiering_info(api_key: str, tokens: dict) -> dict:
     """Fetch loyalty points and tier."""
     payload = {"is_enterprise": False, "lang": LANG_EN}
     res = send_api_request(api_key, Endpoint.TIERING_INFO, payload, tokens["id_token"], "POST")
-    if isinstance(res, dict):
-        return res.get("data", {})
-    return {}
+    return res if isinstance(res, dict) else {}
