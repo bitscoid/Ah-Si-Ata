@@ -31,11 +31,15 @@ def show_transaction_history(api_key: str, tokens: dict) -> None:
         ts = tx.get("timestamp", 0)
         ts_str = datetime.fromtimestamp(ts, tz=gmt7).strftime("%Y-%m-%d %H:%M:%S")
         title_tx = tx.get("title", "N/A")
-        price = tx.get("price", "N/A")
+        price_raw = tx.get("price", 0)
+        try:
+            price_fmt = f"Rp. {int(price_raw):,}".replace(",", ".")
+        except (ValueError, TypeError):
+            price_fmt = str(price_raw)
         print(f"{idx}. {p(ts_str, C.DIM)} | {p(title_tx, C.BOLD, C.WHITE)}")
         print(f"   💳 Metode: {tx.get('payment_method_label', 'N/A')}")
         print(f"   📊 Status: {tx.get('payment_status', 'N/A')}")
-        print(f"   {p('💰 ' + str(price), C.BOLD, C.YELLOW)}")
+        print(f"   {p('💰 ' + price_fmt, C.BOLD, C.YELLOW)}")
         print(rule(color=C.BLUE))
 
     print(rule(char="-", color=C.BLUE))
