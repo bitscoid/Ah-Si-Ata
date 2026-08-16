@@ -31,7 +31,6 @@ _AX_FP = load_ax_fp()
 
 def _ciam_headers(
     *,
-    extra: dict | None = None,
     lowercase: bool = False,
     ts_override: str | None = None,
     include_signature: str | None = None,

@@ -16,7 +16,6 @@ def show_bookmark_menu() -> None:
     api_key = SESSION.api_key
     tokens = user["tokens"]
 
-    in_menu = True
     while True:
         clear_screen()
         bookmarks = BOOKMARK.get_bookmarks()

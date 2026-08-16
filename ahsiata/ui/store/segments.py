@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from ahsiata.api.catalog import get_segments
 from ahsiata.core.session import SESSION
-from ahsiata.ui.style import C, p, title, rule, info, fail
+from ahsiata.ui.style import C, p, title, rule, fail
 from ahsiata.ui.utils import clear_screen, pause, format_price
 
 WIDTH = 55

@@ -27,7 +27,6 @@ def get_packages_by_family(
         pause()
         return None
 
-    price_currency = "Poin" if data["package_family"].get("rc_bonus_type") == "MYREWARDS" else "Rp"
     packages: list[dict] = []
 
     while True:

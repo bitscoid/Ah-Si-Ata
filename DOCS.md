@@ -173,9 +173,6 @@ Ah-Si-Ata/
 ├── hot_data/                    # Data paket HOT (JSON)
 │   ├── hot.json
 │   └── hot2.json
-│
-└── tests/                       # Tes offline (stdlib unittest)
-    └── test_crypto.py
 ```
 
 ---
@@ -468,7 +465,7 @@ Catatan: MSISDN pada payload Circle dienkripsi dengan `encrypt_circle_msisdn`.
 
 ### 9.5 Katalog store
 
-Fungsi katalog (`get_segments`, `get_family_list`, `get_store_packages`, `get_redeemables`) ada di **`ahsiata/api/catalog.py`** — lihat tabel §9.1. Direktori `ahsiata/api/store/` hanya berisi `__init__.py` kosong (sisa struktur lama).
+Fungsi katalog (`get_segments`, `get_family_list`, `get_store_packages`, `get_redeemables`) ada di **`ahsiata/api/catalog.py`** — lihat tabel §9.1.
 
 ### 9.6 `ahsiata/api/purchase/` — Settlement (lihat juga §12)
 
@@ -780,7 +777,6 @@ Tiga cara meluncurkan CLI (setara):
 - **Versi aplikasi** yang di-emulasi: `x-version-app: 8.9.0` (default `APP_VERSION`); model perangkat emulasi: `SM-N935F` (default `DEVICE_MODEL`).
 - **`show_hot_menu2`** bergantung pada data lokal `hot2.json`; jika struktur server berubah, `get_package_details` dapat gagal dan pembelian dibatalkan.
 - Error `Bizz-err.Amount.Total=<angka>` adalah mekanisme server untuk mengoreksi jumlah; penanganan terpusat di `settle_with_decoy` (`ahsiata/api/purchase/balance.py`) — kode mengekstrak `<angka>` dan mengulang settlement sekali.
-- **Testing offline**: `python -m unittest discover -s tests -v` menjalankan `tests/test_crypto.py` (roundtrip `xdata` & circle-msisdn, determinisme signature, tanpa jaringan). CI (`.github/workflows/ci.yml`) pada push/PR: checkout → setup-python 3.12 → `pip install -r requirements.txt` → unittest.
 
 ---
 

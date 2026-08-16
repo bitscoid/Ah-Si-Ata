@@ -11,8 +11,6 @@
     <img src="https://img.shields.io/badge/PyCryptodome-3.23.0-3776AB?style=flat&logo=pypi&logoColor=white" alt="PyCryptodome" />
     <img src="https://img.shields.io/badge/qrcode-8.2-3776AB?style=flat&logo=pypi&logoColor=white" alt="qrcode" />
     <img src="https://img.shields.io/badge/UI-Bahasa%20Indonesia-00C853?style=flat&logo=statuspage&logoColor=white" alt="UI Bahasa Indonesia" />
-    <img src="https://img.shields.io/badge/tests-unittest%206%20lulus-00C853?style=flat" alt="unittest" />
-    <img src="https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?style=flat&logo=githubactions&logoColor=white" alt="GitHub Actions" />
   </p>
   <p>
     <a href="DOCS.md">📘 Dokumentasi Teknis Lengkap</a>
@@ -46,8 +44,7 @@
 | **Rendering** | qrcode (QRIS ASCII di terminal), `html.parser` (HTML→teks) |
 | **Config** | python-dotenv (`.env` di-`load_dotenv` saat import) |
 | **Packaging** | pyproject.toml (`console script ahsiata`), Makefile, setup.sh |
-| **Testing** | unittest (stdlib, offline) — 6 test crypto/signing |
-| **CI** | GitHub Actions (Python 3.12) + Dependabot (mingguan) |
+| **CI** | Dependabot (mingguan) |
 
 ---
 
@@ -56,7 +53,6 @@
 ```text
 Ah-Si-Ata/
 ├── .github/
-│   ├── workflows/ci.yml        # CI: install deps + unittest
 │   └── dependabot.yml          # Update dependensi otomatis
 ├── ahsiata/
 │   ├── __init__.py
@@ -87,7 +83,6 @@ Ah-Si-Ata/
 │       ├── purchase/loop.py purchase/single.py
 │       ├── circle/info.py
 │       └── store/segments.py store/search.py store/redeemables.py
-├── tests/test_crypto.py        # unittest offline (crypto roundtrip + signature)
 ├── decoy_data/                 # Data decoy family (7 file JSON)
 ├── hot_data/                   # Paket HOT preset (hot.json, hot2.json)
 ├── .env.template               # Template konfigurasi
@@ -148,8 +143,7 @@ Salin `.env.template` ke `.env` dan isi nilai. Lihat bagian
 | `make env` | Membuat `.env` dari `.env.template` jika belum ada |
 | `make update` | `git pull --rebase` |
 | `make clean` | Bersihkan venv dan `__pycache__` |
-| `python -m unittest discover -s tests -v` | Menjalankan test (6 test) |
-| `python -m pyflakes ahsiata/ tests/ main.py` | Lint (pastikan bersih) |
+| `python -m pyflakes ahsiata/ main.py` | Lint (pastikan bersih) |
 
 ### Catatan
 

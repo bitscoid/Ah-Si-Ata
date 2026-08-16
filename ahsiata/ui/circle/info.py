@@ -16,7 +16,7 @@ from ahsiata.api.circle import (
 )
 from ahsiata.api.encrypt import decrypt_circle_msisdn
 from ahsiata.core.session import SESSION
-from ahsiata.ui.style import C, p, title, rule, ok, fail, warn, info
+from ahsiata.ui.style import C, p, title, rule, ok, fail, warn
 from ahsiata.ui.utils import clear_screen, format_quota_byte, pause
 
 WIDTH = 55

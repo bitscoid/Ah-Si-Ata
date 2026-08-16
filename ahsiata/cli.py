@@ -25,7 +25,7 @@ from ahsiata.ui.purchase.loop import purchase_by_family
 from ahsiata.ui.store.redeemables import show_redeemables_menu
 from ahsiata.ui.store.search import show_family_list_menu, show_store_packages_menu
 from ahsiata.ui.store.segments import show_store_segments_menu
-from ahsiata.ui.style import C, p, title, rule, center, fail, disp_w
+from ahsiata.ui.style import C, p, title, rule, center, fail
 from ahsiata.ui.utils import clear_screen, pause, format_price
 
 WIDTH = 55
