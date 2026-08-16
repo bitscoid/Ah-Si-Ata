@@ -186,11 +186,14 @@ def show_circle_info(api_key: str, tokens: dict) -> None:
 
         print(rule(char="-", color=C.MAGENTA))
         print(p("⚙️ Opsi:", C.BOLD, C.WHITE))
+        print(rule())
         print("1. ➕ Undang Member")
-        print("del <nomor> — ❌ hapus")
-        print("acc <nomor> — ✔️ terima undangan")
         print("2. 🏆 Bonus Circle")
+        print("del <nomor> — ❌ Hapus")
+        print("acc <nomor> — ✔️ Terima")
+        print(rule(char="-", color=C.MAGENTA))
         print(p(f"{'':>3}  {'B':>2} Kembali", C.DIM))
+        print(rule(char="-", color=C.MAGENTA))
         print()
         choice = input(p("🧭 Pilih : ", C.YELLOW)).strip()
 
