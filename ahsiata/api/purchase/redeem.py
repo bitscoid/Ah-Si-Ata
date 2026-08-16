@@ -1,7 +1,6 @@
 """Redeem flows: bounty (voucher), loyalty (points), bounty-allotment (gift)."""
 from __future__ import annotations
 
-from datetime import datetime
 
 from ahsiata.api.encrypt import build_encrypted_field
 from ahsiata.api.purchase.base import (

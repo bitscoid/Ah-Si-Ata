@@ -109,7 +109,7 @@ def show_family_info(api_key: str, tokens: dict) -> None:
                     pause()
                     continue
 
-                if input(f"Are you sure? (y/n): ").strip().lower() != "y":
+                if input("Are you sure? (y/n): ").strip().lower() != "y":
                     print("Cancelled.")
                     pause()
                     continue

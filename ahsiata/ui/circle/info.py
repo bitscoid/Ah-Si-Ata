@@ -165,14 +165,12 @@ def show_circle_info(api_key: str, tokens: dict) -> None:
 
         for idx, member in enumerate(members, start=1):
             msisdn = decrypt_circle_msisdn(api_key, member.get("msisdn", ""))
-            member_id = member.get("member_id", "")
             member_role = member.get("member_role", "N/A")
             member_name = member.get("member_name", "N/A")
             join_ts = member.get("join_date", 0)
             slot_type = member.get("slot_type", "N/A")
             member_status = member.get("status", "N/A")
             allocated = format_quota_byte(member.get("allocation", 0))
-            remaining_mb = format_quota_byte(member.get("remaining", 0))
             used = format_quota_byte(member.get("allocation", 0) - member.get("remaining", 0))
 
             display_msisdn = msisdn if msisdn else "<No Number>"

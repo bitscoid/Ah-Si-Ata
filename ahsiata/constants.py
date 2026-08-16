@@ -6,18 +6,16 @@ class Endpoint:
     """Main-backend (BASE_API_URL) paths."""
     PROFILE = "api/v8/profile"
     BALANCE = "api/v8/packages/balance-and-credit"
+    QUOTA_DETAILS = "api/v8/packages/quota-details"
     FAMILY_LIST = "api/v8/xl-stores/options/list"
-    FAMILIES = "api/v8/xl-stores/families"
     PACKAGE_DETAIL = "api/v8/xl-stores/options/detail"
     ADDONS = "api/v8/xl-stores/options/addons-pinky-box"
     INTERCEPT_PAGE = "misc/api/v8/utility/intercept-page"
-    LOGIN = "api/v8/auth/login"
     NOTIFICATIONS = "api/v8/notification-non-grouping"
     NOTIFICATION_DETAIL = "api/v8/notification/detail"
     TRANSACTION_HISTORY = "payments/api/v8/transaction-history"
     TIERING_INFO = "gamification/api/v8/loyalties/tiering/info"
     UNSUBSCRIBE = "api/v8/packages/unsubscribe"
-    DASHBOARD_SEGMENTS = "dashboard/api/v8/segments"
 
     # Store
     STORE_SEGMENTS = "api/v8/configs/store/segments"
@@ -43,7 +41,6 @@ class Endpoint:
     CIRCLE_BONUS_LIST = "gamification/api/v8/family-hub/bonus/list"
 
     # Registration
-    VALIDATE_PUK = "api/v8/infos/validate-puk"
     DUKCAPIL = "api/v8/auth/regist/dukcapil"
 
     # Payment
@@ -64,7 +61,6 @@ class CIAMEndpoint:
     OTP = "/realms/xl-ciam/auth/otp"
     EXTEND_SESSION = "/realms/xl-ciam/auth/extend-session"
     TOKEN = "/realms/xl-ciam/protocol/openid-connect/token"
-    AUTHORIZATION_TOKEN = "/ciam/auth/authorization-token/generate"
 
 
 class MigrationType:
@@ -78,11 +74,6 @@ class MigrationType:
 class PaymentMethod:
     BALANCE = "BALANCE"
     QRIS = "QRIS"
-    DANA = "DANA"
-    SHOPEEPAY = "SHOPEEPAY"
-    GOPAY = "GOPAY"
-    OVO = "OVO"
-    EWALLETS = (DANA, SHOPEEPAY, GOPAY, OVO)
 
 
 class PaymentFor:
@@ -115,12 +106,6 @@ class CIAMHeader:
     AX_SUBSTYPE = "Ax-Substype"
     AX_API_SIGNATURE = "Ax-Api-Signature"
     ACCEPT_ENCODING = "Accept-Encoding"
-
-
-class TokenField:
-    ACCESS_TOKEN = "access_token"
-    ID_TOKEN = "id_token"
-    REFRESH_TOKEN = "refresh_token"
 
 
 LANG_EN = "en"

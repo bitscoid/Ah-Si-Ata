@@ -1,7 +1,7 @@
 """Account / login menu: add, switch, remove accounts."""
 from __future__ import annotations
 
-from ahsiata.api.ciam import get_otp, submit_otp
+from ahsiata.api.auth import get_otp, submit_otp
 from ahsiata.core.session import SESSION
 from ahsiata.ui.utils import clear_screen, pause
 

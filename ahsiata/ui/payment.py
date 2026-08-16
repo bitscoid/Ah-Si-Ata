@@ -4,7 +4,6 @@ from __future__ import annotations
 from datetime import datetime, timedelta, timezone
 
 from ahsiata.api.transactions import get_transaction_history
-from ahsiata.core.session import SESSION
 from ahsiata.ui.utils import clear_screen, pause
 
 

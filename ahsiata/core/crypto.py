@@ -100,12 +100,6 @@ def make_x_signature_bounty_allotment(
     return hmac.new(key, msg, hashlib.sha512).hexdigest()
 
 
-def make_x_signature_basic(method: str, path: str, sig_time_sec: int) -> str:
-    key = f"{CONFIG.x_api_base_secret};{method};{path};{sig_time_sec}".encode("utf-8")
-    msg = f"{sig_time_sec};en;".encode("utf-8")
-    return hmac.new(key, msg, hashlib.sha512).hexdigest()
-
-
 def make_ax_api_signature(
     ts_for_sign: str,
     contact: str,

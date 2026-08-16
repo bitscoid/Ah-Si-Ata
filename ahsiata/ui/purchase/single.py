@@ -12,51 +12,6 @@ from ahsiata.type_dict import PaymentItem
 from ahsiata.ui.utils import pause
 
 
-def purchase_n_times(
-    n: int,
-    family_code: str,
-    variant_code: str,
-    option_order: int,
-    use_decoy: bool,
-    delay_seconds: int,
-    pause_on_success: bool,
-    token_confirmation_idx: int = 0,
-) -> int:
-    """Buy the same package N times; returns count of successful purchases.
-
-    Currently unused by the main menu; kept for compatibility with the
-    previous `app/menus/purchase.py` import surface.
-    """
-    api_key = SESSION.api_key
-    tokens = SESSION.get_active_tokens()
-    if tokens is None:
-        return 0
-
-    detail = get_package(api_key, tokens, "", package_family_code=family_code, package_variant_code=variant_code)
-    successful = 0
-    for i in range(n):
-        rnd = randint(1000, 9999)
-        items = [PaymentItem(
-            item_code="",
-            product_type="",
-            item_price=detail.get("package_option", {}).get("price", 0) if detail else 0,
-            item_name=f"{rnd} loop",
-            tax=0,
-            token_confirmation="",
-        )]
-        res = settlement_balance(
-            api_key, tokens, items, "BUY_PACKAGE", True,
-            token_confirmation_idx=token_confirmation_idx,
-        )
-        if isinstance(res, dict) and res.get("status") == "SUCCESS":
-            successful += 1
-        if pause_on_success:
-            pause()
-        if delay_seconds and i < n - 1:
-            time.sleep(delay_seconds)
-    return successful
-
-
 def purchase_n_times_by_option_code(
     n: int,
     option_code: str,

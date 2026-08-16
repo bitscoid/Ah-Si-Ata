@@ -57,26 +57,6 @@ def get_family(
     return family_data
 
 
-def get_families(api_key: str, tokens: dict, package_category_code: str) -> dict | None:
-    print("Fetching families...")
-    payload = {
-        "migration_type": "",
-        "is_enterprise": False,
-        "is_shareable": False,
-        "package_category_code": package_category_code,
-        "with_icon_url": True,
-        "is_migration": False,
-        "lang": LANG_EN,
-    }
-    res = send_api_request(api_key, Endpoint.FAMILIES, payload, tokens["id_token"], "POST")
-    if not isinstance(res, dict) or res.get("status") != "SUCCESS":
-        print(f"Failed to get families for category {package_category_code}")
-        print(f"Res:{json.dumps(res, indent=2)}")
-        input("Press Enter to continue...")
-        return None
-    return res["data"]
-
-
 def get_package(
     api_key: str,
     tokens: dict,

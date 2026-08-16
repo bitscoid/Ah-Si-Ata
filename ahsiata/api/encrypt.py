@@ -28,10 +28,6 @@ from ahsiata.core.crypto import (
     encrypt_xdata,
     make_ax_api_signature,
     make_x_signature,
-    make_x_signature_bounty,
-    make_x_signature_bounty_allotment,
-    make_x_signature_loyalty,
-    make_x_signature_payment,
 )
 
 
@@ -155,26 +151,6 @@ def decrypt_xdata(api_key: str, encrypted_payload: dict) -> dict:
         raise ValueError("Invalid encrypted data format. Expected a dictionary with 'xdata' and 'xtime' keys.")
     plaintext = _decrypt_xdata(encrypted_payload["xdata"], int(encrypted_payload["xtime"]))
     return json.loads(plaintext)
-
-
-def get_x_signature_payment(*, access_token: str, sig_time_sec: int, package_code: str,
-                            token_payment: str, payment_method: str, payment_for: str, path: str) -> str:
-    return make_x_signature_payment(access_token, sig_time_sec, package_code, token_payment,
-                                    payment_method, payment_for, path)
-
-
-def get_x_signature_bounty(*, access_token: str, sig_time_sec: int, package_code: str, token_payment: str) -> str:
-    return make_x_signature_bounty(access_token, sig_time_sec, package_code, token_payment)
-
-
-def get_x_signature_bounty_allotment(*, sig_time_sec: int, package_code: str, token_confirmation: str,
-                                     destination_msisdn: str, path: str) -> str:
-    return make_x_signature_bounty_allotment(sig_time_sec, package_code, token_confirmation,
-                                             path, destination_msisdn)
-
-
-def get_x_signature_loyalty(*, sig_time_sec: int, package_code: str, token_confirmation: str, path: str) -> str:
-    return make_x_signature_loyalty(sig_time_sec, package_code, token_confirmation, path)
 
 
 def encrypt_circle_msisdn(api_key: str, msisdn: str) -> str:

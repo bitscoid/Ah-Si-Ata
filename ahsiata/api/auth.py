@@ -8,12 +8,11 @@ import base64
 import json
 import uuid
 from datetime import datetime, timedelta, timezone
-from urllib.parse import urlparse
 
 import requests
 
 from ahsiata.config import CONFIG
-from ahsiata.constants import CIAMEndpoint, CIAMHeader, LANG_EN
+from ahsiata.constants import CIAMEndpoint, CIAMHeader
 from ahsiata.api.encrypt import (
     ax_api_signature,
     ax_device_id,
@@ -227,62 +226,3 @@ def get_new_token(api_key: str, refresh_token: str, subscriber_id: str) -> dict:
     if "error" in body:
         raise ValueError(f"Error in response: {body['error']} - {body.get('error_description', '')}")
     return body
-
-
-def get_auth_code(tokens: dict, pin: str, msisdn: str) -> str | None:
-    """Generate authorization code for share-balance transactions."""
-    url = CONFIG.base_ciam_url + CIAMEndpoint.AUTHORIZATION_TOKEN
-
-    parsed = urlparse(CONFIG.base_ciam_url)
-    host_header = parsed.netloc or CONFIG.base_ciam_url.replace("https://", "")
-
-    now = datetime.now(timezone(timedelta(hours=7)))
-    ax_request_at = now.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "+0700"
-    request_id = str(uuid.uuid4())
-
-    headers = {
-        "Host": host_header,
-        "Ax-Request-At": ax_request_at,
-        "Ax-Device-Id": _AX_DEVICE_ID,
-        "Ax-Request-Id": request_id,
-        "Ax-Request-Device": CONFIG.device_manufacturer,
-        "Ax-Request-Device-Model": CONFIG.device_model,
-        "Ax-Fingerprint": _AX_FP,
-        "Authorization": f"Bearer {tokens['access_token']}",
-        "User-Agent": CONFIG.ua,
-        "Ax-Substype": CONFIG.default_substype,
-        "Content-Type": "application/json",
-    }
-
-    pin_b64 = base64.b64encode(pin.encode("utf-8")).decode("utf-8")
-    body = {"pin": pin_b64, "transaction_type": "SHARE_BALANCE", "receiver_msisdn": msisdn}
-
-    try:
-        resp = requests.post(url, headers=headers, json=body, timeout=30)
-    except requests.RequestException as e:
-        print(f"[get_auth_code] Request error: {e}")
-        return None
-
-    if resp.status_code != 200:
-        print(f"Failed to get auth code: {resp.status_code} - {resp.text}")
-        return None
-
-    try:
-        data = resp.json()
-    except ValueError:
-        print(f"Invalid JSON response: {resp.text}")
-        return None
-
-    if not isinstance(data, dict):
-        print(f"Unexpected response format: {data!r}")
-        return None
-
-    if data.get("status", "") != "Success":
-        print(f"Error getting authorization code: {data.get('status')}")
-        return None
-
-    authorization_code = data.get("data", {}).get("authorization_code")
-    if not authorization_code:
-        print(f"Authorization code not found in response: {data}")
-        return None
-    return authorization_code

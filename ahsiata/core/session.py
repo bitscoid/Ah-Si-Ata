@@ -6,7 +6,7 @@ import os
 import time
 
 from ahsiata.config import CONFIG
-from ahsiata.api.ciam import get_new_token
+from ahsiata.api.auth import get_new_token
 from ahsiata.api.profile import get_profile
 
 

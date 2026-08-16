@@ -1,7 +1,5 @@
-"""Profile, balance, tiering, and dashboard-segments endpoints."""
+"""Profile, balance, and tiering endpoints."""
 from __future__ import annotations
-
-import json
 
 from ahsiata.config import CONFIG
 from ahsiata.constants import Endpoint, LANG_EN
@@ -31,22 +29,3 @@ def get_tiering_info(api_key: str, tokens: dict) -> dict:
     if isinstance(res, dict):
         return res.get("data", {})
     return {}
-
-
-def login_info(api_key: str, tokens: dict, is_enterprise: bool = False) -> dict | None:
-    payload = {
-        "access_token": tokens["access_token"],
-        "is_enterprise": is_enterprise,
-        "lang": LANG_EN,
-    }
-    res = send_api_request(api_key, Endpoint.LOGIN, payload, tokens["id_token"], "POST")
-    if "data" not in res:
-        print(json.dumps(res, indent=2))
-        print("Error getting package:", res.get("error", "Unknown error"))
-        return None
-    return res["data"]
-
-
-def dashboard_segments(api_key: str, tokens: dict) -> dict:
-    payload = {"access_token": tokens["access_token"]}
-    return send_api_request(api_key, Endpoint.DASHBOARD_SEGMENTS, payload, tokens["id_token"], "POST")

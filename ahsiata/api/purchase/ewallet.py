@@ -1,8 +1,6 @@
 """Settlement via e-wallet (DANA, ShopeePay, GoPay, OVO)."""
 from __future__ import annotations
 
-import json
-import time
 
 from ahsiata.api.client import intercept_page
 from ahsiata.api.purchase.base import (

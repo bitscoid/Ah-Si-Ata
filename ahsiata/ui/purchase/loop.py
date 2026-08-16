@@ -5,8 +5,6 @@ from random import randint
 
 from ahsiata.api.packages import get_family, get_package
 from ahsiata.api.purchase.balance import settlement_balance
-from ahsiata.api.purchase.qris import settlement_qris
-from ahsiata.constants import PaymentMethod
 from ahsiata.core.session import SESSION
 from ahsiata.type_dict import PaymentItem
 from ahsiata.ui.utils import pause
