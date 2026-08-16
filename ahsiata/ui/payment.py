@@ -10,9 +10,9 @@ from ahsiata.ui.utils import clear_screen, pause
 
 def show_transaction_history(api_key: str, tokens: dict) -> None:
     clear_screen()
-    print(rule(char="=", color=C.CYAN))
+    print(rule(char="=", color=C.BLUE))
     print(title("🧾 Riwayat Transaksi", color=C.CYAN))
-    print(rule(char="=", color=C.CYAN))
+    print(rule(char="=", color=C.BLUE))
 
     res = get_transaction_history(api_key, tokens)
     if not isinstance(res, dict):
@@ -38,7 +38,8 @@ def show_transaction_history(api_key: str, tokens: dict) -> None:
         print(f"   {p(str(price), C.BOLD, C.YELLOW)}")
         print(rule(color=C.BLUE))
 
-    print(rule(char="-", color=C.CYAN))
+    print(rule(char="-", color=C.BLUE))
     print(p(f"{'':>3}  {'B':>2} Kembali", C.DIM))
+    print(rule(char="-", color=C.BLUE))
     print()
     input(p("🧭 Pilih : ", C.YELLOW))
