@@ -58,7 +58,7 @@ def show_main_menu(profile: dict) -> None:
     subscription_type = profile["subscription_type"]
     balance_remaining = profile["balance"]
     balance_expired_at = profile["balance_expired_at"]
-    balance_text = format_price(balance_remaining) if balance_remaining is not None else "Saldo N/A"
+    balance_text = format_price(balance_remaining) if balance_remaining is not None else "Rp. 0"
     expired_text = datetime.fromtimestamp(balance_expired_at).strftime("%Y-%m-%d") if balance_expired_at else "N/A"
     point_info = profile["point_info"]
     print(title("🔥 AH-SI-ATA 🔥", color=C.MAGENTA))
