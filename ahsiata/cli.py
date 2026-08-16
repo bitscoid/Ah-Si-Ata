@@ -43,7 +43,7 @@ MENU_ITEMS = [
     ("P", "🏬", "Promo"),
     ("F", "🏬", "Family List"),
     ("S", "🛒", "Store"),
-    ("G", "🎁", "C"),
+    ("C", "🎁", "Claim"),
     ("R", "📝", "Registrasi"),
     ("N", "🔔", "Notifikasi"),
     ("V", "🎯", "Validasi"),
@@ -177,7 +177,7 @@ def _run() -> None:
         elif choice.lower() == "s":
             is_enterprise = input(p("🧭 Toko enterprise? (y/n): ", C.BOLD)).lower() == "y"
             show_store_packages_menu(profile["subscription_type"], is_enterprise)
-        elif choice.lower() == "g":
+        elif choice.lower() == "c":
             is_enterprise = input(p("🧭 Toko enterprise? (y/n): ", C.BOLD)).lower() == "y"
             show_redeemables_menu(is_enterprise)
         elif choice.lower() == "b":
