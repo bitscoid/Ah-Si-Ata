@@ -20,7 +20,6 @@ def show_store_segments_menu(is_enterprise: bool) -> None:
         print(rule(char="=", color=C.CYAN))
         print(title("🏬 Promo", color=C.CYAN))
         print(rule(char="=", color=C.CYAN))
-        print(info("⏳ Mengambil segmen…"))
         segments_data = get_segments(api_key, tokens, is_enterprise)
         if not segments_data:
             print(fail("Tidak ada segmen ditemukan."))

@@ -42,7 +42,6 @@ def show_circle_creation(api_key: str, tokens: dict) -> None:
 def _show_bonus_list(api_key: str, tokens: dict, parent_subs_id: str, family_id: str) -> None:
     while True:
         clear_screen()
-        print(info("⏳ Mengambil data bonus…"))
         bonus_data = get_bonus_data(api_key, tokens, parent_subs_id, family_id)
         if bonus_data.get("status") != "SUCCESS":
             print(fail("Gagal mengambil data bonus."))
