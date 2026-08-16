@@ -40,10 +40,10 @@ MENU_ITEMS = [
     ("7", "🧾", "Riwayat"),
     ("8", "👨", "Family Plan"),
     ("9", "🫂", "Circle"),
-    ("10", "🏬", "Promo"),
-    ("11", "🏬", "Family List"),
-    ("12", "🛒", "Store"),
-    ("13", "🎁", "Redeemables"),
+    ("P", "🏬", "Promo"),
+    ("F", "🏬", "Family List"),
+    ("S", "🛒", "Store"),
+    ("G", "🎁", "Claim"),
     ("R", "📝", "Registrasi"),
     ("N", "🔔", "Notifikasi"),
     ("V", "🎯", "Validasi"),
@@ -168,16 +168,16 @@ def _run() -> None:
             show_family_info(SESSION.api_key, active_user["tokens"])
         elif choice == "9":
             show_circle_info(SESSION.api_key, active_user["tokens"])
-        elif choice == "10":
+        elif choice.lower() == "p":
             is_enterprise = input(p("🧭 Toko enterprise? (y/n): ", C.BOLD)).lower() == "y"
             show_store_segments_menu(is_enterprise)
-        elif choice == "11":
+        elif choice.lower() == "f":
             is_enterprise = input(p("🧭 Toko enterprise? (y/n): ", C.BOLD)).lower() == "y"
             show_family_list_menu(profile["subscription_type"], is_enterprise)
-        elif choice == "12":
+        elif choice.lower() == "s":
             is_enterprise = input(p("🧭 Toko enterprise? (y/n): ", C.BOLD)).lower() == "y"
             show_store_packages_menu(profile["subscription_type"], is_enterprise)
-        elif choice == "13":
+        elif choice.lower() == "g":
             is_enterprise = input(p("🧭 Toko enterprise? (y/n): ", C.BOLD)).lower() == "y"
             show_redeemables_menu(is_enterprise)
         elif choice.lower() == "b":
