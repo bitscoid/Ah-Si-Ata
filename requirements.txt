@@ -1,6 +1,8 @@
-# Direct dependencies only; transitives (certifi, charset-normalizer, idna, urllib3) resolve via requests.
+# Direct dependencies only; transitives (certifi, charset-normalizer, idna) resolve via requests.
+# urllib3 floor: PYSEC-2026-1996 (fixed urllib3 2.6.3) — guard against stale installed copies.
 Brotli==1.2.0
 pycryptodome==3.23.0
 python-dotenv==1.2.2
 qrcode==8.2
 requests==2.34.2
+urllib3>=2.6.3

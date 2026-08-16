@@ -723,7 +723,7 @@ Catatan: struktur tiap file bervariasi — `decoy-default-qris.json` berisi `fam
 
 ## 17. Dependensi
 
-Dari `requirements.txt` (5 paket langsung, versi di-pin; transitif tidak lagi di-pin):
+Dari `requirements.txt` (5 paket langsung di-pin + 1 floor keamanan transitif):
 
 | Paket | Versi | Peran |
 |---|---|---|
@@ -733,7 +733,7 @@ Dari `requirements.txt` (5 paket langsung, versi di-pin; transitif tidak lagi di
 | `qrcode` | 8.2 | Render QRIS di terminal (`print_ascii`) |
 | `requests` | 2.34.2 | HTTP client (session + retry) |
 
-Transitives (`certifi`, `charset-normalizer`, `idna`, `urllib3`) tidak di-pin dan resolve otomatis via `requests`. Versi yang sama didaftarkan di `pyproject.toml` (`dependencies`).
+Transitives (`certifi`, `charset-normalizer`, `idna`) tidak di-pin dan resolve otomatis via `requests`. Satu floor keamanan: `urllib3>=2.6.3` di `requirements.txt` (menimpa `PYSEC-2026-1996` pada copy terinstall yang sudah usang). Versi yang sama didaftarkan di `pyproject.toml` (`dependencies`).
 
 ---
 
