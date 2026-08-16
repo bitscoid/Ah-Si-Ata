@@ -43,7 +43,7 @@ MENU_ITEMS = [
     ("P", "🏬", "Promo"),
     ("F", "🏬", "Family List"),
     ("S", "🛒", "Store"),
-    ("G", "🎁", "Claim"),
+    ("G", "🎁", "C"),
     ("R", "📝", "Registrasi"),
     ("N", "🔔", "Notifikasi"),
     ("V", "🎯", "Validasi"),
