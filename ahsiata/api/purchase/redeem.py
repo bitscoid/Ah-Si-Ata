@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 
+from ahsiata.ui.style import fail, ok
+
 from ahsiata.api.encrypt import build_encrypted_field
 from ahsiata.api.purchase.base import (
     make_bounty_allotment_signature,
@@ -97,14 +99,13 @@ def settlement_bounty(
         token_payment=token_confirmation,
     )
 
-    print("Mengirim permintaan bounty…")
+    print("📤 Mengirim permintaan bounty…")
     res = post_signed_payload(api_key=api_key, tokens=tokens, path=path, payload=payload, signature=x_sig)
     if isinstance(res, dict):
         if res.get("status") != "SUCCESS":
-            print("Gagal mengklaim bounty.")
-            print(f"Error: {res}")
+            print(fail(f"Gagal mengklaim bounty: {res}"))
             return None
-        print(res)
+        print(ok("Bounty berhasil diklaim."))
     return res
 
 
@@ -137,14 +138,13 @@ def settlement_loyalty(
         path=path,
     )
 
-    print("Mengirim permintaan loyalty…")
+    print("📤 Mengirim permintaan loyalty…")
     res = post_signed_payload(api_key=api_key, tokens=tokens, path=path, payload=payload, signature=x_sig)
     if isinstance(res, dict):
         if res.get("status") != "SUCCESS":
-            print("Pembelian gagal.")
-            print(f"Error: {res}")
+            print(fail(f"Pembelian gagal: {res}"))
             return None
-        print(res)
+        print(ok("Klaim loyalty berhasil."))
     return res
 
 
@@ -177,12 +177,11 @@ def bounty_allotment(
         path=path,
     )
 
-    print("Mengirim permintaan bounty allotment…")
+    print("📤 Mengirim permintaan bounty allotment…")
     res = post_signed_payload(api_key=api_key, tokens=tokens, path=path, payload=payload, signature=x_sig)
     if isinstance(res, dict):
         if res.get("status") != "SUCCESS":
-            print("Gagal mengklaim bounty.")
-            print(f"Error: {res}")
+            print(fail(f"Gagal mengklaim bounty: {res}"))
             return None
-        print(res)
+        print(ok("Bounty berhasil diklaim."))
     return res

@@ -29,7 +29,7 @@ def show_family_list_menu(subs_type: str, is_enterprise: bool) -> None:
             print(f"{idx}. 👨‍👩‍👧 {p(fam.get('family_name', 'N/A'), C.BOLD)}")
         print(rule())
         print("00. ↩️ Keluar")
-        choice = input("👉 Pilih family (nomor): ").strip()
+        choice = input("🧭 Pilih family (nomor): ").strip()
         if choice == "00":
             return
         if not choice.isdigit() or not (1 <= int(choice) <= len(families)):
@@ -62,7 +62,7 @@ def show_store_packages_menu(subs_type: str, is_enterprise: bool) -> None:
             print(f"{idx}. 📦 {p(name, C.BOLD)} - {p(str(price), C.BOLD, C.YELLOW)}")
         print(rule())
         print("00. ↩️ Keluar")
-        choice = input("👉 Pilih paket (nomor): ").strip()
+        choice = input("🧭 Pilih paket (nomor): ").strip()
         if choice == "00":
             return
         if not choice.isdigit() or not (1 <= int(choice) <= len(packages)):

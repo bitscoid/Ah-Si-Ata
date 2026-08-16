@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 from datetime import datetime
-import json
 
 from ahsiata.api.circle import (
     accept_circle_invitation,
@@ -27,14 +26,16 @@ def show_circle_creation(api_key: str, tokens: dict) -> None:
     clear_screen()
     print(title("🫂 Buat Circle", color=C.MAGENTA))
 
-    parent_name = input("👉 Nama Anda (Parent): ")
-    group_name = input("👉 Nama Circle: ")
-    member_msisdn = input("👉 MSISDN member (628…): ")
-    member_name = input("👉 Nama member: ")
+    parent_name = input("🧭 Nama Anda (Parent): ")
+    group_name = input("🧭 Nama Circle: ")
+    member_msisdn = input("🧭 MSISDN member (628…): ")
+    member_name = input("🧭 Nama member: ")
 
     create_res = create_circle(api_key, tokens, parent_name, group_name, member_msisdn, member_name)
-    print(p("📨 Respons Server:", C.BOLD))
-    print(json.dumps(create_res, indent=2))
+    if isinstance(create_res, dict) and create_res.get("status") == "SUCCESS":
+        print(ok("Circle berhasil dibuat."))
+    else:
+        print(fail("Gagal membuat Circle."))
     pause()
 
 
@@ -62,7 +63,7 @@ def _show_bonus_list(api_key: str, tokens: dict, parent_subs_id: str, family_id:
     print(rule())
     print("👀 Masukkan nomor bonus untuk melihat detail.")
     print("00. ↩️ Kembali")
-    choice = input("👉 Pilih (00=↩️): ")
+    choice = input("🧭 Pilih (00=↩️): ")
     if choice == "00":
         return
     if not choice.isdigit() or not (1 <= int(choice) <= len(bonus_list)):
@@ -101,7 +102,7 @@ def show_circle_info(api_key: str, tokens: dict) -> None:
         group_id = group_data.get("group_id", "")
         if not group_id:
             print(warn("Anda tidak tergabung dalam Circle apa pun."))
-            if input("👉 Buat baru? (y/n): ").lower() == "y":
+            if input("🧭 Buat baru? (y/n): ").lower() == "y":
                 show_circle_creation(api_key, tokens)
             else:
                 pause()
@@ -181,24 +182,24 @@ def show_circle_info(api_key: str, tokens: dict) -> None:
         print(rule())
         print(p("⚙️ Opsi:", C.BOLD, C.WHITE))
         print("1. ➕ Undang Member")
-        print("del <nomor> — 🗑 hapus")
+        print("del <nomor> — ❌ hapus")
         print("acc <nomor> — ✔️ terima undangan")
         print("2. 🏆 Bonus Circle")
         print("00. ↩️ Kembali")
-        choice = input("👉 Pilih: ")
+        choice = input("🧭 Pilih: ")
 
         if choice == "00":
             return
 
         if choice == "1":
-            msisdn_to_invite = input("👉 MSISDN diundang (628…): ")
+            msisdn_to_invite = input("🧭 MSISDN diundang (628…): ")
             validate_res = validate_circle_member(api_key, tokens, msisdn_to_invite)
             if validate_res.get("status") == "SUCCESS":
                 if validate_res.get("data", {}).get("response_code", "") != "200-2001":
                     print(fail(f"Tidak dapat mengundang: {validate_res.get('data', {}).get('message', 'Unknown')}"))
                     pause()
                     continue
-            member_name = input("👉 Nama member: ")
+            member_name = input("🧭 Nama member: ")
             invite_res = invite_circle_member(api_key, tokens, msisdn_to_invite, member_name, group_id, parent_member_id)
             if invite_res.get("status") == "SUCCESS" and invite_res.get("data", {}).get("response_code", "") == "200-00":
                 print(ok(f"Undangan terkirim ke {msisdn_to_invite}."))
@@ -224,7 +225,7 @@ def show_circle_info(api_key: str, tokens: dict) -> None:
                     pause()
                     continue
                 msisdn = decrypt_circle_msisdn(api_key, target.get("msisdn", ""))
-                if input(f"👉 Hapus {msisdn}? (y/n): ").lower() != "y":
+                if input(f"🧭 Hapus {msisdn}? (y/n): ").lower() != "y":
                     print(warn("Dibatalkan."))
                     pause()
                     continue
@@ -250,7 +251,7 @@ def show_circle_info(api_key: str, tokens: dict) -> None:
                     pause()
                     continue
                 msisdn = decrypt_circle_msisdn(api_key, target.get("msisdn", ""))
-                if input(f"👉 Terima undangan untuk {msisdn}? (y/n): ").lower() != "y":
+                if input(f"🧭 Terima undangan untuk {msisdn}? (y/n): ").lower() != "y":
                     print(warn("Dibatalkan."))
                     pause()
                     continue

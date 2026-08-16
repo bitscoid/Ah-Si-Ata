@@ -44,7 +44,7 @@ def show_store_segments_menu(is_enterprise: bool) -> None:
             print(rule())
 
         print("00. ↩️ Kembali")
-        choice = input("👉 Pilih paket (contoh: A1): ").strip()
+        choice = input("🧭 Pilih paket (contoh: A1): ").strip()
         if choice == "00":
             return
         # Parse "<letter><number>"

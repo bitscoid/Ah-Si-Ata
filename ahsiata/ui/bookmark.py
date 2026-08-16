@@ -27,9 +27,9 @@ def show_bookmark_menu() -> None:
             for idx, bm in enumerate(bookmarks):
                 print(f"{idx + 1}. {p(bm['family_name'], C.BOLD)} - {bm['variant_name']} - {bm['option_name']}")
                 print(rule(color=C.BLUE))
-        print("000. 🗑 Hapus")
+        print("000. ❌ Hapus")
         print("00. ↩️ Kembali")
-        choice = input(p("👉 Pilih paket (nomor): ", C.BOLD))
+        choice = input(p("🧭 Pilih paket (nomor): ", C.BOLD))
 
         if choice == "00":
             in_menu = False
@@ -39,7 +39,7 @@ def show_bookmark_menu() -> None:
             if not bookmarks:
                 pause()
                 continue
-            del_idx = input(p("👉 Nomor urut hapus: ", C.BOLD))
+            del_idx = input(p("🧭 Nomor urut hapus: ", C.BOLD))
             if not del_idx.isdigit() or not (1 <= int(del_idx) <= len(bookmarks)):
                 print(fail("Nomor tidak valid"))
                 pause()

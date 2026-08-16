@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 from datetime import datetime
-import json
 
 from ahsiata.api.family_plan import (
     change_member,
@@ -11,7 +10,8 @@ from ahsiata.api.family_plan import (
     set_quota_limit,
     validate_msisdn,
 )
-from ahsiata.ui.style import C, p, title, rule, center, ok, fail, warn, info
+from ahsiata.ui.style import C, p, rule, center, ok, fail, warn
+
 from ahsiata.ui.utils import clear_screen, format_quota_byte, pause
 
 WIDTH = 55
@@ -71,19 +71,19 @@ def show_family_info(api_key: str, tokens: dict) -> None:
         print(rule())
         print("1. 🔄 Ganti Member")
         print("limit <slot> <MB> — 🔒 batas kuota")
-        print("del <slot> — 🗑 hapus member")
+        print("del <slot> — ❌ hapus member")
         print("00. ↩️ Kembali")
         print(rule())
 
-        choice = input("👉 Pilih: ").strip()
+        choice = input("🧭 Pilih: ").strip()
         if choice == "00":
             return
 
         if choice == "1":
-            slot_idx = input("👉 Nomor slot: ").strip()
-            target_msisdn = input("👉 Nomor member (62…): ").strip()
-            parent_alias = input("👉 Alias Anda: ").strip()
-            child_alias = input("👉 Alias member: ").strip()
+            slot_idx = input("🧭 Nomor slot: ").strip()
+            target_msisdn = input("🧭 Nomor member (62…): ").strip()
+            parent_alias = input("🧭 Alias Anda: ").strip()
+            child_alias = input("🧭 Alias member: ").strip()
             try:
                 slot_idx_int = int(slot_idx)
                 if not (1 <= slot_idx_int <= len(members)):
@@ -100,7 +100,8 @@ def show_family_info(api_key: str, tokens: dict) -> None:
 
                 validation = validate_msisdn(api_key, tokens, target_msisdn)
                 if validation.get("status", "").lower() != "success":
-                    print(fail(f"Validasi MSISDN gagal: {json.dumps(validation, indent=2)}"))
+                    err = validation.get("error", "Coba lagi") if isinstance(validation, dict) else "Coba lagi"
+                    print(fail(f"Validasi MSISDN gagal: {err}"))
                     pause()
                     continue
                 print(ok("Validasi MSISDN berhasil."))
@@ -110,7 +111,7 @@ def show_family_info(api_key: str, tokens: dict) -> None:
                     pause()
                     continue
 
-                if input("👉 Yakin? (y/n): ").strip().lower() != "y":
+                if input("🧭 Yakin? (y/n): ").strip().lower() != "y":
                     print(warn("Dibatalkan."))
                     pause()
                     continue
@@ -120,7 +121,6 @@ def show_family_info(api_key: str, tokens: dict) -> None:
                     print(ok("Member berhasil diganti."))
                 else:
                     print(fail(f"Gagal: {change_res.get('message', 'Unknown error')}"))
-                print(json.dumps(change_res, indent=4))
             except ValueError:
                 print(fail("Nomor slot tidak valid."))
             pause()
@@ -138,7 +138,7 @@ def show_family_info(api_key: str, tokens: dict) -> None:
                     print(warn("Slot sudah kosong."))
                     pause()
                     continue
-                if input(f"👉 Hapus {member.get('msisdn')} dari slot {slot_idx_int}? (y/n): ").strip().lower() != "y":
+                if input(f"🧭 Hapus {member.get('msisdn')} dari slot {slot_idx_int}? (y/n): ").strip().lower() != "y":
                     print(warn("Dibatalkan."))
                     pause()
                     continue
@@ -147,7 +147,6 @@ def show_family_info(api_key: str, tokens: dict) -> None:
                     print(ok("Member dihapus."))
                 else:
                     print(fail(f"Gagal: {res.get('message', 'Unknown error')}"))
-                print(json.dumps(res, indent=4))
             except ValueError:
                 print(fail("Nomor slot tidak valid."))
             pause()
@@ -173,7 +172,6 @@ def show_family_info(api_key: str, tokens: dict) -> None:
                     print(ok("Batas kuota diatur."))
                 else:
                     print(fail(f"Gagal: {res.get('message', 'Unknown error')}"))
-                print(json.dumps(res, indent=4))
             except ValueError:
                 print(fail("Input tidak valid."))
             pause()

@@ -40,7 +40,7 @@ def show_redeemables_menu(is_enterprise: bool) -> None:
             print(rule())
 
         print("00. ↩️ Kembali")
-        choice = input("👉 Pilih paket (mis. A1): ").strip()
+        choice = input("🧭 Pilih paket (mis. A1): ").strip()
         if choice == "00":
             return
         if len(choice) < 2 or not choice[0].isalpha() or not choice[1:].isdigit():

@@ -32,7 +32,7 @@ def show_notification_menu() -> None:
         print(rule(color=C.BLUE))
         print("1. ✅ Tandai dibaca semua")
         print("00. ↩️ Kembali")
-        choice = input(p("👉 Pilih:", C.BOLD))
+        choice = input(p("🧭 Pilih:", C.BOLD))
 
         if choice == "00":
             return

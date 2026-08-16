@@ -14,7 +14,7 @@ def show_transaction_history(api_key: str, tokens: dict) -> None:
 
     res = get_transaction_history(api_key, tokens)
     if not isinstance(res, dict):
-        print(fail(f"Gagal ambil riwayat: {res}"))
+        print(fail("Gagal ambil riwayat."))
         pause()
         return
 

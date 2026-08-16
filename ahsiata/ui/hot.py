@@ -13,7 +13,8 @@ from ahsiata.api.purchase.qris import show_qris_payment
 from ahsiata.core.session import SESSION
 from ahsiata.type_dict import PaymentItem
 from ahsiata.ui.package.details import show_package_details
-from ahsiata.ui.style import C, p as sp, title as tt, rule, ok, fail, warn, info
+from ahsiata.ui.style import C, p as sp, title as tt, rule, fail, warn
+
 from ahsiata.ui.utils import clear_screen, format_quota_byte, pause
 
 WIDTH = 55
@@ -107,13 +108,13 @@ def _buy_bundle(api_key: str, tokens: dict, selected: dict) -> None:
         print(f"{'2':>3}  💵 E-Wallet")
         print(f"{'3':>3}  🧾 QRIS")
         print(f"{'X':>3}  ↩️ Kembali")
-        method = input("👉 Pilih metode: ").strip().lower()
+        method = input("🧭 Pilih metode: ").strip().lower()
         if method == "x":
             return
         if method == "1":
             if overwrite_amount == -1:
                 print(warn(f"💡 Pastikan saldo KURANG DARI Rp{payment_items[-1]['item_price']}!"))
-                if input(sp("👉 Lanjut beli? (y/n): ", C.BOLD)).lower() != "y":
+                if input(sp("🧭 Lanjut beli? (y/n): ", C.BOLD)).lower() != "y":
                     continue
             settlement_balance(
                 api_key, tokens, payment_items, payment_for, ask_overwrite,
@@ -168,7 +169,7 @@ def show_hot_menu() -> None:
         print(rule())
         print(f"{'X':>3}  ↩️ Kembali")
         print(rule())
-        choice = input("👉 Pilih paket (nomor): ").strip()
+        choice = input("🧭 Pilih paket (nomor): ").strip()
         if choice.lower() == "x":
             return
         if not choice.isdigit():

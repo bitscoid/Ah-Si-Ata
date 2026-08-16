@@ -9,7 +9,8 @@ from ahsiata.api.purchase.balance import settle_with_decoy, settlement_balance
 from ahsiata.core.decoy import DECOY
 from ahsiata.core.session import SESSION
 from ahsiata.type_dict import PaymentItem
-from ahsiata.ui.style import C, p, ok, fail
+from ahsiata.ui.style import ok, fail
+
 from ahsiata.ui.utils import pause
 
 

@@ -5,6 +5,7 @@ Endpoint-specific callers live in dedicated modules (profile, packages, …).
 """
 from __future__ import annotations
 
+from ahsiata.ui.style import fail
 import json
 import uuid
 from datetime import datetime, timezone
@@ -15,6 +16,7 @@ from urllib3.util.retry import Retry
 
 from ahsiata.config import CONFIG
 from ahsiata.constants import HttpHeader, LANG_EN
+from ahsiata.core.log import log
 from ahsiata.api.encrypt import (
     decrypt_xdata,
     encryptsign_xdata,
@@ -65,12 +67,16 @@ def post_encrypted(
     headers = build_headers(path, id_token, int(body["xtime"]), sig)
     url = f"{CONFIG.base_api_url}/{path}"
     resp = _SESSION.post(url, headers=headers, data=json.dumps(body), timeout=30)
+    raw = resp.text
 
     try:
-        return decrypt_xdata(api_key, json.loads(resp.text))
+        res = decrypt_xdata(api_key, json.loads(raw))
     except Exception as e:
-        print("[err dekripsi]", e)
-        return resp.text
+        log(f"[dekripsi gagal] {path}: {e} | raw={raw[:2000]}")
+        return raw
+    if not isinstance(res, dict) or res.get("status") != "SUCCESS":
+        log(f"[respons gagal] {path} | raw={raw[:2000]}")
+    return res
 
 
 def send_api_request(
@@ -102,11 +108,11 @@ def get_balance(api_key: str, id_token: str) -> dict | None:
     """Fetch balance and credit expiry."""
     from ahsiata.constants import Endpoint
     payload = _common_payload()
-    print("Mengambil saldo…")
+    print("⏳ Mengambil saldo…")
     res = send_api_request(api_key, Endpoint.BALANCE, payload, id_token, "POST")
     if isinstance(res, dict) and "data" in res and "balance" in res["data"]:
         return res["data"]["balance"]
-    print("Gagal mengambil saldo:", res.get("error", "Error tidak diketahui") if isinstance(res, dict) else res)
+    print(fail(f"Gagal mengambil saldo: {res.get('error', 'Error tidak diketahui') if isinstance(res, dict) else res}"))
     return None
 
 
@@ -116,9 +122,9 @@ def intercept_page(api_key: str, tokens: dict, option_code: str, is_enterprise: 
         is_enterprise=is_enterprise,
         package_option_code=option_code,
     )
-    print("Mengambil halaman intercept…")
+    print("⏳ Mengambil halaman intercept…")
     res = send_api_request(api_key, Endpoint.INTERCEPT_PAGE, payload, tokens["id_token"], "POST")
     if isinstance(res, dict) and "status" in res:
         print(f"Status intercept: {res['status']}")
     else:
-        print("Gagal intercept")
+        print(fail("Gagal intercept"))

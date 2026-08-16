@@ -1,7 +1,8 @@
 """Settlement via PULSA / prepaid balance."""
 from __future__ import annotations
 
-import json
+from ahsiata.ui.style import fail, info, ok
+
 import time
 
 from ahsiata.api.client import intercept_page
@@ -58,7 +59,7 @@ def settle_with_decoy(
                 valid_amount = int(error_msg.split("=")[1].strip())
             except (IndexError, ValueError):
                 return res
-            print(f"Total jumlah disesuaikan menjadi: {valid_amount}")
+            print(info(f"Total jumlah disesuaikan menjadi: {valid_amount}"))
             return settlement_balance(
                 api_key, tokens, items, payment_for, False,
                 overwrite_amount=valid_amount, token_confirmation_idx=token_confirmation_idx,
@@ -79,7 +80,7 @@ def settlement_balance(
     stage_token: str = "",
 ):
     if overwrite_amount == -1 and not ask_overwrite:
-        print("ask_overwrite harus True atau overwrite_amount harus diisi.")
+        print(fail("ask_overwrite harus True atau overwrite_amount harus diisi."))
         return None
 
     token_confirmation = items[token_confirmation_idx]["token_confirmation"]
@@ -167,13 +168,12 @@ def settlement_balance(
         path=path,
     )
 
-    print("Mengirim permintaan settlement…")
+    print("📤 Mengirim permintaan settlement…")
     res = post_signed_payload(api_key=api_key, tokens=tokens, path=path, payload=payload, signature=x_sig)
 
     if isinstance(res, dict) and res.get("status") != "SUCCESS":
-        print("Gagal memulai settlement.")
-        print(f"Error: {res}")
+        print(fail(f"Gagal memulai settlement: {res}"))
         return res
     if isinstance(res, dict):
-        print(f"Hasil pembelian:\n{json.dumps(res, indent=2)}")
+        print(ok("Pembelian selesai."))
     return res

@@ -3,32 +3,43 @@ from __future__ import annotations
 
 from ahsiata.api.auth import get_otp, submit_otp
 from ahsiata.core.session import SESSION
-from ahsiata.ui.style import C, p, title, rule, center, ok, fail, warn, info
+from ahsiata.ui.style import C, p, rule, center, disp_w, ok, fail, warn, info
+
 from ahsiata.ui.utils import clear_screen, pause
 
 
 def _login_prompt(api_key: str) -> tuple[str, str] | None:
     """Run the OTP login flow; return (phone_number, refresh_token) on success."""
     clear_screen()
-    print(title("📱 Login MyXL", color=C.BLUE))
+    print()
+    print(rule(char="=", color=C.BLUE))
+    print(p(center("📱 Login MyXL", 55), C.BOLD, C.B_WHITE))
+    print(rule(char="=", color=C.BLUE))
+    print()
     print(p(center("Masukkan nomor XL untuk menerima OTP", 55), C.DIM))
     print(rule(char="-", color=C.BLUE))
     print(p("Nomor XL  : ", C.BOLD), end="")
     phone_number = input().strip()
-
+    if phone_number.startswith("0"):
+        phone_number = "62" + phone_number[1:]
     if not phone_number.startswith("628") or len(phone_number) < 10 or len(phone_number) > 14:
-        print(fail("Nomor tidak valid. Awali dengan '628' dan cek panjang."))
+        print(fail("Nomor tidak valid. Pakai format 0819… atau 62819…"))
         return None
 
     try:
-        print(p("📤 Mengirim OTP…", C.DIM))
+        print(p(f"📤 Mengirim OTP ke {phone_number}…", C.DIM))
         subscriber_id = get_otp(phone_number)
         if not subscriber_id:
             print(fail("OTP tidak terkirim. Coba lagi."))
             return None
         print(ok("OTP terkirim"))
+        print()
+        print(rule(char="=", color=C.BLUE))
+        print(p(center("🔑 Verifikasi OTP", 55), C.BOLD, C.B_WHITE))
+        print(rule(char="=", color=C.BLUE))
+        print()
+        print(p(center("Masukkan kode 6 digit yang dikirim via SMS", 55), C.DIM))
         print(rule(char="-", color=C.BLUE))
-        print(p("🔑 Verifikasi kode OTP 6 digit:", C.BOLD))
 
         for attempt in range(5, 0, -1):
             print(warn(f"Sisa percobaan: {attempt}"))
@@ -77,7 +88,11 @@ def show_account_menu() -> int | None:
         users = SESSION.refresh_tokens
         active_user = SESSION.get_active_user()
 
-        print(title("📋 Ganti Nomor", color=C.BLUE))
+        print()
+        print(rule(char="=", color=C.BLUE))
+        print(p(center("📋 Ganti Akun", 55), C.BOLD, C.B_WHITE))
+        print(rule(char="=", color=C.BLUE))
+        print()
         if not users:
             print(info("Tidak ada akun tersimpan"))
         else:
@@ -85,40 +100,41 @@ def show_account_menu() -> int | None:
             types = [str(u.get("subscription_type", "")) for u in users]
             nw, tw = max(map(len, numbers)), max(map(len, types))
 
-            print(f"{'#':>3}  {p('Nomor'.ljust(nw), C.BOLD, C.WHITE)}  {p('Tipe'.center(tw), C.BOLD, C.WHITE)}  Status")
+            print(f"{'#':>3}  {p('Nomor'.ljust(nw), C.BOLD, C.WHITE)}  {p('Tipe'.center(tw), C.BOLD, C.WHITE)}  {p('Status'.center(8), C.BOLD, C.WHITE)}")
             print(rule(char="-", color=C.BLUE))
             for idx, (user, num, typ) in enumerate(zip(users, numbers, types), 1):
                 is_active = active_user and user["number"] == active_user["number"]
+                ic = "✅" if is_active else "💾"
+                icon = p(ic, C.GREEN if is_active else C.YELLOW)
                 row = f"{idx:>3}  {p(num.ljust(nw), C.BOLD)}  {p(typ.center(tw), C.CYAN)}  "
-                row += p("✅ Akun aktif", C.GREEN, C.BOLD) if is_active else p("Belum aktif", C.DIM)
-                print(row)
+                pad = 8 - disp_w(ic)
+                print(row + " " * (pad // 2) + icon)
 
         print(rule(char="-", color=C.BLUE))
-        print(p("⚙️ Command:", C.BOLD))
-        print(f"{'0':>3}  ➕ Tambah akun")
-        print(f"{'00':>3}  ↩️ Kembali")
-        print(f"{'del':>3}  🗑 Hapus akun (contoh: del 2)")
-        print(f"{'#':>3}  🔢 Ganti akun (ketik nomor urut)")
-        choice = input(p("👉 Pilihan: ", C.BOLD))
+        print(p(f"{'A':>2} Tambah    {'D':>2} Hapus    {'B':>2} Kembali", C.DIM))
+        print()
+        choice = input(p("🧭 Pilihan: ", C.BOLD))
 
-        if choice == "00":
+        if choice.lower() == "b":
             in_menu = False
             return active_user["number"] if active_user else None
 
-        if choice == "0":
+        if choice.lower() == "a":
             add_user = True
             continue
 
         if choice.isdigit() and 1 <= int(choice) <= len(users):
             return users[int(choice) - 1]["number"]
 
-        if choice.startswith("del "):
-            parts = choice.split()
-            if len(parts) != 2 or not parts[1].isdigit():
-                print(fail("Format: del <nomor>"))
+        if choice.lower().startswith("d"):
+            tail = choice[1:]
+            if tail == "":
+                tail = input(p("🧭 Hapus nomor urut: ", C.BOLD))
+            if not tail.isdigit():
+                print(fail("Format: D<nomor urut>, contoh: D2"))
                 pause()
                 continue
-            del_idx = int(parts[1])
+            del_idx = int(tail)
             if active_user and users[del_idx - 1]["number"] == active_user["number"]:
                 print(fail("Akun aktif tidak bisa dihapus"))
                 pause()
@@ -129,7 +145,7 @@ def show_account_menu() -> int | None:
                 continue
 
             user_to_delete = users[del_idx - 1]
-            confirm = input(p(f"🗑 Hapus {user_to_delete['number']}? (y/n): ", C.BOLD))
+            confirm = input(p(f"❌ Hapus {user_to_delete['number']}? (y/n): ", C.BOLD))
             if confirm.lower() == "y":
                 SESSION.remove_refresh_token(user_to_delete["number"])
                 SESSION.load_tokens()

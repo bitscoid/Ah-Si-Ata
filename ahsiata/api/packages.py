@@ -1,10 +1,10 @@
 """Package catalog and detail endpoints."""
 from __future__ import annotations
 
-import json
 
 from ahsiata.constants import Endpoint, LANG_EN, MigrationType
 from ahsiata.api.client import send_api_request
+from ahsiata.ui.style import fail
 
 
 def get_family(
@@ -15,7 +15,7 @@ def get_family(
     migration_type: str | None = None,
 ) -> dict | None:
     """Brute-force (is_enterprise × migration_type) until a non-empty family is returned."""
-    print("Mengambil family paket…")
+    print("⏳ Mengambil family paket…")
 
     enterprise_choices = [False, True] if is_enterprise is None else [is_enterprise]
     migration_choices = list(MigrationType.ALL) if migration_type is None else [migration_type]
@@ -29,7 +29,7 @@ def get_family(
         for ie in enterprise_choices:
             if family_data is not None:
                 break
-            print(f"Mencoba is_enterprise={ie}, migration_type={mt}.")
+            print(f"⏳ Mencoba is_enterprise={ie}, migration_type={mt}.")
             payload = {
                 "is_show_tagging_tab": True,
                 "is_dedicated_event": True,
@@ -52,7 +52,7 @@ def get_family(
                 print(f"Berhasil dengan is_enterprise={ie}, migration_type={mt}. Nama family: {family_name}")
 
     if family_data is None:
-        print(f"Gagal mendapatkan data family yang valid untuk {family_code}")
+        print(fail(f"Gagal mendapatkan data family yang valid untuk {family_code}"))
         return None
     return family_data
 
@@ -78,21 +78,19 @@ def get_package(
         "is_upsell_pdp": False,
         "package_variant_code": package_variant_code,
     }
-    print("Mengambil paket…")
     res = send_api_request(api_key, Endpoint.PACKAGE_DETAIL, payload, tokens["id_token"], "POST")
     if not isinstance(res, dict) or "data" not in res:
-        print(json.dumps(res, indent=2))
-        print("Gagal mengambil paket:", res.get("error", "Error tidak diketahui") if isinstance(res, dict) else res)
+        print(fail("Gagal mengambil paket."))
         return None
     return res["data"]
 
 
 def get_addons(api_key: str, tokens: dict, package_option_code: str) -> dict | None:
     payload = {"is_enterprise": False, "lang": LANG_EN, "package_option_code": package_option_code}
-    print("Mengambil addon…")
+    print("⏳ Mengambil addon…")
     res = send_api_request(api_key, Endpoint.ADDONS, payload, tokens["id_token"], "POST")
     if not isinstance(res, dict) or "data" not in res:
-        print("Gagal mengambil addon:", res.get("error", "Error tidak diketahui") if isinstance(res, dict) else res)
+        print(fail(f"Gagal mengambil addon: {res.get('error', 'Error tidak diketahui') if isinstance(res, dict) else res}"))
         return None
     return res["data"]
 
@@ -109,7 +107,7 @@ def get_package_details(
     """Resolve family → variant → option → package detail in one call."""
     family_data = get_family(api_key, tokens, family_code, is_enterprise, migration_type)
     if not family_data:
-        print(f"Gagal mengambil data family untuk {family_code}.")
+        print(fail(f"Gagal mengambil data family untuk {family_code}."))
         return None
 
     option_code: str | None = None
@@ -124,12 +122,12 @@ def get_package_details(
             break
 
     if option_code is None:
-        print("Gagal menemukan opsi paket yang sesuai.")
+        print(fail("Gagal menemukan opsi paket yang sesuai."))
         return None
 
     package_details_data = get_package(api_key, tokens, option_code)
     if not package_details_data:
-        print("Gagal mengambil detail paket.")
+        print(fail("Gagal mengambil detail paket."))
         return None
     return package_details_data
 
@@ -152,7 +150,6 @@ def unsubscribe(
     }
     try:
         res = send_api_request(api_key, Endpoint.UNSUBSCRIBE, payload, tokens["id_token"], "POST")
-        print(json.dumps(res, indent=4))
         return bool(res and isinstance(res, dict) and res.get("code") == "000")
     except Exception:
         return False

@@ -4,6 +4,8 @@ from __future__ import annotations
 import json
 import os
 
+from ahsiata.ui.style import ok, warn
+
 
 _BOOKMARK_PATH = "bookmark.json"
 
@@ -73,7 +75,7 @@ class Bookmark:
             (p["family_code"], p["variant_name"], p["order"]) == key
             for p in self.packages
         ):
-            print("Bookmark sudah ada.")
+            print(warn("Bookmark sudah ada."))
             return False
         self.packages.append({
             "family_name": family_name,
@@ -84,7 +86,7 @@ class Bookmark:
             "order": order,
         })
         self.save_bookmark()
-        print("Bookmark ditambahkan.")
+        print(ok("Bookmark ditambahkan."))
         return True
 
     def remove_bookmark(
@@ -103,9 +105,9 @@ class Bookmark:
             ):
                 del self.packages[i]
                 self.save_bookmark()
-                print("Bookmark dihapus.")
+                print(ok("Bookmark dihapus."))
                 return True
-        print("Bookmark tidak ditemukan.")
+        print(warn("Bookmark tidak ditemukan."))
         return False
 
     def get_bookmarks(self) -> list[dict]:

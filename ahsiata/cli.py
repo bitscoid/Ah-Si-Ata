@@ -119,7 +119,7 @@ def _run() -> None:
             "point_info": point_info,
         }
         show_main_menu(profile)
-        choice = input(p("👉 Pilih menu: ", C.BOLD)).strip()
+        choice = input(p("🧭 Pilih menu: ", C.BOLD)).strip()
 
         if choice == "t":
             pause()
@@ -132,20 +132,20 @@ def _run() -> None:
         elif choice == "3":
             show_hot_menu()
         elif choice == "4":
-            option_code = input(p("👉 Kode opsi (99=batal): ", C.BOLD))
+            option_code = input(p("🧭 Kode opsi (99=batal): ", C.BOLD))
             if option_code != "99":
                 show_package_details(SESSION.api_key, active_user["tokens"], option_code, False)
         elif choice == "5":
-            family_code = input(p("👉 Family code (99=batal): ", C.BOLD))
+            family_code = input(p("🧭 Family code (99=batal): ", C.BOLD))
             if family_code != "99":
                 get_packages_by_family(family_code)
         elif choice == "6":
-            family_code = input(p("👉 Family code (99=batal): ", C.BOLD))
+            family_code = input(p("🧭 Family code (99=batal): ", C.BOLD))
             if family_code != "99":
-                start_from = input(p("👉 Mulai dari opsi (1): ", C.BOLD)) or "1"
-                use_decoy = input(p("👉 Paket decoy? (y/n): ", C.BOLD)).lower() == "y"
-                pause_on_success = input(p("👉 Jeda tiap sukses? (y/n): ", C.BOLD)).lower() == "y"
-                delay = input(p("👉 Jeda detik (0): ", C.BOLD)) or "0"
+                start_from = input(p("🧭 Mulai dari opsi (1): ", C.BOLD)) or "1"
+                use_decoy = input(p("🧭 Paket decoy? (y/n): ", C.BOLD)).lower() == "y"
+                pause_on_success = input(p("🧭 Jeda tiap sukses? (y/n): ", C.BOLD)).lower() == "y"
+                delay = input(p("🧭 Jeda detik (0): ", C.BOLD)) or "0"
                 try:
                     start_from_int = int(start_from)
                 except ValueError:
@@ -162,16 +162,16 @@ def _run() -> None:
         elif choice == "9":
             show_circle_info(SESSION.api_key, active_user["tokens"])
         elif choice == "10":
-            is_enterprise = input(p("👉 Toko enterprise? (y/n): ", C.BOLD)).lower() == "y"
+            is_enterprise = input(p("🧭 Toko enterprise? (y/n): ", C.BOLD)).lower() == "y"
             show_store_segments_menu(is_enterprise)
         elif choice == "11":
-            is_enterprise = input(p("👉 Toko enterprise? (y/n): ", C.BOLD)).lower() == "y"
+            is_enterprise = input(p("🧭 Toko enterprise? (y/n): ", C.BOLD)).lower() == "y"
             show_family_list_menu(profile["subscription_type"], is_enterprise)
         elif choice == "12":
-            is_enterprise = input(p("👉 Toko enterprise? (y/n): ", C.BOLD)).lower() == "y"
+            is_enterprise = input(p("🧭 Toko enterprise? (y/n): ", C.BOLD)).lower() == "y"
             show_store_packages_menu(profile["subscription_type"], is_enterprise)
         elif choice == "13":
-            is_enterprise = input(p("👉 Toko enterprise? (y/n): ", C.BOLD)).lower() == "y"
+            is_enterprise = input(p("🧭 Toko enterprise? (y/n): ", C.BOLD)).lower() == "y"
             show_redeemables_menu(is_enterprise)
         elif choice.lower() == "b":
             show_bookmark_menu()
@@ -179,14 +179,14 @@ def _run() -> None:
             print(p("👋 Menutup aplikasi.", C.CYAN))
             sys.exit(0)
         elif choice.lower() == "r":
-            msisdn = input(p("👉 MSISDN (628…): ", C.BOLD))
-            nik = input(p("👉 NIK: ", C.BOLD))
-            kk = input(p("👉 KK: ", C.BOLD))
+            msisdn = input(p("🧭 MSISDN (628…): ", C.BOLD))
+            nik = input(p("🧭 NIK: ", C.BOLD))
+            kk = input(p("🧭 KK: ", C.BOLD))
             res = dukcapil(SESSION.api_key, msisdn, kk, nik)
             _show_result("Hasil Registrasi", res)
             pause()
         elif choice.lower() == "v":
-            msisdn = input(p("👉 MSISDN validasi (628…): ", C.BOLD))
+            msisdn = input(p("🧭 MSISDN validasi (628…): ", C.BOLD))
             res = api_validate_msisdn(SESSION.api_key, active_user["tokens"], msisdn)
             _show_result("Hasil Validasi MSISDN", res)
             pause()

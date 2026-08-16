@@ -4,7 +4,8 @@ from __future__ import annotations
 from ahsiata.api.packages import get_family
 from ahsiata.core.session import SESSION
 from ahsiata.ui.package.details import show_package_details
-from ahsiata.ui.style import C, p as sp, rule, title, ok, fail, warn, info
+from ahsiata.ui.style import C, p as sp, rule, title, fail
+
 from ahsiata.ui.utils import clear_screen, pause
 
 
@@ -63,7 +64,7 @@ def get_packages_by_family(
         print(rule(color=C.CYAN))
         print("00. ↩️ Kembali")
         print(rule(color=C.CYAN))
-        pkg_choice = input("👉 Pilih paket (nomor): ").strip()
+        pkg_choice = input("🧭 Pilih paket (nomor): ").strip()
 
         if pkg_choice == "00":
             return packages

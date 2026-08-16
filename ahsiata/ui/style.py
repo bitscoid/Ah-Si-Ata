@@ -33,6 +33,7 @@ class C:
     B_BLUE = "\033[94m"
     B_MAGENTA = "\033[95m"
     B_CYAN = "\033[96m"
+    B_WHITE = "\033[97m"
     BG_RED = "\033[41m"
     BG_GREEN = "\033[42m"
     BG_YELLOW = "\033[43m"
@@ -81,4 +82,4 @@ def warn(msg: str) -> str:
 
 
 def info(msg: str) -> str:
-    return p(f"ℹ️ {msg}", C.CYAN)
+    return p(f"💡 {msg}", C.CYAN)

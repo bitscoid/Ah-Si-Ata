@@ -11,3 +11,5 @@ ax.fp
 bookmark.json
 active.number
 *.egg-info/
+# log file
+ahsiata.log

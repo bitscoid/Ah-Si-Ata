@@ -1,7 +1,6 @@
 """Package detail screen: show info, choose payment method, redeem options."""
 from __future__ import annotations
 
-import json
 
 from ahsiata.api.client import send_api_request
 from ahsiata.api.packages import get_addons, get_package, unsubscribe
@@ -103,10 +102,15 @@ def show_package_details(api_key, tokens, package_option_code, is_enterprise, op
     addons = get_addons(api_key, tokens, package_option_code) or {}
 
     print(p("➕ Addon:", C.BOLD, C.WHITE))
-    print(json.dumps(addons, indent=2))
+    if isinstance(addons, dict) and addons:
+        for code, val in addons.items():
+            name = val.get("name", "") if isinstance(val, dict) else ""
+            print(f"  🔢 {code}" + (f" - {name}" if name else ""))
+    else:
+        print(p("💡 Tidak ada addon", C.DIM))
     print(rule(color=C.CYAN))
-    print(p("📜 SnK MyXL:", C.BOLD, C.WHITE))
-    print(detail_html)
+    print(p("📜 Syarat & Ketentuan:", C.BOLD, C.WHITE))
+    print(detail_html if detail_html.strip() else p("💡 Tidak ada Syarat & Ketentuan untuk paket ini", C.DIM))
     print(rule(color=C.CYAN))
 
     while True:
@@ -263,7 +267,6 @@ def fetch_my_packages() -> None:
     res = send_api_request(api_key, Endpoint.QUOTA_DETAILS, payload, tokens["id_token"], "POST")
     if not isinstance(res, dict) or res.get("status") != "SUCCESS":
         print(fail("Gagal mengambil paket"))
-        print(f"Respons: {res}")
         pause()
         return
 
@@ -307,7 +310,6 @@ def fetch_my_packages() -> None:
                 info += f"  Kuota : {remaining} / {total}"
             benefit_infos.append(info)
 
-        print(p(f"⏳ Detail paket no. {idx}…", C.CYAN))
         package_details = get_package(api_key, tokens, quota_code)
         if package_details:
             family_code = package_details["package_family"]["package_family_code"]
@@ -334,12 +336,12 @@ def fetch_my_packages() -> None:
             "product_domain": product_domain,
         })
 
-    print(p("👉 Nomor paket untuk detail", C.BOLD, C.WHITE))
-    print(p("🗑 del <nomor> = berhenti", C.BOLD, C.WHITE))
-    print(p("00 = ↩️ kembali", C.BOLD, C.WHITE))
-    choice = input(p("👉 Pilihan: ", C.YELLOW)).strip()
+    print(rule(char="-", color=C.BLUE))
+    print(p(f"{'':>3}  {'D':>2} Berhenti    {'B':>2} Kembali", C.DIM))
+    print()
+    choice = input(p("🧭 Pilihan: ", C.YELLOW)).strip()
 
-    if choice == "00":
+    if choice.lower() == "b":
         return
 
     if choice.isdigit() and 1 <= int(choice) <= len(my_packages):
@@ -348,20 +350,17 @@ def fetch_my_packages() -> None:
             show_package_details(api_key, tokens, selected["quota_code"], False)
         return
 
-    if choice.startswith("del "):
-        parts = choice.split()
-        if len(parts) != 2 or not parts[1].isdigit():
-            print(fail("Input salah"))
+    if choice.lower().startswith("d"):
+        tail = choice[1:]
+        if tail == "":
+            tail = input(p("🧭 Nomor urut berhenti: ", C.BOLD))
+        if not tail.isdigit() or not (1 <= int(tail) <= len(my_packages)):
+            print(fail("Nomor urut tidak valid (contoh: D2)"))
             pause()
             return
-        del_number = int(parts[1])
-        target = next((pkg for pkg in my_packages if pkg["number"] == del_number), None)
-        if not target:
-            print(fail("Paket tidak ada"))
-            pause()
-            return
-        if input(p(f"👉 Berhenti berlangganan dari {target['name']}? (y/n): ", C.BOLD)).lower() != "y":
-            print(p("ℹ️ Dibatalkan", C.CYAN))
+        target = my_packages[int(tail) - 1]
+        if input(p(f"🧭 Berhenti berlangganan dari {target['name']}? (y/n): ", C.BOLD)).lower() != "y":
+            print(p("💡 Dibatalkan", C.CYAN))
             pause()
             return
         if unsubscribe(api_key, tokens, target["quota_code"], target["product_domain"], target["product_subscription_type"]):

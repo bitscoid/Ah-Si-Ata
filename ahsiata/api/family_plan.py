@@ -7,7 +7,7 @@ from ahsiata.api.client import send_api_request
 
 def get_family_data(api_key: str, tokens: dict) -> dict:
     payload = {"group_id": 0, "is_enterprise": False, "lang": LANG_EN}
-    print("Mengambil data family…")
+    print("⏳ Mengambil data family…")
     return send_api_request(api_key, Endpoint.FAMILY_PLAN_MEMBER_INFO, payload, tokens["id_token"], "POST")
 
 
@@ -22,7 +22,7 @@ def validate_msisdn(api_key: str, tokens: dict, msisdn: str) -> dict:
         "with_regist_status": True,
         "with_enterprise": True,
     }
-    print(f"Memvalidasi msisdn {msisdn}…")
+    print(f"⏳ Memvalidasi msisdn {msisdn}…")
     return send_api_request(api_key, Endpoint.FAMILY_PLAN_VALIDATE_MSISDN, payload, tokens["id_token"], "POST")
 
 
@@ -44,7 +44,7 @@ def change_member(
         "msisdn": new_msisdn,
         "family_member_id": family_member_id,
     }
-    print(f"Menetapkan slot {slot_id} ke {new_msisdn}…")
+    print(f"⏳ Menetapkan slot {slot_id} ke {new_msisdn}…")
     return send_api_request(api_key, Endpoint.FAMILY_PLAN_CHANGE_MEMBER, payload, tokens["id_token"], "POST")
 
 
@@ -54,7 +54,7 @@ def remove_member(api_key: str, tokens: dict, family_member_id: str) -> dict:
         "family_member_id": family_member_id,
         "lang": LANG_EN,
     }
-    print(f"Menghapus anggota keluarga {family_member_id}…")
+    print(f"⏳ Menghapus anggota keluarga {family_member_id}…")
     return send_api_request(api_key, Endpoint.FAMILY_PLAN_REMOVE_MEMBER, payload, tokens["id_token"], "POST")
 
 
@@ -80,5 +80,5 @@ def set_quota_limit(
         }],
         "lang": LANG_EN,
     }
-    print(f"Mengatur batas kuota untuk anggota keluarga {family_member_id} menjadi {new_allocation} bytes…")
+    print(f"⏳ Mengatur batas kuota untuk anggota keluarga {family_member_id} menjadi {new_allocation} bytes…")
     return send_api_request(api_key, Endpoint.FAMILY_PLAN_ALLOCATE_QUOTA, payload, tokens["id_token"], "POST")

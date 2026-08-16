@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 
+from ahsiata.ui.style import fail
+
 from ahsiata.api.client import intercept_page
 from ahsiata.api.purchase.base import (
     fetch_payment_token,
@@ -27,7 +29,7 @@ def settlement_multipayment(
     amount_idx: int = -1,
 ):
     if overwrite_amount == -1 and not ask_overwrite:
-        print("ask_overwrite harus True atau overwrite_amount harus diisi.")
+        print(fail("ask_overwrite harus True atau overwrite_amount harus diisi."))
         return None
 
     token_confirmation = items[token_confirmation_idx]["token_confirmation"]
@@ -82,7 +84,7 @@ def settlement_multipayment(
         path=path,
     )
 
-    print("Mengirim permintaan settlement…")
+    print("📤 Mengirim permintaan settlement…")
     return post_signed_payload(api_key=api_key, tokens=tokens, path=path, payload=payload, signature=x_sig)
 
 
@@ -110,7 +112,7 @@ def show_multipayment(
             payment_method = "DANA"
             wallet_number = input("Masukkan nomor DANA (contoh: 08123456789): ")
             if not _validate_wallet_number(wallet_number):
-                print("Nomor DANA tidak valid. Pastikan nomor diawali dengan '08' dan memiliki panjang yang benar.")
+                print(fail("Nomor DANA tidak valid. Pastikan diawali '08'."))
                 continue
             break
         if choice == "2":
@@ -123,10 +125,10 @@ def show_multipayment(
             payment_method = "OVO"
             wallet_number = input("Masukkan nomor OVO (contoh: 08123456789): ")
             if not _validate_wallet_number(wallet_number):
-                print("Nomor OVO tidak valid. Pastikan nomor diawali dengan '08' dan memiliki panjang yang benar.")
+                print(fail("Nomor OVO tidak valid. Pastikan diawali '08'."))
                 continue
             break
-        print("Pilihan tidak valid.")
+        print(fail("Pilihan tidak valid."))
 
     res = settlement_multipayment(
         api_key, tokens, items, wallet_number, payment_method, payment_for,
@@ -134,8 +136,7 @@ def show_multipayment(
     )
 
     if not isinstance(res, dict) or res.get("status") != "SUCCESS":
-        print("Gagal memulai settlement.")
-        print(f"Error: {res}")
+        print(fail(f"Gagal memulai settlement: {res}"))
         return
 
     if payment_method != "OVO":

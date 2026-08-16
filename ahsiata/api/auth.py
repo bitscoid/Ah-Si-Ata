@@ -4,6 +4,7 @@ Uses BASE_CIAM_URL. Token types: `SMS` (OTP flow), `DEVICEID` (session extend).
 """
 from __future__ import annotations
 
+from ahsiata.ui.style import fail
 import base64
 import json
 import uuid
@@ -20,6 +21,7 @@ from ahsiata.api.encrypt import (
     ts_gmt7_without_colon,
 )
 from ahsiata.core.crypto import make_ax_api_signature
+from ahsiata.core.log import log
 
 
 # Module-level device context (loaded once at import)
@@ -80,7 +82,7 @@ def _ciam_headers(
 def validate_contact(contact: str) -> bool:
     """XL MSISDN: starts with 628, length <= 14."""
     if not contact.startswith("628") or len(contact) > 14:
-        print("Nomor tidak valid")
+        print(fail("Nomor tidak valid."))
         return False
     return True
 
@@ -94,15 +96,15 @@ def get_otp(contact: str) -> str | None:
     params = {"contact": contact, "contactType": "SMS", "alternateContact": "false"}
     headers = _ciam_headers()
 
-    print("Meminta OTP…")
     try:
         response = requests.get(url, headers=headers, params=params, timeout=30)
         json_body = json.loads(response.text)
         if "subscriber_id" not in json_body:
+            log(f"[OTP gagal] {contact} | raw={response.text[:2000]}")
             raise ValueError("OTP gagal terkirim. Periksa nomor dan coba lagi.")
         return json_body["subscriber_id"]
     except Exception as e:
-        print(f"Gagal meminta OTP: {e}")
+        print(fail(f"Gagal meminta OTP: {e}"))
         return None
 
 
@@ -113,15 +115,16 @@ def extend_session(subscriber_id: str) -> str | None:
     params = {"contact": b64_subscriber_id, "contactType": "DEVICEID"}
     headers = _ciam_headers()
 
-    print("Memperpanjang sesi…")
+    print("⏳ Memperpanjang sesi…")
     try:
         response = requests.get(url, headers=headers, params=params, timeout=30)
         if response.status_code != 200:
-            print(f"Gagal memperpanjang sesi: {response.status_code} - {response.text}")
+            log(f"[extend_session gagal] {response.status_code} | raw={response.text[:2000]}")
+            print(fail(f"Gagal memperpanjang sesi: {response.status_code}"))
             return None
         return response.json().get("data", {}).get("exchange_code")
     except Exception as e:
-        print(f"Gagal memperpanjang sesi: {e}")
+        print(fail(f"Gagal memperpanjang sesi: {e}"))
         return None
 
 
@@ -134,17 +137,17 @@ def submit_otp(
     """Exchange OTP (SMS) or exchange_code (DEVICEID) for OIDC tokens."""
     if contact_type == "SMS":
         if not validate_contact(contact):
-            print("Nomor tidak valid")
+            print(fail("Nomor tidak valid."))
             return None
         if not code or len(code) != 6:
-            print("Format kode OTP tidak valid")
+            print(fail("Format kode OTP tidak valid."))
             return None
         final_contact, final_code = contact, code
     elif contact_type == "DEVICEID":
         final_contact = base64.b64encode(contact.encode()).decode()
         final_code = code
     else:
-        print("Tipe kontak tidak didukung")
+        print(fail("Tipe kontak tidak didukung."))
         return None
 
     now_gmt7 = datetime.now(timezone(timedelta(hours=7)))
@@ -162,16 +165,16 @@ def submit_otp(
 
     url = CONFIG.base_ciam_url + CIAMEndpoint.TOKEN
 
-    print("Mengirim OTP…")
     try:
         response = requests.post(url, data=payload, headers=headers, timeout=30)
         json_body = json.loads(response.text)
         if "error" in json_body:
-            print("OTP ditolak. Periksa kode dan coba lagi.")
+            log(f"[submit_otp gagal] raw={response.text[:2000]}")
+            print(fail("OTP ditolak. Periksa kode dan coba lagi."))
             return None
         return json_body
     except requests.RequestException as e:
-        print(f"Gagal mengirim OTP: {e}")
+        print(fail(f"Gagal mengirim OTP: {e}"))
         return None
 
 
@@ -193,12 +196,13 @@ def get_new_token(api_key: str, refresh_token: str, subscriber_id: str) -> dict 
 
     data = {"grant_type": "refresh_token", "refresh_token": refresh_token}
 
-    print("Memperbarui token…")
+    print("⏳ Memperbarui token…")
     resp = requests.post(url, headers=headers, data=data, timeout=30)
 
     if resp.status_code == 400:
         if resp.json().get("error_description") != "Session not active":
-            print(f"Gagal memperbarui token: {resp.status_code} - {resp.text}")
+            log(f"[token gagal] {resp.status_code} | raw={resp.text[:2000]}")
+            print(fail(f"Gagal memperbarui token: {resp.status_code}"))
             return None
 
         if subscriber_id == "":

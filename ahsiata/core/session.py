@@ -1,6 +1,7 @@
 """Active session and refresh-token state for the logged-in user."""
 from __future__ import annotations
 
+from ahsiata.ui.style import fail
 import json
 import os
 import time
@@ -67,7 +68,7 @@ class Session:
             if "number" in entry and "refresh_token" in entry:
                 self.refresh_tokens.append(entry)
             else:
-                print(f"Entri token tidak valid: {entry}")
+                print(f"⚠️ Entri token tidak valid: {entry}")
 
     def write_tokens_to_file(self) -> None:
         with open("refresh-tokens.json", "w", encoding="utf-8") as f:
@@ -125,13 +126,13 @@ class Session:
     def set_active_user(self, number: int) -> bool:
         rt_entry = next((rt for rt in self.refresh_tokens if rt["number"] == number), None)
         if not rt_entry:
-            print(f"Tidak ada refresh token ditemukan untuk nomor: {number}")
+            print(fail(f"Tidak ada refresh token ditemukan untuk nomor: {number}"))
             input("Tekan enter untuk melanjutkan…")
             return False
 
         tokens = get_new_token(self.api_key, rt_entry["refresh_token"], rt_entry.get("subscriber_id", ""))
         if not tokens:
-            print(f"Gagal mendapatkan token untuk nomor: {number}. Refresh token mungkin tidak valid atau sudah kedaluwarsa.")
+            print(fail(f"Gagal mendapatkan token untuk nomor: {number}. Refresh token mungkin tidak valid atau sudah kedaluwarsa."))
             input("Tekan enter untuk melanjutkan…")
             return False
 
@@ -154,7 +155,7 @@ class Session:
 
     def renew_active_user_token(self) -> bool:
         if not self.active_user:
-            print("Tidak ada user aktif atau refresh token hilang.")
+            print(fail("Tidak ada user aktif atau refresh token hilang."))
             input("Tekan enter untuk melanjutkan…")
             return False
 
@@ -164,14 +165,14 @@ class Session:
             self.active_user["subscriber_id"],
         )
         if not tokens:
-            print("Gagal memperbarui token user aktif.")
+            print(fail("Gagal memperbarui token user aktif."))
             input("Tekan enter untuk melanjutkan…")
             return False
 
         self.active_user["tokens"] = tokens
         self.last_refresh_time = int(time.time())
         self.add_refresh_token(self.active_user["number"], tokens["refresh_token"])
-        print("Token user aktif berhasil diperbarui.")
+        print("✅ Token user aktif berhasil diperbarui.")
         return True
 
     def get_active_user(self) -> dict | None:

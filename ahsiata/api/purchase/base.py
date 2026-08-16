@@ -7,6 +7,7 @@ function, and endpoint path differ.
 """
 from __future__ import annotations
 
+from ahsiata.ui.style import fail, warn
 from ahsiata.api.client import post_encrypted, send_api_request
 from ahsiata.api.encrypt import encryptsign_xdata
 from ahsiata.constants import Endpoint, LANG_EN
@@ -40,7 +41,7 @@ def resolve_amount(
             try:
                 amount_int = int(amount_str)
             except ValueError:
-                print("Input overwrite tidak valid, menggunakan harga awal.")
+                print(warn("Input overwrite tidak valid, menggunakan harga awal."))
     return amount_int
 
 
@@ -59,11 +60,10 @@ def fetch_payment_token(api_key: str, tokens: dict, item_code: str, token_confir
         "is_referral": False,
         "token_confirmation": token_confirmation,
     }
-    print("Mendapatkan metode pembayaran…")
+    print("⏳ Mendapatkan metode pembayaran…")
     res = send_api_request(api_key, Endpoint.PAYMENT_METHODS_OPTION, payload, tokens["id_token"], "POST")
     if not isinstance(res, dict) or res.get("status") != "SUCCESS":
-        print("Gagal mengambil metode pembayaran.")
-        print(f"Error: {res}")
+        print(fail(f"Gagal mengambil metode pembayaran: {res}"))
         return None
     data = res["data"]
     return data["token_payment"], int(data["timestamp"])

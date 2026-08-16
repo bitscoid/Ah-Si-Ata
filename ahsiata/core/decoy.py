@@ -1,6 +1,7 @@
 """Decoy package cache. Refreshes from `decoy_data/decoy-*.json` every 5 minutes."""
 from __future__ import annotations
 
+from ahsiata.ui.style import fail, warn
 import json
 import time
 
@@ -54,7 +55,7 @@ class DecoyPackage:
         if self.subscriber_id == current_sub_id:
             return
 
-        print(f"Subscriber ID berubah dari {self.subscriber_id} ke {current_sub_id}. Mengatur ulang data decoy.")
+        print(warn(f"Subscriber ID berubah dari {self.subscriber_id} ke {current_sub_id}. Mengatur ulang data decoy."))
         self.reset_decoys()
         self.subscriber_id = current_sub_id
         self.subscription_type = current_sub_type
@@ -63,11 +64,11 @@ class DecoyPackage:
     def fetch_decoy_data(self, decoy_name: str) -> None:
         user = SESSION.get_active_user()
         if user is None:
-            print("Tidak ada user aktif. Tidak dapat mengambil paket decoy.")
+            print(fail("Tidak ada user aktif. Tidak dapat mengambil paket decoy."))
             return
 
         path = _DECOY_PATH_PREFIX + decoy_name + ".json"
-        print(f"Memperbarui data decoy untuk: {decoy_name}")
+        print(f"⏳ Memperbarui data decoy untuk: {decoy_name}")
         try:
             with open(path, "r", encoding="utf-8") as f:
                 decoy = json.load(f)
@@ -82,21 +83,21 @@ class DecoyPackage:
                 decoy["migration_type"],
             )
             if detail is None:
-                print(f"Tidak dapat mengambil detail untuk {decoy_name}")
+                print(fail(f"Tidak dapat mengambil detail untuk {decoy_name}"))
                 return
             self.decoys[decoy_name] = {
                 "option_code": detail["package_option"]["package_option_code"],
                 "last_fetched_at": int(time.time()),
                 "price": decoy["price"],
             }
-            print(f"Data decoy untuk {decoy_name} berhasil diperbarui.")
+            print(f"✅ Data decoy untuk {decoy_name} berhasil diperbarui.")
         except Exception as e:
-            print(f"Gagal mengambil data decoy: {e}")
+            print(fail(f"Gagal mengambil data decoy: {e}"))
 
     def get_decoy(self, payment_type: str) -> dict | None:
         self.check_subscriber_change()
         if payment_type not in _DECOY_PAYMENT_TYPES:
-            print(f"Tipe pembayaran tidak didukung: {payment_type}")
+            print(fail(f"Tipe pembayaran tidak didukung: {payment_type}"))
             return None
 
         name = self.prefix + payment_type

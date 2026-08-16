@@ -8,13 +8,13 @@ from ahsiata.api.encrypt import encrypt_circle_msisdn
 
 def get_group_data(api_key: str, tokens: dict) -> dict:
     payload = {"is_enterprise": False, "lang": LANG_EN}
-    print("Mengambil detail grup…")
+    print("⏳ Mengambil detail grup…")
     return send_api_request(api_key, Endpoint.CIRCLE_GROUP_STATUS, payload, tokens["id_token"], "POST")
 
 
 def get_group_members(api_key: str, tokens: dict, group_id: str) -> dict:
     payload = {"group_id": group_id, "is_enterprise": False, "lang": LANG_EN}
-    print("Mengambil anggota grup…")
+    print("⏳ Mengambil anggota grup…")
     return send_api_request(api_key, Endpoint.CIRCLE_MEMBERS_INFO, payload, tokens["id_token"], "POST")
 
 
@@ -24,7 +24,7 @@ def validate_circle_member(api_key: str, tokens: dict, msisdn: str) -> dict:
         "is_enterprise": False,
         "lang": LANG_EN,
     }
-    print(f"Memvalidasi {msisdn}…")
+    print(f"⏳ Memvalidasi {msisdn}…")
     return send_api_request(api_key, Endpoint.CIRCLE_MEMBERS_VALIDATE, payload, tokens["id_token"], "POST")
 
 
@@ -44,7 +44,7 @@ def invite_circle_member(
         "lang": LANG_EN,
         "member_id_parent": member_id_parent,
     }
-    print(f"Mengundang {msisdn}…")
+    print(f"⏳ Mengundang {msisdn}…")
     return send_api_request(api_key, Endpoint.CIRCLE_MEMBERS_INVITE, payload, tokens["id_token"], "POST")
 
 
@@ -64,7 +64,7 @@ def remove_circle_member(
         "lang": LANG_EN,
         "member_id_parent": member_id_parent,
     }
-    print(f"Menghapus anggota {member_id} dari Circle…")
+    print(f"⏳ Menghapus anggota {member_id} dari Circle…")
     return send_api_request(api_key, Endpoint.CIRCLE_MEMBERS_REMOVE, payload, tokens["id_token"], "POST")
 
 
@@ -96,7 +96,7 @@ def create_circle(
         "members": [{"msisdn": encrypt_circle_msisdn(api_key, member_msisdn), "name": member_name}],
         "lang": LANG_EN,
     }
-    print(f"Membuat Circle dengan anggota {member_msisdn}…")
+    print(f"⏳ Membuat Circle dengan anggota {member_msisdn}…")
     return send_api_request(api_key, Endpoint.CIRCLE_GROUP_CREATE, payload, tokens["id_token"], "POST")
 
 
