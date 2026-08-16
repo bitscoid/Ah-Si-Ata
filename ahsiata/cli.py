@@ -33,7 +33,7 @@ WIDTH = 55
 MENU_ITEMS = [
     ("1", "👤", "Akun"),
     ("2", "📦", "Paket"),
-    ("3", "🔥", "HOT"),
+    ("3", "🔥", "Hot"),
     ("4", "🔎", "Option Code"),
     ("5", "👨", "Family Code"),
     ("6", "🔄", "Loop"),
