@@ -5,7 +5,7 @@ from datetime import datetime, timedelta, timezone
 
 from ahsiata.api.transactions import get_transaction_history
 from ahsiata.ui.style import C, p, title, rule, info, fail
-from ahsiata.ui.utils import clear_screen, pause
+from ahsiata.ui.utils import clear_screen, pause, format_price
 
 
 def show_transaction_history(api_key: str, tokens: dict) -> None:
@@ -32,10 +32,7 @@ def show_transaction_history(api_key: str, tokens: dict) -> None:
         ts_str = datetime.fromtimestamp(ts, tz=gmt7).strftime("%Y-%m-%d %H:%M:%S")
         title_tx = tx.get("title", "N/A")
         price_raw = tx.get("price", 0)
-        try:
-            price_fmt = f"Rp. {int(price_raw):,}".replace(",", ".")
-        except (ValueError, TypeError):
-            price_fmt = str(price_raw)
+        price_fmt = format_price(price_raw)
         print(f"{idx}. {p(ts_str, C.DIM)} | {p(title_tx, C.BOLD, C.WHITE)}")
         print(f"   💳 Metode: {tx.get('payment_method_label', 'N/A')}")
         print(f"   📊 Status: {tx.get('payment_status', 'N/A')}")

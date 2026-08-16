@@ -15,7 +15,7 @@ from ahsiata.type_dict import PaymentItem
 from ahsiata.ui.package.details import show_package_details
 from ahsiata.ui.style import C, p as sp, title as tt, rule, fail, warn
 
-from ahsiata.ui.utils import clear_screen, format_quota_byte, pause
+from ahsiata.ui.utils import clear_screen, format_quota_byte, pause, format_price
 
 WIDTH = 55
 
@@ -67,11 +67,11 @@ def _buy_bundle(api_key: str, tokens: dict, selected: dict) -> None:
 
     print(rule(char="=", color=C.CYAN))
     print(sp(f"📦 {selected['name']}", C.BOLD, C.WHITE))
-    print(sp(f"   💰 {selected['price']}", C.YELLOW))
+    print(sp(f"   💰 {format_price(selected['price'])}", C.YELLOW))
     print(f"   📄 Detail: {selected['detail']}")
     print(rule(char="=", color=C.CYAN))
     print(f"📦 Nama: {sp(title, C.BOLD, C.WHITE)}")
-    print(f"💰 Harga: {sp(f'Rp {price}', C.BOLD, C.GREEN)}")
+    print(f"💰 Harga: {sp(format_price(price), C.BOLD, C.GREEN)}")
     print(f"💳 Pembayaran: {payment_for}")
     print(f"⏳ Masa Aktif: {validity}")
     print(f"⭐ Point: {main_detail['package_option']['point']}")
@@ -113,7 +113,7 @@ def _buy_bundle(api_key: str, tokens: dict, selected: dict) -> None:
             return
         if method == "1":
             if overwrite_amount == -1:
-                print(warn(f"💡 Pastikan saldo KURANG DARI Rp{payment_items[-1]['item_price']}!"))
+                print(warn(f"💡 Pastikan saldo KURANG DARI {format_price(payment_items[-1]['item_price'])}!"))
                 if input(sp("🧭 Lanjut beli? (y/n): ", C.BOLD)).lower() != "y":
                     continue
             settlement_balance(
@@ -165,7 +165,7 @@ def show_hot_menu() -> None:
                   f" - {sp(item['option_name'], C.YELLOW)}")
         print(rule(char="-", color=C.B_RED))
         for j, bundle in enumerate(bundles, offset + 1):
-            print(f"{j:>3}  {sp(bundle['name'], C.BOLD, C.WHITE)}  {sp(bundle['price'], C.YELLOW)}")
+            print(f"{j:>3}  {sp(bundle['name'], C.BOLD, C.WHITE)}  {sp(format_price(bundle['price']), C.YELLOW)}")
         print(rule(char="-", color=C.B_RED))
         print(sp(f"{'':>3}  {'B':>2} Kembali", C.DIM))
         print(rule(color=C.B_RED))

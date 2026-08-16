@@ -11,7 +11,7 @@ from ahsiata.core.session import SESSION
 from ahsiata.type_dict import PaymentItem
 from ahsiata.ui.style import ok, fail
 
-from ahsiata.ui.utils import pause
+from ahsiata.ui.utils import pause, format_price
 
 
 def purchase_n_times_by_option_code(
@@ -38,7 +38,7 @@ def purchase_n_times_by_option_code(
     successful = 0
 
     for i in range(n):
-        print(ok(f"✅ [{i + 1}/{n}] {detail['package_option']['name']}"))
+        print(ok(f"✅ [{i + 1}/{n}] {detail['package_option']['name']} ({format_price(price)})"))
         rnd = randint(1000, 9999)
         items = [PaymentItem(
             item_code=option_code,

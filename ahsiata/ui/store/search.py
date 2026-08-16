@@ -6,7 +6,7 @@ from ahsiata.core.session import SESSION
 from ahsiata.ui.package.details import show_package_details
 from ahsiata.ui.package.list import get_packages_by_family
 from ahsiata.ui.style import C, p, title, rule, fail
-from ahsiata.ui.utils import clear_screen, pause
+from ahsiata.ui.utils import clear_screen, pause, format_price
 
 
 def show_family_list_menu(subs_type: str, is_enterprise: bool) -> None:
@@ -64,7 +64,7 @@ def show_store_packages_menu(subs_type: str, is_enterprise: bool) -> None:
         for idx, pkg in enumerate(packages, start=1):
             price = pkg.get("discounted_price", pkg.get("price", "N/A"))
             name = pkg.get("package_name", pkg.get("name", "N/A"))
-            print(f"{idx}. 📦 {p(name, C.BOLD)} - {p(str(price), C.BOLD, C.YELLOW)}")
+            print(f"{idx}. 📦 {p(name, C.BOLD)} - {p(format_price(price), C.BOLD, C.YELLOW)}")
         print(rule(char="-", color=C.CYAN))
         print(p(f"{'':>3}  {'B':>2} Kembali", C.DIM))
         print()

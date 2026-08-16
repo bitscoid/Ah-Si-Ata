@@ -4,7 +4,7 @@ from __future__ import annotations
 from ahsiata.api.catalog import get_segments
 from ahsiata.core.session import SESSION
 from ahsiata.ui.style import C, p, title, rule, info, fail
-from ahsiata.ui.utils import clear_screen, pause
+from ahsiata.ui.utils import clear_screen, pause, format_price
 
 WIDTH = 55
 
@@ -38,7 +38,7 @@ def show_store_segments_menu(is_enterprise: bool) -> None:
             print(f"{letter}. {p(seg.get('title', 'N/A'), C.BOLD, C.WHITE)}")
             for j, banner in enumerate(seg.get("banners", []), start=1):
                 price = banner.get("discounted_price")
-                price_text = f"Rp {price:,}".replace(",", ".") if isinstance(price, (int, float)) else ""
+                price_text = format_price(price) if isinstance(price, (int, float)) else ""
                 line = f"   {letter.lower()}{j}. {p(banner.get('title', 'N/A'), C.CYAN)}"
                 if price_text:
                     line += p(f" ({price_text})", C.YELLOW)

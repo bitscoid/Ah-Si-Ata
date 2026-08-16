@@ -19,7 +19,7 @@ from ahsiata.core.session import SESSION
 from ahsiata.type_dict import PaymentItem
 from ahsiata.ui.purchase.single import purchase_n_times_by_option_code
 from ahsiata.ui.style import C, p, title, rule, ok, fail, warn, info
-from ahsiata.ui.utils import clear_screen, display_html, format_quota_byte, pause
+from ahsiata.ui.utils import clear_screen, display_html, format_quota_byte, pause, format_price
 
 
 def _print_benefits(benefits: list[dict]) -> None:
@@ -57,7 +57,7 @@ def _print_summary(package: dict) -> tuple[str, int, str, str, str]:
 
     print(rule(color=C.CYAN))
     print(f"📦 Nama: {p(title, C.BOLD, C.WHITE)}")
-    print(f"💰 Harga: {p(f'Rp {price}', C.BOLD, C.GREEN)}")
+    print(f"💰 Harga: {p(format_price(price), C.BOLD, C.GREEN)}")
     print(f"💳 Pembayaran: {payment_for}")
     print(f"⏳ Masa Aktif: {validity}")
     print(f"⭐ Point: {package['package_option']['point']}")
@@ -195,8 +195,8 @@ def show_package_details(api_key, tokens, package_option_code, is_enterprise, op
                 return False
             append_decoy_item(payment_items, decoy_detail)
             print(rule(color=C.YELLOW))
-            print(warn(f"💰 Harga Utama: Rp {price}"))
-            print(warn(f"🎭 Harga Decoy: Rp {decoy_detail['package_option']['price']}"))
+            print(warn(f"💰 Harga Utama: {format_price(price)}"))
+            print(warn(f"🎭 Harga Decoy: {format_price(decoy_detail['package_option']['price'])}"))
             print(warn("Silahkan sesuaikan amount (trial & error, 0 = malformed)"))
             print(rule(color=C.YELLOW))
             show_qris_payment(

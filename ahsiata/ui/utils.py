@@ -68,3 +68,16 @@ def format_quota_byte(quota_byte: int) -> str:
     if quota_byte >= _KB:
         return f"{quota_byte / _KB:.2f} KB"
     return f"{quota_byte} B"
+
+
+def format_price(price: int | float | str) -> str:
+    """Format price as 'Rp. 1.000' with dot thousand separator."""
+    price_str = str(price)
+    import re
+    nums = re.sub(r"[^\d]", "", price_str)
+    if not nums:
+        return price_str
+    try:
+        return f"Rp. {int(nums):,}".replace(",", ".")
+    except ValueError:
+        return price_str

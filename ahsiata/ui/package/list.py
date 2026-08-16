@@ -6,7 +6,7 @@ from ahsiata.core.session import SESSION
 from ahsiata.ui.package.details import show_package_details
 from ahsiata.ui.style import C, p as sp, rule, title, fail
 
-from ahsiata.ui.utils import clear_screen, pause
+from ahsiata.ui.utils import clear_screen, pause, format_price
 
 
 def get_packages_by_family(
@@ -57,7 +57,7 @@ def get_packages_by_family(
                     "code": option["package_option_code"],
                     "option_order": option["order"],
                 })
-                print(f"   {option_number}. {sp(option['name'], C.WHITE)} - {sp('{} {}'.format(price_currency, option['price']), C.BOLD, C.YELLOW)}")
+                print(f"   {option_number}. {sp(option['name'], C.WHITE)} - {sp(format_price(option['price']), C.BOLD, C.YELLOW)}")
                 option_number += 1
             if variant_idx < len(data["package_variants"]):
                 print(rule(color=C.CYAN))

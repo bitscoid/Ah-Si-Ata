@@ -9,7 +9,7 @@ from ahsiata.api.purchase.balance import settle_with_decoy, settlement_balance
 from ahsiata.core.session import SESSION
 from ahsiata.type_dict import PaymentItem
 from ahsiata.ui.style import C, p, ok, fail, info
-from ahsiata.ui.utils import pause
+from ahsiata.ui.utils import pause, format_price
 
 
 def purchase_by_family(
@@ -80,7 +80,7 @@ def purchase_by_family(
                 "option": f"{option['order']}. {option['name']}",
                 "price": real_price,
             })
-            print(ok(f"[{i + 1}/{len(payment_targets)}] {variant['name']} - {option['name']}"))
+            print(ok(f"[{i + 1}/{len(payment_targets)}] {variant['name']} - {option['name']} ({format_price(real_price)})"))
         else:
             print(fail(f"[{i + 1}/{len(payment_targets)}] {variant['name']} - {option['name']}"))
 
@@ -94,5 +94,5 @@ def purchase_by_family(
     print()
     print(p(f"✅ Total berhasil: {len(successful)}/{len(payment_targets)}", C.BOLD, C.GREEN))
     for s in successful:
-        print(f"  {s['variant']} | {p(s['option'], C.YELLOW)}")
+        print(f"  {s['variant']} | {p(s['option'], C.YELLOW)} | {format_price(s['price'])}")
     pause()
