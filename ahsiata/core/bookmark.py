@@ -23,6 +23,11 @@ class Bookmark:
     def __init__(self):
         if self._initialized:
             return
+
+    def initialize(self) -> None:
+        """One-time load from disk. Kept out of `__init__` (no import side effects)."""
+        if self._initialized:
+            return
         if os.path.exists(self._filepath):
             self.load_bookmark()
         else:
@@ -68,7 +73,7 @@ class Bookmark:
             (p["family_code"], p["variant_name"], p["order"]) == key
             for p in self.packages
         ):
-            print("Bookmark already exists.")
+            print("Bookmark sudah ada.")
             return False
         self.packages.append({
             "family_name": family_name,
@@ -79,7 +84,7 @@ class Bookmark:
             "order": order,
         })
         self.save_bookmark()
-        print("Bookmark added.")
+        print("Bookmark ditambahkan.")
         return True
 
     def remove_bookmark(
@@ -98,9 +103,9 @@ class Bookmark:
             ):
                 del self.packages[i]
                 self.save_bookmark()
-                print("Bookmark removed.")
+                print("Bookmark dihapus.")
                 return True
-        print("Bookmark not found.")
+        print("Bookmark tidak ditemukan.")
         return False
 
     def get_bookmarks(self) -> list[dict]:

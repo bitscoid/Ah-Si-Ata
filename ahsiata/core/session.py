@@ -35,7 +35,17 @@ class Session:
     def __init__(self):
         if self._initialized:
             return
+        # No disk I/O at import time; state loads in `initialize()`.
         self.api_key = CONFIG.api_key
+
+    def initialize(self) -> None:
+        """One-time load of accounts + active number from disk.
+
+        Called by the CLI entry point. Kept out of `__init__` so importing
+        the package has no side effects (testable, headless-safe).
+        """
+        if self._initialized:
+            return
 
         if os.path.exists("refresh-tokens.json"):
             self.load_tokens()
@@ -57,7 +67,7 @@ class Session:
             if "number" in entry and "refresh_token" in entry:
                 self.refresh_tokens.append(entry)
             else:
-                print(f"Invalid token entry: {entry}")
+                print(f"Entri token tidak valid: {entry}")
 
     def write_tokens_to_file(self) -> None:
         with open("refresh-tokens.json", "w", encoding="utf-8") as f:
@@ -109,20 +119,20 @@ class Session:
                 if tokens:
                     self.set_active_user(first["number"])
             else:
-                input("No users left. Press Enter to continue...")
+                input("Tidak ada user tersisa. Tekan enter untuk melanjutkan...")
                 self.active_user = None
 
     def set_active_user(self, number: int) -> bool:
         rt_entry = next((rt for rt in self.refresh_tokens if rt["number"] == number), None)
         if not rt_entry:
-            print(f"No refresh token found for number: {number}")
-            input("Press Enter to continue...")
+            print(f"Tidak ada refresh token ditemukan untuk nomor: {number}")
+            input("Tekan enter untuk melanjutkan...")
             return False
 
         tokens = get_new_token(self.api_key, rt_entry["refresh_token"], rt_entry.get("subscriber_id", ""))
         if not tokens:
-            print(f"Failed to get tokens for number: {number}. The refresh token might be invalid or expired.")
-            input("Press Enter to continue...")
+            print(f"Gagal mendapatkan token untuk nomor: {number}. Refresh token mungkin tidak valid atau sudah kedaluwarsa.")
+            input("Tekan enter untuk melanjutkan...")
             return False
 
         profile_data = get_profile(self.api_key, tokens["access_token"], tokens["id_token"])
@@ -144,8 +154,8 @@ class Session:
 
     def renew_active_user_token(self) -> bool:
         if not self.active_user:
-            print("No active user set or missing refresh token.")
-            input("Press Enter to continue...")
+            print("Tidak ada user aktif atau refresh token hilang.")
+            input("Tekan enter untuk melanjutkan...")
             return False
 
         tokens = get_new_token(
@@ -154,14 +164,14 @@ class Session:
             self.active_user["subscriber_id"],
         )
         if not tokens:
-            print("Failed to renew active user token.")
-            input("Press Enter to continue...")
+            print("Gagal memperbarui token user aktif.")
+            input("Tekan enter untuk melanjutkan...")
             return False
 
         self.active_user["tokens"] = tokens
         self.last_refresh_time = int(time.time())
         self.add_refresh_token(self.active_user["number"], tokens["refresh_token"])
-        print("Active user token renewed successfully.")
+        print("Token user aktif berhasil diperbarui.")
         return True
 
     def get_active_user(self) -> dict | None:

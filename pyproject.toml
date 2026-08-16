@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ahsiata"
+version = "1.0.0"
+description = "MyXL (XL Axiata) backend CLI client"
+requires-python = ">=3.10"
+dependencies = [
+    "Brotli==1.2.0",
+    "pycryptodome==3.23.0",
+    "python-dotenv==1.2.2",
+    "qrcode==8.2",
+    "requests==2.34.2",
+]
+
+[project.scripts]
+ahsiata = "ahsiata.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["ahsiata*"]

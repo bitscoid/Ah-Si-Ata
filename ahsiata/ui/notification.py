@@ -17,13 +17,13 @@ def show_notification_menu() -> None:
         print("=" * 55)
         res = get_notifications(SESSION.api_key, tokens)
         if not isinstance(res, dict):
-            print("Failed to fetch notifications.")
+            print("Gagal mengambil notifikasi.")
             pause()
             return
 
         notifications = res.get("data", {}).get("notifications", [])
         unread = sum(1 for n in notifications if n.get("is_read") is False)
-        print(f"Total notifications: {len(notifications)} | Unread: {unread}")
+        print(f"Total notifikasi: {len(notifications)} | Belum dibaca: {unread}")
         print("-" * 55)
 
         for idx, n in enumerate(notifications, start=1):
@@ -32,8 +32,8 @@ def show_notification_menu() -> None:
 
         print("-" * 55)
         print("1. Tandai semua sudah dibaca")
-        print("00. Back to Main Menu")
-        choice = input("Enter your choice: ")
+        print("00. Kembali ke menu utama")
+        choice = input("Masukkan pilihan Anda: ")
 
         if choice == "00":
             return
@@ -41,5 +41,5 @@ def show_notification_menu() -> None:
             for n in notifications:
                 if n.get("is_read") is False:
                     get_notification_detail(SESSION.api_key, tokens, n.get("id", ""))
-            print("All notifications marked as read.")
+            print("Semua notifikasi ditandai sudah dibaca.")
             pause()

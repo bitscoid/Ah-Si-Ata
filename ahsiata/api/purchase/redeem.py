@@ -97,11 +97,11 @@ def settlement_bounty(
         token_payment=token_confirmation,
     )
 
-    print("Sending bounty request...")
+    print("Mengirim permintaan bounty...")
     res = post_signed_payload(api_key=api_key, tokens=tokens, path=path, payload=payload, signature=x_sig)
     if isinstance(res, dict):
         if res.get("status") != "SUCCESS":
-            print("Failed to claim bounty.")
+            print("Gagal mengklaim bounty.")
             print(f"Error: {res}")
             return None
         print(res)
@@ -137,11 +137,11 @@ def settlement_loyalty(
         path=path,
     )
 
-    print("Sending loyalty request...")
+    print("Mengirim permintaan loyalty...")
     res = post_signed_payload(api_key=api_key, tokens=tokens, path=path, payload=payload, signature=x_sig)
     if isinstance(res, dict):
         if res.get("status") != "SUCCESS":
-            print("Failed purchase.")
+            print("Pembelian gagal.")
             print(f"Error: {res}")
             return None
         print(res)
@@ -177,11 +177,11 @@ def bounty_allotment(
         path=path,
     )
 
-    print("Sending bounty allotment request...")
+    print("Mengirim permintaan bounty allotment...")
     res = post_signed_payload(api_key=api_key, tokens=tokens, path=path, payload=payload, signature=x_sig)
     if isinstance(res, dict):
         if res.get("status") != "SUCCESS":
-            print("Failed to claim bounty.")
+            print("Gagal mengklaim bounty.")
             print(f"Error: {res}")
             return None
         print(res)

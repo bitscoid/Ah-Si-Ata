@@ -8,6 +8,12 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass
 
+from dotenv import load_dotenv
+
+# Populate env from `.env` (searched from CWD upward) once, at import.
+# Without this, importing any `ahsiata.*` module outside `python main.py` fails.
+load_dotenv()
+
 
 def _required(name: str) -> str:
     value = os.getenv(name)

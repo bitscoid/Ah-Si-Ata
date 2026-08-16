@@ -26,7 +26,6 @@ from ahsiata.core.crypto import (
     decrypt_circle_msisdn as _decrypt_circle_msisdn,
     encrypt_circle_msisdn as _encrypt_circle_msisdn,
     encrypt_xdata,
-    make_ax_api_signature,
     make_x_signature,
 )
 
@@ -132,10 +131,6 @@ def ts_gmt7_without_colon(dt: datetime) -> str:
 
 
 # -- Public re-exports (preserves old import surface) -------------------------
-
-def ax_api_signature(api_key: str, ts_for_sign: str, contact: str, code: str, contact_type: str) -> str:
-    return make_ax_api_signature(ts_for_sign, contact, code, contact_type)
-
 
 def encryptsign_xdata(api_key: str, method: str, path: str, id_token: str, payload: dict) -> dict:
     plain_body = json.dumps(payload, separators=(",", ":"))

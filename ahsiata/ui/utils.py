@@ -36,7 +36,7 @@ def clear_screen() -> None:
 
 
 def pause() -> None:
-    input("\nPress enter to continue...")
+    input("\nTekan enter untuk melanjutkan...")
 
 
 class _HTMLToText(HTMLParser):

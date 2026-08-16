@@ -15,13 +15,13 @@ def get_packages_by_family(
     api_key = SESSION.api_key
     tokens = SESSION.get_active_tokens()
     if tokens is None:
-        print("No active user tokens found.")
+        print("Tidak ada token user aktif ditemukan.")
         pause()
         return None
 
     data = get_family(api_key, tokens, family_code, is_enterprise, migration_type)
     if not data:
-        print("Failed to load family data.")
+        print("Gagal memuat data family.")
         pause()
         return None
 
@@ -31,10 +31,10 @@ def get_packages_by_family(
     while True:
         clear_screen()
         print("-------------------------------------------------------")
-        print(f"Family Name: {data['package_family']['name']}")
+        print(f"Nama Family: {data['package_family']['name']}")
         print(f"Family Code: {family_code}")
-        print(f"Family Type: {data['package_family']['package_family_type']}")
-        print(f"Variant Count: {len(data['package_variants'])}")
+        print(f"Tipe Family: {data['package_family']['package_family_type']}")
+        print(f"Jumlah Varian: {len(data['package_variants'])}")
         print("-------------------------------------------------------")
         print("Paket Tersedia")
         print("-------------------------------------------------------")
@@ -43,8 +43,8 @@ def get_packages_by_family(
         for variant_idx, variant in enumerate(data["package_variants"], start=1):
             variant_name = variant["name"]
             variant_code = variant["package_variant_code"]
-            print(f" Variant {variant_idx}: {variant_name}")
-            print(f" Code: {variant_code}")
+            print(f" Varian {variant_idx}: {variant_name}")
+            print(f" Kode: {variant_code}")
             for option in variant["package_options"]:
                 packages.append({
                     "number": option_number,

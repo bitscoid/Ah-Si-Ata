@@ -5,7 +5,7 @@ import json
 
 from ahsiata.api.client import send_api_request
 from ahsiata.api.packages import get_addons, get_package, unsubscribe
-from ahsiata.api.purchase.balance import settlement_balance
+from ahsiata.api.purchase.balance import append_decoy_item, settle_with_decoy, settlement_balance
 from ahsiata.api.purchase.ewallet import show_multipayment
 from ahsiata.api.purchase.qris import show_qris_payment
 from ahsiata.api.purchase.redeem import (
@@ -25,11 +25,11 @@ from ahsiata.ui.utils import clear_screen, display_html, format_quota_byte, paus
 def _print_benefits(benefits: list[dict]) -> None:
     if not benefits or not isinstance(benefits, list):
         return
-    print("Benefits:")
+    print("Benefit:")
     for benefit in benefits:
         print("-------------------------------------------------------")
-        print(f" Name: {benefit['name']}")
-        print(f"  Item id: {benefit['item_id']}")
+        print(f" Nama: {benefit['name']}")
+        print(f"  ID item: {benefit['item_id']}")
         data_type = benefit["data_type"]
         total = benefit["total"]
         if data_type == "VOICE" and total > 0:
@@ -37,11 +37,11 @@ def _print_benefits(benefits: list[dict]) -> None:
         elif data_type == "TEXT" and total > 0:
             print(f"  Total: {total} SMS")
         elif data_type == "DATA" and total > 0:
-            print(f"  Quota: {format_quota_byte(int(total))}")
+            print(f"  Kuota: {format_quota_byte(int(total))}")
         elif data_type not in ("DATA", "VOICE", "TEXT"):
             print(f"  Total: {total} ({data_type})")
         if benefit.get("is_unlimited"):
-            print("  Unlimited: Yes")
+            print("  Unlimited: Ya")
 
 
 def _print_summary(package: dict) -> tuple[str, int, str, str, str]:
@@ -64,42 +64,10 @@ def _print_summary(package: dict) -> tuple[str, int, str, str, str]:
     print(f"Plan Type: {package['package_family']['plan_type']}")
     print("-------------------------------------------------------")
     print(f"Family Code: {family_code}")
-    print(f"Parent Code (for addon/dummy): {parent_code}")
+    print(f"Parent Code (untuk addon/dummy): {parent_code}")
     print("-------------------------------------------------------")
     _print_benefits(package["package_option"]["benefits"])
     return title, price, payment_for, family_code, parent_code
-
-
-def _append_decoy(payment_items: list[PaymentItem], decoy_detail: dict) -> None:
-    payment_items.append(PaymentItem(
-        item_code=decoy_detail["package_option"]["package_option_code"],
-        product_type="",
-        item_price=decoy_detail["package_option"]["price"],
-        item_name=decoy_detail["package_option"]["name"],
-        tax=0,
-        token_confirmation=decoy_detail["token_confirmation"],
-    ))
-
-
-def _balance_with_amount_retry(api_key, tokens, items, payment_for, amount, token_confirmation_idx=0):
-    """Try settlement; on `Bizz-err.Amount.Total` retry with corrected amount."""
-    res = settlement_balance(
-        api_key, tokens, items, payment_for, False,
-        overwrite_amount=amount, token_confirmation_idx=token_confirmation_idx,
-    )
-    if res and res.get("status", "") != "SUCCESS":
-        error_msg = res.get("message", "")
-        if "Bizz-err.Amount.Total" in error_msg:
-            try:
-                valid_amount = int(error_msg.split("=")[1].strip())
-            except (IndexError, ValueError):
-                return res
-            print(f"Adjusted total amount to: {valid_amount}")
-            return settlement_balance(
-                api_key, tokens, items, payment_for, False,
-                overwrite_amount=valid_amount, token_confirmation_idx=token_confirmation_idx,
-            )
-    return res
 
 
 def show_package_details(api_key, tokens, package_option_code, is_enterprise, option_order: int = -1):
@@ -109,7 +77,7 @@ def show_package_details(api_key, tokens, package_option_code, is_enterprise, op
     print("-------------------------------------------------------")
     package = get_package(api_key, tokens, package_option_code)
     if not package:
-        print("Failed to load package details.")
+        print("Gagal memuat detail paket.")
         pause()
         return False
 
@@ -133,13 +101,13 @@ def show_package_details(api_key, tokens, package_option_code, is_enterprise, op
     detail_html = display_html(package["package_option"]["tnc"])
     addons = get_addons(api_key, tokens, package_option_code) or {}
 
-    print(f"Addons:\n{json.dumps(addons, indent=2)}")
+    print(f"Addon:\n{json.dumps(addons, indent=2)}")
     print("-------------------------------------------------------")
     print(f"SnK MyXL:\n{detail_html}")
     print("-------------------------------------------------------")
 
     while True:
-        print("Options:")
+        print("Opsi:")
         print("1. Beli dengan Pulsa")
         print("2. Beli dengan E-Wallet")
         print("3. Bayar dengan QRIS")
@@ -190,20 +158,20 @@ def show_package_details(api_key, tokens, package_option_code, is_enterprise, op
             return True
 
         if choice in ("4", "5"):
-            decoy_name = "balance"
-            decoy = DECOY.get_decoy(decoy_name)
-            decoy_detail = get_package(api_key, tokens, decoy["option_code"])
+            decoy = DECOY.get_decoy("balance")
+            decoy_detail = get_package(api_key, tokens, decoy["option_code"]) if decoy else None
             if not decoy_detail:
-                print("Failed to load decoy package details.")
+                print("Gagal memuat detail paket decoy.")
                 pause()
                 return False
-            _append_decoy(payment_items, decoy_detail)
-            overwrite = price + decoy_detail["package_option"]["price"]
             tcidx = 1 if choice == "5" else 0
             payment_for_arg = "🤫" if choice == "5" else payment_for
-            res = _balance_with_amount_retry(api_key, tokens, payment_items, payment_for_arg, overwrite, tcidx)
-            if res and res.get("status") == "SUCCESS":
-                print("Purchase successful!")
+            res = settle_with_decoy(
+                api_key, tokens, payment_items, payment_for_arg, decoy_detail,
+                token_confirmation_idx=tcidx,
+            )
+            if isinstance(res, dict) and res.get("status") == "SUCCESS":
+                print("Pembelian berhasil!")
             pause()
             return True
 
@@ -211,10 +179,10 @@ def show_package_details(api_key, tokens, package_option_code, is_enterprise, op
             decoy = DECOY.get_decoy("qris" if choice == "6" else "qris0")
             decoy_detail = get_package(api_key, tokens, decoy["option_code"])
             if not decoy_detail:
-                print("Failed to load decoy package details.")
+                print("Gagal memuat detail paket decoy.")
                 pause()
                 return False
-            _append_decoy(payment_items, decoy_detail)
+            append_decoy_item(payment_items, decoy_detail)
             print("-" * 55)
             print(f"Harga Paket Utama: Rp {price}")
             print(f"Harga Paket Decoy: Rp {decoy_detail['package_option']['price']}")
@@ -228,15 +196,15 @@ def show_package_details(api_key, tokens, package_option_code, is_enterprise, op
             return True
 
         if choice == "8":
-            use_decoy = input("Use decoy package? (y/n): ").strip().lower() == "y"
-            n_times_str = input("Enter number of times to purchase (e.g., 3): ").strip()
-            delay_str = input("Enter delay between purchases in seconds (e.g., 25): ").strip() or "0"
+            use_decoy = input("Gunakan paket decoy? (y/n): ").strip().lower() == "y"
+            n_times_str = input("Masukkan jumlah pembelian (mis. 3): ").strip()
+            delay_str = input("Masukkan jeda antar pembelian dalam detik (mis. 25): ").strip() or "0"
             try:
                 n_times = int(n_times_str)
                 if n_times < 1:
                     raise ValueError
             except ValueError:
-                print("Invalid number. Please enter a valid integer.")
+                print("Angka tidak valid. Masukkan bilangan bulat yang valid.")
                 pause()
                 continue
             purchase_n_times_by_option_code(
@@ -277,7 +245,7 @@ def show_package_details(api_key, tokens, package_option_code, is_enterprise, op
             input("Tekan Enter untuk kembali.")
             return True
 
-        print("Purchase cancelled.")
+        print("Pembelian dibatalkan.")
         return False
 
 
@@ -291,15 +259,15 @@ def fetch_my_packages() -> None:
     payload = {"is_enterprise": False, "lang": LANG_EN, "family_member_id": ""}
     res = send_api_request(api_key, Endpoint.QUOTA_DETAILS, payload, tokens["id_token"], "POST")
     if not isinstance(res, dict) or res.get("status") != "SUCCESS":
-        print("Failed to fetch packages")
-        print(f"Response: {res}")
+        print("Gagal mengambil paket")
+        print(f"Respons: {res}")
         pause()
         return
 
     quotas = res["data"]["quotas"]
     clear_screen()
     print("=======================================================")
-    print("======================My Packages======================")
+    print("======================Paket Saya======================")
     print("=======================================================")
 
     my_packages = []
@@ -336,23 +304,23 @@ def fetch_my_packages() -> None:
                 info += f"  Kuota : {remaining} / {total}"
             benefit_infos.append(info)
 
-        print(f"fetching package no. {idx} details...")
+        print(f"Mengambil detail paket no. {idx}...")
         package_details = get_package(api_key, tokens, quota_code)
         if package_details:
             family_code = package_details["package_family"]["package_family_code"]
 
         print("=======================================================")
-        print(f"Package {idx}")
-        print(f"Name: {quota_name}")
+        print(f"Paket {idx}")
+        print(f"Nama: {quota_name}")
         if benefit_infos:
-            print("Benefits:")
+            print("Benefit:")
             for bi in benefit_infos:
                 print(bi)
             print("  -----------------------------------------------------")
-        print(f"Group Name: {group_name}")
-        print(f"Quota Code: {quota_code}")
+        print(f"Nama Grup: {group_name}")
+        print(f"Kode Kuota: {quota_code}")
         print(f"Family Code: {family_code}")
-        print(f"Group Code: {group_code}")
+        print(f"Kode Grup: {group_code}")
         print("=======================================================")
 
         my_packages.append({
@@ -363,10 +331,10 @@ def fetch_my_packages() -> None:
             "product_domain": product_domain,
         })
 
-    print("Input package number to view detail.")
-    print("Input del <package number> to unsubscribe from a package.")
-    print("Input 00 to return to main menu.")
-    choice = input("Choice: ").strip()
+    print("Masukkan nomor paket untuk melihat detail.")
+    print("Masukkan del <nomor paket> untuk berhenti berlangganan paket.")
+    print("Masukkan 00 untuk kembali ke menu utama.")
+    choice = input("Pilihan: ").strip()
 
     if choice == "00":
         return
@@ -380,21 +348,21 @@ def fetch_my_packages() -> None:
     if choice.startswith("del "):
         parts = choice.split()
         if len(parts) != 2 or not parts[1].isdigit():
-            print("Invalid input.")
+            print("Input tidak valid.")
             pause()
             return
         del_number = int(parts[1])
         target = next((pkg for pkg in my_packages if pkg["number"] == del_number), None)
         if not target:
-            print("Package not found.")
+            print("Paket tidak ditemukan.")
             pause()
             return
-        if input(f"Are you sure you want to unsubscribe from {target['name']}? (y/n): ").lower() != "y":
-            print("Cancelled.")
+        if input(f"Yakin ingin berhenti berlangganan dari {target['name']}? (y/n): ").lower() != "y":
+            print("Dibatalkan.")
             pause()
             return
-        if unsubscribe(api_key, tokens, target["quota_code"], target["product_subscription_type"], target["product_domain"]):
-            print("Unsubscribed.")
+        if unsubscribe(api_key, tokens, target["quota_code"], target["product_domain"], target["product_subscription_type"]):
+            print("Berhenti berlangganan.")
         else:
-            print("Failed to unsubscribe.")
+            print("Gagal berhenti berlangganan.")
         pause()

@@ -15,7 +15,7 @@ def get_family(
     migration_type: str | None = None,
 ) -> dict | None:
     """Brute-force (is_enterprise × migration_type) until a non-empty family is returned."""
-    print("Fetching package family...")
+    print("Mengambil family paket...")
 
     enterprise_choices = [False, True] if is_enterprise is None else [is_enterprise]
     migration_choices = list(MigrationType.ALL) if migration_type is None else [migration_type]
@@ -29,7 +29,7 @@ def get_family(
         for ie in enterprise_choices:
             if family_data is not None:
                 break
-            print(f"Trying is_enterprise={ie}, migration_type={mt}.")
+            print(f"Mencoba is_enterprise={ie}, migration_type={mt}.")
             payload = {
                 "is_show_tagging_tab": True,
                 "is_dedicated_event": True,
@@ -49,10 +49,10 @@ def get_family(
             family_name = res["data"]["package_family"].get("name", "")
             if family_name:
                 family_data = res["data"]
-                print(f"Success with is_enterprise={ie}, migration_type={mt}. Family name: {family_name}")
+                print(f"Berhasil dengan is_enterprise={ie}, migration_type={mt}. Nama family: {family_name}")
 
     if family_data is None:
-        print(f"Failed to get valid family data for {family_code}")
+        print(f"Gagal mendapatkan data family yang valid untuk {family_code}")
         return None
     return family_data
 
@@ -78,21 +78,21 @@ def get_package(
         "is_upsell_pdp": False,
         "package_variant_code": package_variant_code,
     }
-    print("Fetching package...")
+    print("Mengambil paket...")
     res = send_api_request(api_key, Endpoint.PACKAGE_DETAIL, payload, tokens["id_token"], "POST")
     if not isinstance(res, dict) or "data" not in res:
         print(json.dumps(res, indent=2))
-        print("Error getting package:", res.get("error", "Unknown error") if isinstance(res, dict) else res)
+        print("Gagal mengambil paket:", res.get("error", "Error tidak diketahui") if isinstance(res, dict) else res)
         return None
     return res["data"]
 
 
 def get_addons(api_key: str, tokens: dict, package_option_code: str) -> dict | None:
     payload = {"is_enterprise": False, "lang": LANG_EN, "package_option_code": package_option_code}
-    print("Fetching addons...")
+    print("Mengambil addon...")
     res = send_api_request(api_key, Endpoint.ADDONS, payload, tokens["id_token"], "POST")
     if not isinstance(res, dict) or "data" not in res:
-        print("Error getting addons:", res.get("error", "Unknown error") if isinstance(res, dict) else res)
+        print("Gagal mengambil addon:", res.get("error", "Error tidak diketahui") if isinstance(res, dict) else res)
         return None
     return res["data"]
 

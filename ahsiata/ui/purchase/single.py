@@ -5,7 +5,7 @@ import time
 from random import randint
 
 from ahsiata.api.packages import get_package
-from ahsiata.api.purchase.balance import settlement_balance
+from ahsiata.api.purchase.balance import settle_with_decoy, settlement_balance
 from ahsiata.core.decoy import DECOY
 from ahsiata.core.session import SESSION
 from ahsiata.type_dict import PaymentItem
@@ -28,7 +28,7 @@ def purchase_n_times_by_option_code(
 
     detail = get_package(api_key, tokens, option_code)
     if not detail:
-        print("Failed to fetch package detail.")
+        print("Gagal mengambil detail paket.")
         return 0
 
     price = detail["package_option"]["price"]
@@ -48,25 +48,10 @@ def purchase_n_times_by_option_code(
         if use_decoy:
             decoy = DECOY.get_decoy("balance")
             decoy_detail = get_package(api_key, tokens, decoy["option_code"]) if decoy else None
-            if decoy_detail:
-                items.append(PaymentItem(
-                    item_code=decoy_detail["package_option"]["package_option_code"],
-                    product_type="",
-                    item_price=decoy_detail["package_option"]["price"],
-                    item_name=decoy_detail["package_option"]["name"],
-                    tax=0,
-                    token_confirmation=decoy_detail["token_confirmation"],
-                ))
-                res = settlement_balance(
-                    api_key, tokens, items, "BUY_PACKAGE", False,
-                    overwrite_amount=price + decoy_detail["package_option"]["price"],
-                    token_confirmation_idx=token_confirmation_idx,
-                )
-            else:
-                res = settlement_balance(
-                    api_key, tokens, items, "BUY_PACKAGE", True,
-                    token_confirmation_idx=token_confirmation_idx,
-                )
+            res = settle_with_decoy(
+                api_key, tokens, items, "BUY_PACKAGE", decoy_detail,
+                token_confirmation_idx=token_confirmation_idx,
+            )
         else:
             res = settlement_balance(
                 api_key, tokens, items, "BUY_PACKAGE", True,

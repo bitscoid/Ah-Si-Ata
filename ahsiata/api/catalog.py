@@ -9,7 +9,7 @@ def get_segments(api_key: str, tokens: dict, is_enterprise: bool = False) -> dic
     payload = {"is_enterprise": is_enterprise, "lang": LANG_EN}
     res = send_api_request(api_key, Endpoint.STORE_SEGMENTS, payload, tokens["id_token"], "POST")
     if not isinstance(res, dict) or res.get("status") != "SUCCESS":
-        print("Failed to fetch segments.")
+        print("Gagal mengambil segments.")
         print(f"Error: {res}")
         return None
     return res
@@ -24,7 +24,7 @@ def get_family_list(
     payload = {"is_enterprise": is_enterprise, "subs_type": subs_type, "lang": LANG_EN}
     res = send_api_request(api_key, Endpoint.FAMILY_LIST_SEARCH, payload, tokens["id_token"], "POST")
     if not isinstance(res, dict) or res.get("status") != "SUCCESS":
-        print("Failed to fetch family list.")
+        print("Gagal mengambil family list.")
         print(f"Error: {res}")
         return None
     return res
@@ -51,7 +51,7 @@ def get_store_packages(
     }
     res = send_api_request(api_key, Endpoint.STORE_PACKAGES_SEARCH, payload, tokens["id_token"], "POST")
     if not isinstance(res, dict) or res.get("status") != "SUCCESS":
-        print("Failed to fetch store packages.")
+        print("Gagal mengambil paket toko.")
         print(f"Error: {res}")
         return None
     return res
@@ -61,7 +61,7 @@ def get_redeemables(api_key: str, tokens: dict, is_enterprise: bool = False) -> 
     payload = {"is_enterprise": is_enterprise, "lang": LANG_EN}
     res = send_api_request(api_key, Endpoint.REDEEMABLES, payload, tokens["id_token"], "POST")
     if not isinstance(res, dict) or res.get("status") != "SUCCESS":
-        print("Failed to fetch redeemable.")
+        print("Gagal mengambil redeemable.")
         print(f"Error: {res}")
         return None
     return res

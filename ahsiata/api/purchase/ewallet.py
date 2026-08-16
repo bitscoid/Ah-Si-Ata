@@ -27,7 +27,7 @@ def settlement_multipayment(
     amount_idx: int = -1,
 ):
     if overwrite_amount == -1 and not ask_overwrite:
-        print("Either ask_overwrite must be True or overwrite_amount must be set.")
+        print("ask_overwrite harus True atau overwrite_amount harus diisi.")
         return None
 
     token_confirmation = items[token_confirmation_idx]["token_confirmation"]
@@ -82,7 +82,7 @@ def settlement_multipayment(
         path=path,
     )
 
-    print("Sending settlement request...")
+    print("Mengirim permintaan settlement...")
     return post_signed_payload(api_key=api_key, tokens=tokens, path=path, payload=payload, signature=x_sig)
 
 
@@ -134,7 +134,7 @@ def show_multipayment(
     )
 
     if not isinstance(res, dict) or res.get("status") != "SUCCESS":
-        print("Failed to initiate settlement.")
+        print("Gagal memulai settlement.")
         print(f"Error: {res}")
         return
 

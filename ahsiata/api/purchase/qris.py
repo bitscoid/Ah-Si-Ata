@@ -34,7 +34,7 @@ def settlement_qris(
 ) -> str | None:
     """Returns the QRIS `transaction_code` (used by `get_qris_code`)."""
     if overwrite_amount == -1 and not ask_overwrite:
-        print("Either ask_overwrite must be True or overwrite_amount must be set.")
+        print("ask_overwrite harus True atau overwrite_amount harus diisi.")
         return None
 
     token_confirmation = items[token_confirmation_idx]["token_confirmation"]
@@ -104,13 +104,13 @@ def settlement_qris(
         path=path,
     )
 
-    print("Sending settlement request...")
+    print("Mengirim permintaan settlement...")
     res = post_signed_payload(api_key=api_key, tokens=tokens, path=path, payload=payload, signature=x_sig)
 
     if not isinstance(res, dict):
         return res
     if res.get("status") != "SUCCESS":
-        print("Failed to initiate settlement.")
+        print("Gagal memulai settlement.")
         print(f"Error: {res}")
         return None
     return res["data"]["transaction_code"]
@@ -125,7 +125,7 @@ def get_qris_code(api_key: str, tokens: dict, transaction_id: str) -> str | None
     }
     res = send_api_request(api_key, Endpoint.PENDING_DETAIL, payload, tokens["id_token"], "POST")
     if not isinstance(res, dict) or res.get("status") != "SUCCESS":
-        print("Failed to fetch QRIS code.")
+        print("Gagal mengambil kode QRIS.")
         print(f"Error: {res}")
         return None
     return res["data"]["qr_code"]
@@ -148,15 +148,15 @@ def show_qris_payment(
         token_confirmation_idx, amount_idx, topup_number, stage_token,
     )
     if not transaction_id:
-        print("Failed to create QRIS transaction.")
+        print("Gagal membuat transaksi QRIS.")
         return None
 
-    print("Fetching QRIS code...")
+    print("Mengambil kode QRIS...")
     qris_code = get_qris_code(api_key, tokens, transaction_id)
     if not qris_code:
-        print("Failed to get QRIS code.")
+        print("Gagal mendapatkan kode QRIS.")
         return None
-    print(f"QRIS data:\n{qris_code}")
+    print(f"Data QRIS:\n{qris_code}")
 
     qr = qrcode.QRCode(
         version=1,

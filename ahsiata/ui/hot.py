@@ -141,8 +141,8 @@ def show_hot_menu2() -> None:
         family_code = main_detail.get("package_family", {}).get("package_family_code", "")
 
         print("=" * WIDTH)
-        print(f"Name: {selected['name']}")
-        print(f"Price: {selected['price']}")
+        print(f"Nama: {selected['name']}")
+        print(f"Harga: {selected['price']}")
         print(f"Detail: {selected['detail']}")
         print("=" * WIDTH)
         print(f"Nama: {title}")
@@ -153,11 +153,11 @@ def show_hot_menu2() -> None:
         print(f"Plan Type: {main_detail['package_family']['plan_type']}")
         print("-" * WIDTH)
         print(f"Family Code: {family_code}")
-        print(f"Parent Code (for addon/dummy): {parent_code}")
+        print(f"Parent Code (untuk addon/dummy): {parent_code}")
         print("-" * WIDTH)
 
         for benefit in main_detail["package_option"]["benefits"]:
-            print(f" Name: {benefit['name']}")
+            print(f" Nama: {benefit['name']}")
             data_type = benefit["data_type"]
             total = benefit["total"]
             if data_type == "VOICE" and total > 0:
@@ -169,7 +169,7 @@ def show_hot_menu2() -> None:
             elif data_type not in ("DATA", "VOICE", "TEXT"):
                 print(f"  Total: {total} ({data_type})")
             if benefit["is_unlimited"]:
-                print("  Unlimited: Yes")
+                print("  Unlimited: Ya")
 
         payment_for = selected.get("payment_for", "BUY_PACKAGE")
         ask_overwrite = selected.get("ask_overwrite", False)

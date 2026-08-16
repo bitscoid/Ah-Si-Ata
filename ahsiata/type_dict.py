@@ -11,10 +11,3 @@ class PaymentItem(TypedDict):
     item_name: str
     tax: int
     token_confirmation: str
-
-
-class PackageToBuy(TypedDict):
-    family_code: str
-    is_enterprise: bool
-    variant_name: str
-    order: int

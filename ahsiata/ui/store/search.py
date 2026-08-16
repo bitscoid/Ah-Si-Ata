@@ -21,7 +21,7 @@ def show_family_list_menu(subs_type: str, is_enterprise: bool) -> None:
         print("=" * 55)
         res = get_family_list(api_key, tokens, subs_type, is_enterprise)
         if not res:
-            print("Failed to fetch family list.")
+            print("Gagal mengambil daftar family.")
             pause()
             return
 
@@ -29,7 +29,7 @@ def show_family_list_menu(subs_type: str, is_enterprise: bool) -> None:
         for idx, fam in enumerate(families, start=1):
             print(f"{idx}. {fam.get('family_name', 'N/A')}")
         print("-" * 55)
-        print("00. Back to Main Menu")
+        print("00. Kembali ke menu utama")
         choice = input("Pilih family (nomor): ").strip()
         if choice == "00":
             return
@@ -54,7 +54,7 @@ def show_store_packages_menu(subs_type: str, is_enterprise: bool) -> None:
         print("=" * 55)
         res = get_store_packages(api_key, tokens, subs_type, is_enterprise)
         if not res:
-            print("Failed to fetch packages.")
+            print("Gagal mengambil paket.")
             pause()
             return
 
@@ -63,7 +63,7 @@ def show_store_packages_menu(subs_type: str, is_enterprise: bool) -> None:
             price = pkg.get("discounted_price", pkg.get("price", "N/A"))
             print(f"{idx}. {pkg.get('package_name', pkg.get('name', 'N/A'))} - {price}")
         print("-" * 55)
-        print("00. Back to Main Menu")
+        print("00. Kembali ke menu utama")
         choice = input("Pilih paket (nomor): ").strip()
         if choice == "00":
             return

@@ -14,12 +14,12 @@ import requests
 from ahsiata.config import CONFIG
 from ahsiata.constants import CIAMEndpoint, CIAMHeader
 from ahsiata.api.encrypt import (
-    ax_api_signature,
     ax_device_id,
     java_like_timestamp,
     load_ax_fp,
     ts_gmt7_without_colon,
 )
+from ahsiata.core.crypto import make_ax_api_signature
 
 
 # Module-level device context (loaded once at import)
@@ -80,7 +80,7 @@ def _ciam_headers(
 def validate_contact(contact: str) -> bool:
     """XL MSISDN: starts with 628, length <= 14."""
     if not contact.startswith("628") or len(contact) > 14:
-        print("Invalid number")
+        print("Nomor tidak valid")
         return False
     return True
 
@@ -94,17 +94,17 @@ def get_otp(contact: str) -> str | None:
     params = {"contact": contact, "contactType": "SMS", "alternateContact": "false"}
     headers = _ciam_headers()
 
-    print("Requesting OTP...")
+    print("Meminta OTP...")
     try:
         response = requests.get(url, headers=headers, params=params, timeout=30)
-        print("response body", response.text)
+        print("isi respons", response.text)
         json_body = json.loads(response.text)
         if "subscriber_id" not in json_body:
-            print(json_body.get("error", "No error message in response"))
-            raise ValueError("Subscriber ID not found in response")
+            print(json_body.get("error", "Tidak ada pesan error dalam respons"))
+            raise ValueError("Subscriber ID tidak ditemukan dalam respons")
         return json_body["subscriber_id"]
     except Exception as e:
-        print(f"Error requesting OTP: {e}")
+        print(f"Gagal meminta OTP: {e}")
         return None
 
 
@@ -115,15 +115,15 @@ def extend_session(subscriber_id: str) -> str | None:
     params = {"contact": b64_subscriber_id, "contactType": "DEVICEID"}
     headers = _ciam_headers()
 
-    print("Extending session...")
+    print("Memperpanjang sesi...")
     try:
         response = requests.get(url, headers=headers, params=params, timeout=30)
         if response.status_code != 200:
-            print(f"Failed to extend session: {response.status_code} - {response.text}")
+            print(f"Gagal memperpanjang sesi: {response.status_code} - {response.text}")
             return None
         return response.json().get("data", {}).get("exchange_code")
     except Exception as e:
-        print(f"Error extending session: {e}")
+        print(f"Gagal memperpanjang sesi: {e}")
         return None
 
 
@@ -136,23 +136,23 @@ def submit_otp(
     """Exchange OTP (SMS) or exchange_code (DEVICEID) for OIDC tokens."""
     if contact_type == "SMS":
         if not validate_contact(contact):
-            print("Invalid number")
+            print("Nomor tidak valid")
             return None
         if not code or len(code) != 6:
-            print("Invalid OTP code format")
+            print("Format kode OTP tidak valid")
             return None
         final_contact, final_code = contact, code
     elif contact_type == "DEVICEID":
         final_contact = base64.b64encode(contact.encode()).decode()
         final_code = code
     else:
-        print("Unsupported contact type")
+        print("Tipe kontak tidak didukung")
         return None
 
     now_gmt7 = datetime.now(timezone(timedelta(hours=7)))
     ts_for_sign = ts_gmt7_without_colon(now_gmt7)
     ts_header = ts_gmt7_without_colon(now_gmt7 - timedelta(minutes=5))
-    signature = ax_api_signature(api_key, ts_for_sign, final_contact, code, contact_type)
+    signature = make_ax_api_signature(ts_for_sign, final_contact, code, contact_type)
 
     payload = (
         f"contactType={contact_type}&code={final_code}"
@@ -164,17 +164,17 @@ def submit_otp(
 
     url = CONFIG.base_ciam_url + CIAMEndpoint.TOKEN
 
-    print("Submitting OTP...")
+    print("Mengirim OTP...")
     try:
         response = requests.post(url, data=payload, headers=headers, timeout=30)
         json_body = json.loads(response.text)
         if "error" in json_body:
-            print(f"[Error submit_otp]: {json_body}")
+            print(f"[err submit_otp]: {json_body}")
             return None
-        print("Login successful.")
+        print("Login berhasil.")
         return json_body
     except requests.RequestException as e:
-        print(f"[Error submit_otp]: {e}")
+        print(f"[err submit_otp]: {e}")
         return None
 
 
@@ -196,33 +196,33 @@ def get_new_token(api_key: str, refresh_token: str, subscriber_id: str) -> dict:
 
     data = {"grant_type": "refresh_token", "refresh_token": refresh_token}
 
-    print("Refreshing token...")
+    print("Memperbarui token...")
     resp = requests.post(url, headers=headers, data=data, timeout=30)
 
     if resp.status_code == 400:
         if resp.json().get("error_description") != "Session not active":
-            print(f"Failed to refresh token: {resp.status_code} - {resp.text}")
+            print(f"Gagal memperbarui token: {resp.status_code} - {resp.text}")
             return None
 
         if subscriber_id == "":
-            raise ValueError("Subscriber ID is missing")
+            raise ValueError("Subscriber ID tidak ada")
 
         exchange_code = extend_session(subscriber_id)
         if exchange_code is None:
-            raise ValueError("Failed to get exchange code")
+            raise ValueError("Gagal mendapatkan exchange code")
 
         extend_result = submit_otp(api_key, "DEVICEID", subscriber_id, exchange_code)
         if extend_result is None:
             if "Invalid refresh token" in resp.text:
-                raise ValueError("Refresh token is invalid or expired. Please login again.")
-            raise ValueError("Failed to submit OTP after extending session")
+                raise ValueError("Refresh token tidak valid atau kedaluwarsa. Silakan login lagi.")
+            raise ValueError("Gagal mengirim OTP setelah memperpanjang sesi")
         return extend_result
 
     resp.raise_for_status()
     body = resp.json()
 
     if "id_token" not in body:
-        raise ValueError("ID token not found in response")
+        raise ValueError("ID token tidak ditemukan dalam respons")
     if "error" in body:
-        raise ValueError(f"Error in response: {body['error']} - {body.get('error_description', '')}")
+        raise ValueError(f"Error dalam respons: {body['error']} - {body.get('error_description', '')}")
     return body

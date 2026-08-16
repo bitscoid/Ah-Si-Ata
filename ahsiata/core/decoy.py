@@ -54,7 +54,7 @@ class DecoyPackage:
         if self.subscriber_id == current_sub_id:
             return
 
-        print(f"Subscriber ID changed from {self.subscriber_id} to {current_sub_id}. Resetting decoy data.")
+        print(f"Subscriber ID berubah dari {self.subscriber_id} ke {current_sub_id}. Mengatur ulang data decoy.")
         self.reset_decoys()
         self.subscriber_id = current_sub_id
         self.subscription_type = current_sub_type
@@ -63,11 +63,11 @@ class DecoyPackage:
     def fetch_decoy_data(self, decoy_name: str) -> None:
         user = SESSION.get_active_user()
         if user is None:
-            print("No active user. Cannot fetch decoy package.")
+            print("Tidak ada user aktif. Tidak dapat mengambil paket decoy.")
             return
 
         path = _DECOY_PATH_PREFIX + decoy_name + ".json"
-        print(f"Refreshing decoy data for: {decoy_name}")
+        print(f"Memperbarui data decoy untuk: {decoy_name}")
         try:
             with open(path, "r", encoding="utf-8") as f:
                 decoy = json.load(f)
@@ -82,21 +82,21 @@ class DecoyPackage:
                 decoy["migration_type"],
             )
             if detail is None:
-                print(f"Could not fetch detail for {decoy_name}")
+                print(f"Tidak dapat mengambil detail untuk {decoy_name}")
                 return
             self.decoys[decoy_name] = {
                 "option_code": detail["package_option"]["package_option_code"],
                 "last_fetched_at": int(time.time()),
                 "price": decoy["price"],
             }
-            print(f"Decoy data for {decoy_name} refreshed successfully.")
+            print(f"Data decoy untuk {decoy_name} berhasil diperbarui.")
         except Exception as e:
-            print(f"Error fetching decoy data: {e}")
+            print(f"Gagal mengambil data decoy: {e}")
 
     def get_decoy(self, payment_type: str) -> dict | None:
         self.check_subscriber_change()
         if payment_type not in _DECOY_PAYMENT_TYPES:
-            print(f"Unsupported payment type: {payment_type}")
+            print(f"Tipe pembayaran tidak didukung: {payment_type}")
             return None
 
         name = self.prefix + payment_type

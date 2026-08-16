@@ -23,13 +23,13 @@ def show_redeemables_menu(is_enterprise: bool) -> None:
         print("=" * WIDTH)
         res = get_redeemables(api_key, tokens, is_enterprise)
         if not res:
-            print("Failed to fetch redeemables.")
+            print("Gagal mengambil redeemable.")
             pause()
             return
 
         categories = res.get("data", {}).get("categories", [])
         if not categories:
-            print("No categories.")
+            print("Tidak ada kategori.")
             pause()
             return
 
@@ -40,24 +40,24 @@ def show_redeemables_menu(is_enterprise: bool) -> None:
                 print(f"   {letter.lower()}{j}. {pkg.get('name', 'N/A')}")
             print("-" * WIDTH)
 
-        print("00. Back to Main Menu")
-        choice = input("Enter your choice to view package details (e.g., A1, B2): ").strip()
+        print("00. Kembali ke menu utama")
+        choice = input("Masukkan pilihan Anda untuk melihat detail paket (mis. A1, B2): ").strip()
         if choice == "00":
             return
         if len(choice) < 2 or not choice[0].isalpha() or not choice[1:].isdigit():
-            print("Invalid choice.")
+            print("Pilihan tidak valid.")
             pause()
             continue
         letter_idx = ord(choice[0].upper()) - ord("A")
         pkg_idx = int(choice[1:]) - 1
         if not (0 <= letter_idx < len(categories)):
-            print("Invalid choice.")
+            print("Pilihan tidak valid.")
             pause()
             continue
         category = categories[letter_idx]
         packages = category.get("packages", [])
         if not (0 <= pkg_idx < len(packages)):
-            print("Invalid choice.")
+            print("Pilihan tidak valid.")
             pause()
             continue
         selected = packages[pkg_idx]
@@ -68,5 +68,5 @@ def show_redeemables_menu(is_enterprise: bool) -> None:
         elif action == "PDP":
             show_package_details(api_key, tokens, param, False)
         else:
-            print(f"Unhandled action type: {action}")
+            print(f"Tipe aksi yang tidak ditangani: {action}")
             pause()

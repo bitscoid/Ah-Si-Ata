@@ -17,6 +17,55 @@ from ahsiata.constants import Endpoint, LANG_EN, PaymentMethod
 from ahsiata.type_dict import PaymentItem
 
 
+def append_decoy_item(items: list[PaymentItem], decoy_detail: dict) -> None:
+    """Add a decoy package to the payment items list."""
+    items.append(PaymentItem(
+        item_code=decoy_detail["package_option"]["package_option_code"],
+        product_type="",
+        item_price=decoy_detail["package_option"]["price"],
+        item_name=decoy_detail["package_option"]["name"],
+        tax=0,
+        token_confirmation=decoy_detail["token_confirmation"],
+    ))
+
+
+def settle_with_decoy(
+    api_key: str,
+    tokens: dict,
+    items: list[PaymentItem],
+    payment_for: str,
+    decoy_detail: dict | None,
+    token_confirmation_idx: int = 0,
+) -> dict | str | None:
+    """Settle `items` with an optional decoy appended; retry once with the
+    server-corrected total when the API rejects `Bizz-err.Amount.Total`."""
+    if decoy_detail is None:
+        return settlement_balance(
+            api_key, tokens, items, payment_for, True,
+            token_confirmation_idx=token_confirmation_idx,
+        )
+
+    append_decoy_item(items, decoy_detail)
+    total = items[0]["item_price"] + decoy_detail["package_option"]["price"]
+    res = settlement_balance(
+        api_key, tokens, items, payment_for, False,
+        overwrite_amount=total, token_confirmation_idx=token_confirmation_idx,
+    )
+    if isinstance(res, dict) and res.get("status") != "SUCCESS":
+        error_msg = res.get("message", "")
+        if "Bizz-err.Amount.Total" in error_msg:
+            try:
+                valid_amount = int(error_msg.split("=")[1].strip())
+            except (IndexError, ValueError):
+                return res
+            print(f"Total jumlah disesuaikan menjadi: {valid_amount}")
+            return settlement_balance(
+                api_key, tokens, items, payment_for, False,
+                overwrite_amount=valid_amount, token_confirmation_idx=token_confirmation_idx,
+            )
+    return res
+
+
 def settlement_balance(
     api_key: str,
     tokens: dict,
@@ -30,7 +79,7 @@ def settlement_balance(
     stage_token: str = "",
 ):
     if overwrite_amount == -1 and not ask_overwrite:
-        print("Either ask_overwrite must be True or overwrite_amount must be set.")
+        print("ask_overwrite harus True atau overwrite_amount harus diisi.")
         return None
 
     token_confirmation = items[token_confirmation_idx]["token_confirmation"]
@@ -118,13 +167,13 @@ def settlement_balance(
         path=path,
     )
 
-    print("Sending settlement request...")
+    print("Mengirim permintaan settlement...")
     res = post_signed_payload(api_key=api_key, tokens=tokens, path=path, payload=payload, signature=x_sig)
 
     if isinstance(res, dict) and res.get("status") != "SUCCESS":
-        print("Failed to initiate settlement.")
+        print("Gagal memulai settlement.")
         print(f"Error: {res}")
         return res
     if isinstance(res, dict):
-        print(f"Purchase result:\n{json.dumps(res, indent=2)}")
+        print(f"Hasil pembelian:\n{json.dumps(res, indent=2)}")
     return res
