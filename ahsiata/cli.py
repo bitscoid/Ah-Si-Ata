@@ -68,9 +68,17 @@ def show_main_menu(profile: dict) -> None:
         point_info = point_info.replace("Points", "⭐ Points")
     print(p(center(point_info, WIDTH), C.CYAN))
     print(rule(char="=", color=C.BLUE))
-    icw = max(disp_w(ic) for _, ic, _ in MENU_ITEMS)
-    for key, ic, label in MENU_ITEMS:
-        print(f"{key:>3}  {ic}{' ' * (icw - disp_w(ic))} {label}")
+    items = MENU_ITEMS
+    half = (len(items) + 1) // 2
+    for i in range(half):
+        left = items[i]
+        right = items[i + half] if i + half < len(items) else None
+        left_str = f"{left[0]:>3}  {left[1]} {left[2]}"
+        if right:
+            right_str = f"{right[0]:>3}  {right[1]} {right[2]}"
+            print(f"{left_str:<27}  {right_str}")
+        else:
+            print(left_str)
     print(rule(char="-", color=C.BLUE))
 
 
