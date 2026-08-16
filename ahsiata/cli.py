@@ -126,7 +126,7 @@ def _run() -> None:
             "point_info": point_info,
         }
         show_main_menu(profile)
-        choice = input(p("🧭 Pilih menu: ", C.BOLD)).strip()
+        choice = input(p("🧭 Pilih : ", C.BOLD)).strip()
 
         if choice == "t":
             pause()
