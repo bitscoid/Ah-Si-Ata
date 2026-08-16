@@ -42,7 +42,7 @@ def show_store_segments_menu(is_enterprise: bool) -> None:
                 if price_text:
                     line += p(f" ({price_text})", C.YELLOW)
                 print(line)
-            print(rule())
+            print(rule(color=C.CYAN))
 
         print(rule(char="-", color=C.CYAN))
         print(p(f"{'':>3}  {'B':>2} Kembali", C.WHITE))

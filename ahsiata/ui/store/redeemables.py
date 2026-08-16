@@ -39,7 +39,7 @@ def show_redeemables_menu(is_enterprise: bool) -> None:
             print(f"{letter}. 🏷 {p(cat.get('name', ''), C.BOLD, C.WHITE)}")
             for j, pkg in enumerate(cat.get("packages", []), start=1):
                 print(f"   {letter.lower()}{j}. {p(pkg.get('name', ''), C.CYAN)}")
-            print(rule())
+            print(rule(color=C.YELLOW))
 
         print(rule(char="-", color=C.YELLOW))
         print(p(f"{'':>3}  {'B':>2} Kembali", C.WHITE))

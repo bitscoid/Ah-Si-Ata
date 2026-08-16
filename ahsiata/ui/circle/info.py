@@ -159,9 +159,9 @@ def show_circle_info(api_key: str, tokens: dict) -> None:
         print(title(f"🫂 {group_name}", color=C.MAGENTA))
         print(rule(char="=", color=C.MAGENTA))
         print(p(f"👤 Pemilik: {owner_name} {parrent_msisdn}", C.CYAN))
-        print(rule())
+        print(rule(color=C.MAGENTA))
         print(p(f"📦 Paket: {package_name} | {remaining} / {allocation}", C.BOLD, C.YELLOW))
-        print(rule())
+        print(rule(color=C.MAGENTA))
         print(p(f"💸 Pengeluaran: Rp{spend:,} / Rp{target:,}", C.BOLD))
 
         for idx, member in enumerate(members, start=1):
@@ -181,11 +181,11 @@ def show_circle_info(api_key: str, tokens: dict) -> None:
             print(f"{idx}. {p(display_msisdn, C.BOLD)} ({member_name}) | {p(member_type, C.CYAN)} {p('(You)', C.GREEN) if me_mark else ''}")
             print(f"   📅 Bergabung: {datetime.fromtimestamp(join_ts).strftime('%Y-%m-%d')} | 🔢 Slot: {slot_type} | 📊 Status: {member_status}")
             print(p(f"   📊 Pemakaian: {used} / {allocated}", C.YELLOW))
-            print(rule())
+            print(rule(color=C.MAGENTA))
 
         print(rule(char="-", color=C.MAGENTA))
         print(p("⚙️ Opsi:", C.BOLD, C.WHITE))
-        print(rule())
+        print(rule(color=C.MAGENTA))
         print("1. Undang Member")
         print("2. Bonus Circle")
         print("D Hapus Member")

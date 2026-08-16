@@ -46,11 +46,11 @@ def show_family_info(api_key: str, tokens: dict) -> None:
         clear_screen()
         print(p(center(f"👨👩👧 Plan: {plan_type} | 🧑 Parent: {parent_msisdn}", WIDTH), C.BOLD, C.CYAN))
         print(p(center(f"📦 Kuota: {remaining_quota} / {total_quota} | ⏳ s/d: {end_date}", WIDTH), C.BOLD, C.YELLOW))
-        print(rule())
+        print(rule(color=C.CYAN))
 
         print(p(f"👥 Anggota: {len(members) - len(empty_slots)}/{len(members)}:", C.BOLD))
         for idx, member in enumerate(members, start=1):
-            print(rule())
+            print(rule(color=C.CYAN))
             msisdn = member.get("msisdn", "N/A")
             display_msisdn = msisdn if msisdn else "<Empty Slot>"
             msisdn_str = p(display_msisdn, C.BOLD, C.WHITE) if msisdn else p("<Kosong>", C.WHITE)
@@ -64,11 +64,11 @@ def show_family_info(api_key: str, tokens: dict) -> None:
             quota_used = format_quota_byte(usage.get("quota_used", 0))
             print(f"{idx}. {msisdn_str} ({alias}) | {p(member_type, C.CYAN)} | ➕ {add_chances}/{total_add_chances}")
             print(f"   📊 Pemakaian: {p(quota_used, C.YELLOW)} / {p(quota_allocated, C.YELLOW)}")
-        print(rule())
+        print(rule(color=C.CYAN))
         print()
-        print(rule())
+        print(rule(color=C.CYAN))
         print(p("⚙️ Opsi:", C.BOLD, C.WHITE))
-        print(rule())
+        print(rule(color=C.CYAN))
         print("1. 🔄 Ganti Member")
         print("limit <slot> <MB> — 🔒 batas kuota")
         print("del <slot> — ❌ hapus member")
