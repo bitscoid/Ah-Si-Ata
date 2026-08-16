@@ -36,8 +36,8 @@ def show_redeemables_menu(is_enterprise: bool) -> None:
 
         for letter_idx, cat in enumerate(categories):
             letter = chr(ord("A") + letter_idx)
-            print(f"{letter}. 🏷 {p(cat.get('name', ''), C.BOLD, C.WHITE)}")
-            for j, pkg in enumerate(cat.get("packages", []), start=1):
+            print(f"{letter}. 🏷 {p(cat.get('category_name', ''), C.BOLD, C.WHITE)}")
+            for j, pkg in enumerate(cat.get("redeemables", []), start=1):
                 print(f"   {letter.lower()}{j}. {p(pkg.get('name', ''), C.CYAN)}")
             print(rule(color=C.YELLOW))
 
@@ -59,7 +59,7 @@ def show_redeemables_menu(is_enterprise: bool) -> None:
             pause()
             continue
         category = categories[letter_idx]
-        packages = category.get("packages", [])
+        packages = category.get("redeemables", [])
         if not (0 <= pkg_idx < len(packages)):
             print(fail("Pilihan tidak valid."))
             pause()

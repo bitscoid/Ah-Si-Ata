@@ -26,9 +26,9 @@ def show_family_list_menu(subs_type: str, is_enterprise: bool) -> None:
             pause()
             return
 
-        families = res.get("data", {}).get("family_list", [])
+        families = res.get("data", {}).get("results", [])
         for idx, fam in enumerate(families, start=1):
-            print(f"{idx}. 👨‍👩‍👧 {p(fam.get('family_name', ''), C.BOLD)}")
+            print(f"{idx}. 👨‍👩‍👧 {p(fam.get('label', ''), C.BOLD)}")
         print(rule(char="-", color=C.CYAN))
         print(p(f"{'':>3}  {'B':>2} Kembali", C.YELLOW))
         print(rule(char="-", color=C.CYAN))
@@ -41,7 +41,7 @@ def show_family_list_menu(subs_type: str, is_enterprise: bool) -> None:
             pause()
             continue
         selected = families[int(choice) - 1]
-        get_packages_by_family(selected.get("family_code", ""), is_enterprise)
+        get_packages_by_family(selected.get("id", ""), is_enterprise)
 
 
 def show_store_packages_menu(subs_type: str, is_enterprise: bool) -> None:
