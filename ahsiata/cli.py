@@ -169,16 +169,16 @@ def _run() -> None:
         elif choice == "9":
             show_circle_info(SESSION.api_key, active_user["tokens"])
         elif choice.lower() == "p":
-            is_enterprise = input(p("🧭 Toko enterprise? (y/n): ", C.BOLD)).lower() == "y"
+            is_enterprise = input(p("🧭 Enterprise? (y/n): ", C.BOLD)).lower() == "y"
             show_store_segments_menu(is_enterprise)
         elif choice.lower() == "f":
-            is_enterprise = input(p("🧭 Toko enterprise? (y/n): ", C.BOLD)).lower() == "y"
+            is_enterprise = input(p("🧭 Enterprise? (y/n): ", C.BOLD)).lower() == "y"
             show_family_list_menu(profile["subscription_type"], is_enterprise)
         elif choice.lower() == "s":
-            is_enterprise = input(p("🧭 Toko enterprise? (y/n): ", C.BOLD)).lower() == "y"
+            is_enterprise = input(p("🧭 Enterprise? (y/n): ", C.BOLD)).lower() == "y"
             show_store_packages_menu(profile["subscription_type"], is_enterprise)
         elif choice.lower() == "c":
-            is_enterprise = input(p("🧭 Toko enterprise? (y/n): ", C.BOLD)).lower() == "y"
+            is_enterprise = input(p("🧭 Enterprise? (y/n): ", C.BOLD)).lower() == "y"
             show_redeemables_menu(is_enterprise)
         elif choice.lower() == "b":
             show_bookmark_menu()
