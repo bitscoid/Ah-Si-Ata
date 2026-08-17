@@ -156,7 +156,7 @@ Salin `.env.template` ke `.env` dan isi nilai. Lihat bagian
 
 ## ⚙️ Environment Configuration
 
-### Wajib (raise `ValueError` jika kosong)
+### Wajib
 
 | Variabel | Deskripsi |
 |----------|-----------|
@@ -171,7 +171,7 @@ Salin `.env.template` ke `.env` dan isi nilai. Lihat bagian
 | `AX_API_SIG_KEY` | HMAC-SHA256 key untuk `Ax-Api-Signature` CIAM |
 | `X_API_BASE_SECRET` | Base secret HMAC-SHA512 `x-signature` |
 
-### Opsional (punya default)
+### Opsional
 
 | Variabel | Default | Deskripsi |
 |----------|---------|-----------|
