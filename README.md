@@ -13,7 +13,7 @@
     <img src="https://img.shields.io/badge/UI-Bahasa%20Indonesia-00C853?style=flat&logo=statuspage&logoColor=white" alt="UI Bahasa Indonesia" />
   </p>
   <p>
-    <a href="DOCS.md">📘 Dokumentasi Teknis Lengkap</a>
+    <a href="docs/README.md">📘 Dokumentasi Teknis Lengkap</a>
   </p>
 </div>
 
@@ -89,7 +89,7 @@ Ah-Si-Ata/
 ├── requirements.txt            # Dep langsung (5 pin + 1 floor urllib3)
 ├── pyproject.toml              # Packaging + console script
 ├── Makefile setup.sh           # Setup & run otomatis
-├── DOCS.md                     # Dokumentasi teknis lengkap
+├── docs/                       # Dokumentasi teknis per-file (indeks: docs/README.md)
 └── main.py                     # Wrapper tipis → ahsiata.cli.main()
 ```
 
@@ -233,7 +233,7 @@ Distributed under MIT License. See `LICENSE` file.
 
 <div align="center">
   <p>
-    📘 Dokumentasi teknis lengkap: <a href="DOCS.md">DOCS.md</a> ·
+    📘 Dokumentasi teknis lengkap: <a href="docs/README.md">docs/README.md</a> ·
     🔐 Lindungi refresh token · ⚠️ Proyek tidak penting & tanpa garansi
   </p>
 </div>
