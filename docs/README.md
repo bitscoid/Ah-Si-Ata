@@ -86,9 +86,3 @@ Struktur per-file: `# path` + tujuan satu baris, `## Ringkasan`, `## Fungsi/Kela
 - **Trik decoy**: konsep & cache di [core/decoy.md](core/decoy.md); eksekusi (append item + retry `Bizz-err.Amount.Total`) di [api/purchase/balance.md](api/purchase/balance.md) (`settle_with_decoy`); pemicu menu di [ui/package/details.md](ui/package/details.md) (opsi 4–7).
 - **Login & sesi**: [ui/account.md](ui/account.md) → [api/auth.md](api/auth.md) (CIAM OIDC) → [core/session.md](core/session.md) (multi-akun + auto-refresh 300 s).
 - **Rotasi token otomatis**: `get_active_user()` di [core/session.md](core/session.md); fallback `extend_session` + `submit_otp(DEVICEID)` di [api/auth.md](api/auth.md).
-
-## File yang Tidak Didokumentasikan
-
-- `__init__.py` kosong (0 byte): `ahsiata/`, `ahsiata/api/`, `ahsiata/api/purchase/`, `ahsiata/core/`, `ahsiata/ui/` — tanpa kode, tidak dibuatkan dokumen.
-- `__init__.py` berisi satu docstring (`"""{Nama} sub-package init."""`, tanpa kode): `ahsiata/ui/package/`, `ahsiata/ui/purchase/`, `ahsiata/ui/store/`, `ahsiata/ui/circle/` — dilipat ke indeks ini.
-- `ahsiata/api/store/` adalah direktori kosong.
