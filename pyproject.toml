@@ -8,7 +8,7 @@ version = "1.0.0"
 description = "MyXL (XL Axiata) backend CLI client"
 requires-python = ">=3.10"
 dependencies = [
-    "Brotli==1.2.0",
+    "Brotli==1.2.1",
     "pycryptodome==3.23.0",
     "python-dotenv==1.2.3",
     "qrcode==8.2",
